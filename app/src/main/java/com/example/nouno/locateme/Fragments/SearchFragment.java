@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -74,6 +76,8 @@ public class SearchFragment extends Fragment {
     private Object mDestination;
     private MapboxMap mMapboxMap;
     private ProgressBar mProgressBar;
+    private AnimatedVectorDrawable animatedVectorDrawable;
+    private ImageView imageView;
     private static final LatLngBounds ICELAND_BOUNDS = new LatLngBounds.Builder()
             .include(new LatLng(66.852863, -25.985652))
             .include(new LatLng(62.985661, -12.626277))
@@ -109,6 +113,7 @@ public class SearchFragment extends Fragment {
         });
         mProgressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.GONE);
+
         mCalculateButton.setVisibility(View.GONE);
         mCalculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
