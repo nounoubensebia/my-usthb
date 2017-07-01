@@ -23,7 +23,7 @@ import java.util.List;
 public class Graph {
     private List<Vertex> vertexes;
     private List<Edge> edges;
-    public static final double MAX_DISTANCE = 0.03;
+    public static final double MAX_DISTANCE = 0.05;
 
     public Graph(List<Vertex> vertexes, List<Edge> edges) {
         this.vertexes = vertexes;
