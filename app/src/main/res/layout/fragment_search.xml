@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,201 +6,42 @@
     android:orientation="vertical"
     tools:context="com.example.nouno.locateme.Fragments.SearchFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <android.support.v7.widget.Toolbar
-        android:elevation="10dp"
-        android:background="@color/backgroundColor"
+    <FrameLayout
+        android:elevation="20dp"
+        android:id="@+id/app_bar_root"
         android:layout_width="match_parent"
-        android:layout_marginLeft="0dp"
-        android:contentInsetLeft="0dp"
-        android:contentInsetStart="0dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        android:contentInsetRight="0dp"
-        android:contentInsetEnd="0dp"
-        app:contentInsetRight="0dp"
-        app:contentInsetEnd="0dp"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-            <TextView
-                android:fontFamily="sans-serif-light"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="16dp"
-                android:textColor="@android:color/white"
-                android:text="Itinéraire trouvé"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:background="@color/backgroundColor"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:paddingTop="12dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="8dp"
-            android:elevation="4dp"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        android:layout_height="match_parent">
+        <include layout="@layout/default_search_app_bar" />
+    </FrameLayout>
+    <Button
+        android:layout_centerHorizontal="true"
 
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+        android:elevation="20dp"
+        android:id="@+id/calculate_button"
+        android:textColor="@color/backgroundColor"
+        android:text="Calculer itinéraire"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:background="@drawable/very_rounded_button"
+        android:textStyle="normal"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="148dp"
+        android:textSize="12sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="30dp" />
+    <ProgressBar
+        android:layout_centerHorizontal="true"
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent">
-                <ImageView
-                    android:layout_marginTop="6dp"
-                    app:srcCompat= "@drawable/ic_my_location_white_24dp"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp" />
-                    <View
-                        android:layout_marginTop="4dp"
-                        android:layout_gravity="center"
-                        android:background="#94BAF9"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"/>
-                </LinearLayout>
-                <TextView
-                    android:text="Lieu actuel"
-
-                    android:textColor="@android:color/white"
-                    android:layout_marginLeft="8dp"
-                    android:id="@+id/my_location_text"
-                    android:background="@drawable/rounded_button"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content" />
-
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent">
-                    <View
-                        android:layout_gravity="center"
-                        android:background="#94BAF9"
-                        android:layout_width="1dp"
-                        android:layout_marginBottom="4dp"
-                        android:layout_height="20dp"/>
-            <ImageView
-                app:srcCompat= "@drawable/ic_location_on_white_24dp"
-                android:layout_width="20dp"
-                android:layout_gravity="center"
-                android:layout_height="20dp" />
-                </LinearLayout>
-
-            <TextView
-                android:text="Faculté de chimie"
-
-                android:textColor="@android:color/white"
-                android:layout_gravity="center"
-                android:id="@+id/destination_text"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/rounded_button"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageView
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_arrow_up_24dp"
-            android:layout_width="32dp"
-            android:layout_marginRight="16dp"
-            android:layout_height="32dp" />
-
-    </LinearLayout>
-            <View
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginLeft="32dp"
-                android:layout_width="match_parent"
-                android:background="#FFF"
-                android:layout_height="0.5dp"/>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="56 min 3.3 Km"
-                android:textColor="#FFF"
-                android:fontFamily="sans-serif"
-                android:layout_marginBottom="8dp"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="Arrivée à 11:41"
-                android:textColor="#FFF"
-                android:fontFamily="sans-serif-light"
-                android:layout_marginBottom="8dp"
-                android:layout_height="wrap_content" />
-                </LinearLayout>
-                <TextView
-                    android:drawableTop="@drawable/ic_navigation_24dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_alignParentRight="true"
-                    android:text="Début"
-                    android:fontFamily="sans-serif-light"
-                    android:textColor="#FFF"
-                    android:textSize="16sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
+        android:elevation="1dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/progressBar"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="140dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ProgressBar
-            android:elevation="1dp"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/progressBar"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <Button
-            android:id="@+id/calculate_button"
-            android:textColor="@color/backgroundColor"
-            android:text="Calculer itinéraire"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/very_rounded_button"
-            android:textStyle="normal"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_height="30dp" />
-
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/mapView"
             app:mapbox_cameraZoom="15"
@@ -211,4 +52,4 @@
             app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10" />
     </FrameLayout>
 
-</LinearLayout>
+</RelativeLayout>

@@ -15,25 +15,25 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
+import android.transition.Scene;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.example.nouno.locateme.Data.Coordinate;
-import com.example.nouno.locateme.Djikstra.DijkstraAlgorithm;
 import com.example.nouno.locateme.Djikstra.Edge;
 import com.example.nouno.locateme.Djikstra.Vertex;
 import com.example.nouno.locateme.OnSearchFinishListener;
@@ -42,8 +42,6 @@ import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Activities.SearchQueryActivity;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -59,7 +57,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
+import static java.lang.Thread.sleep;
 
 
 /**
@@ -75,7 +73,10 @@ public class SearchFragment extends Fragment {
     private Object mDeparture;
     private Object mDestination;
     private MapboxMap mMapboxMap;
+    private ImageView collapseButton;
+    private boolean defaultToolbarIsSet = true;
     private ProgressBar mProgressBar;
+    private ViewGroup sceneRoot;
     private AnimatedVectorDrawable animatedVectorDrawable;
     private ImageView imageView;
     private static final LatLngBounds ICELAND_BOUNDS = new LatLngBounds.Builder()
@@ -113,14 +114,26 @@ public class SearchFragment extends Fragment {
         });
         mProgressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.GONE);
-
+        collapseButton = (ImageView)view.findViewById(R.id.collapse_button);
+        collapseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    setPathFoundToolbar();
+                }
+            }
+        });
+        sceneRoot = (ViewGroup) view.findViewById(R.id.app_bar_root);
         mCalculateButton.setVisibility(View.GONE);
         mCalculateButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 if (mDeparture!=null&&mDestination!=null)
                 {
                     getPath();
+                    setPathFoundToolbar();
+
                 }
             }
         });
@@ -336,7 +349,38 @@ public class SearchFragment extends Fragment {
            }
        }
    }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void setPathFoundToolbar ()
+    {
+        TransitionManager.go(Scene.getSceneForLayout(sceneRoot,R.layout.path_found_app_bar,getActivity()),
+                TransitionInflater.from(getActivity()).inflateTransition(R.transition.app_bar_default_to_path_found));
+        defaultToolbarIsSet = false;
+        collapseButton = (ImageView) getView().findViewById(R.id.collapse_button);
+        collapseButton.setOnClickListener(null);
+        collapseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDefaultToolbar();
+            }
+        });
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void setDefaultToolbar()
+    {
+        defaultToolbarIsSet = true;
+        TransitionManager.go(Scene.getSceneForLayout(sceneRoot,R.layout.default_search_app_bar,getActivity()),
+                TransitionInflater.from(getActivity()).inflateTransition(R.transition.app_bar_path_to_default));
+        collapseButton = (ImageView)getView().findViewById(R.id.collapse_button);
+        collapseButton.setOnClickListener(null);
+        collapseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPathFoundToolbar();
+            }
+        });
+
+    }
 
 
 

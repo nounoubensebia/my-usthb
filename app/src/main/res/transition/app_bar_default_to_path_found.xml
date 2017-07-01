@@ -1,0 +1,40 @@
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <!--<fade android:duration="300">
+        <targets>
+            <target android:targetId="@id/default_title_text"></target>
+
+        </targets>
+    </fade>
+    <fade
+        android:duration="300"
+        android:startDelay="350">
+        <targets>
+
+            <target android:targetId="@id/path_found_title_text"></target>
+        </targets>
+    </fade>-->
+    <changeBounds
+        android:duration="300" android:startDelay="0"
+        tools:targetApi="kitkat">
+        <targets>
+            <target
+                android:targetId="@id/app_bar_layout"
+                tools:targetApi="kitkat" />
+        </targets>
+
+    </changeBounds>
+
+    <fade
+        android:duration="300"
+        android:startDelay="350">
+        <targets>
+            <target android:targetId="@id/time_of_arrival_text"></target>
+            <target android:targetId="@id/duration_distance_text"></target>
+            <target android:targetId="@id/navigation_text"></target>
+
+        </targets>
+    </fade>
+</transitionSet>
