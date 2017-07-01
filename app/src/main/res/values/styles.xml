@@ -1,0 +1,36 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#0078d7</item>
+        <item name="colorPrimaryDark">#0063ad</item>
+        <item name="colorAccent">@color/backgroundColor</item>
+    </style>
+
+    <style name="SignupTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@android:color/transparent</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+
+        <!--<item name="android:navigationBarColor" tools:targetApi="lollipop">@color/backgroundColor</item>-->
+        <item name="colorAccent">#FFF</item>
+        <item name="android:colorControlActivated" tools:targetApi="lollipop">#FFFF</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:textColorHint">#FFF</item>
+        <item name="android:colorControlHighlight" tools:targetApi="lollipop">#FFF</item>
+        <item name="android:colorControlNormal" tools:targetApi="lollipop">#FFF</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <item name="android:textColorPrimary">#FFF</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+
+    </style>
+
+    <style name="ToolbarStyle" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="contentInsetStart">0dp</item>
+        <item name="android:contentInsetStart" tools:targetApi="lollipop">0dp</item>
+    </style>
+</resources>
+

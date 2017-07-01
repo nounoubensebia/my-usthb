@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/backgroundColor</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorBlueGreen">#1976D2</color>
+    <color name="colorGreen">#388E3C</color>
+    <color name="colorYellow">#AFB42B</color>
+    <color name="colorBlue">#0078d7</color>
+    <color name="backgroundColor">@color/colorBlue</color>
+    <color name="greenPrimaryDark">#388E3C</color>
+    <color name="greenPrimary">#4CAF50</color>
+    <color name="white">#FFF</color>
+    <color name="refresh_progress_1">@color/colorBlue</color>
+    <color name="refresh_progress_2">@color/colorBlue</color>
+    <color name="refresh_progress_3">@color/colorBlue</color>
+    <color name="green">@android:color/holo_green_dark</color>
+</resources>
