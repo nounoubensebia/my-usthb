@@ -10,8 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,22 +20,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
-import android.transition.Scene;
-import android.transition.TransitionInflater;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
 import com.example.nouno.locateme.Data.Coordinate;
+import com.example.nouno.locateme.Data.Path;
+import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Djikstra.Edge;
-import com.example.nouno.locateme.Djikstra.Vertex;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.Utils.FileUtils;
 import com.example.nouno.locateme.Djikstra.Graph;
@@ -54,8 +55,14 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static java.lang.Thread.sleep;
 
@@ -64,26 +71,30 @@ import static java.lang.Thread.sleep;
  * A simple {@link Fragment} subclass.
  */
 public class SearchFragment extends Fragment {
-    private static final String LICENSE = "XTUN3Q0ZGVzQ1Vmpxc01yRnRuaFFzY043c1BvWDBSOHRBaFJVVFd2bmQ3ODdYY2lkVHpuekcyeHZCWmRQY2c9PQoKYXBwVG9rZW49MGY4YmFjMTYtN2ZlOS00ZjhlLWEyOTItYTAyYjM4Nzg5ZGQwCnBhY2thZ2VOYW1lPWNvbS5leGFtcGxlLm5vdW5vLmxvY2F0ZW1lCm9ubGluZUxpY2Vuc2U9MQpwcm9kdWN0cz1zZGstYW5kcm9pZC00LioKd2F0ZXJtYXJrPWNhcnRvZGIK";
 
-    private TextView mMyLocationText;
+    public static final String USER_LOCATION_JSON = "userLocation";
+
+
+    private static final String LICENSE = "XTUN3Q0ZGVzQ1Vmpxc01yRnRuaFFzY043c1BvWDBSOHRBaFJVVFd2bmQ3ODdYY2lkVHpuekcyeHZCWmRQY2c9PQoKYXBwVG9rZW49MGY4YmFjMTYtN2ZlOS00ZjhlLWEyOTItYTAyYjM4Nzg5ZGQwCnBhY2thZ2VOYW1lPWNvbS5leGFtcGxlLm5vdW5vLmxvY2F0ZW1lCm9ubGluZUxpY2Vuc2U9MQpwcm9kdWN0cz1zZGstYW5kcm9pZC00LioKd2F0ZXJtYXJrPWNhcnRvZGIK";
+    private TextView mAppBarTitleText;
+    private TextView mDepartureText;
     private TextView mDestinationText;
     private Button mCalculateButton;
     private Graph mGraph;
-    private Object mDeparture;
-    private Object mDestination;
+    private LinearLayout appBarLinearLayout;
+    private Path mPath = new Path();
     private MapboxMap mMapboxMap;
     private ImageView collapseButton;
-    private boolean defaultToolbarIsSet = true;
+    private boolean pathLayoutAdded = false;
     private ProgressBar mProgressBar;
     private ViewGroup sceneRoot;
-    private AnimatedVectorDrawable animatedVectorDrawable;
-    private ImageView imageView;
-    private static final LatLngBounds ICELAND_BOUNDS = new LatLngBounds.Builder()
-            .include(new LatLng(66.852863, -25.985652))
-            .include(new LatLng(62.985661, -12.626277))
-            .build();
-    private MapView mapView;
+    private MapView mMapView;
+    private LinearLayout mPathLayout;
+    private int state;
+    private Place mUserLocation;
+    private static final int STATE_PATH_NOT_SET = 0;
+    private static final int STATE_PATH_SET = 1;
+    private static final int STATE_PATH_CALCULATED = 2;
 
     public SearchFragment() {
 
@@ -96,11 +107,13 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         super.onCreate(savedInstanceState);
-
-        mMyLocationText = (TextView) view.findViewById(R.id.my_location_text);
+        state = STATE_PATH_NOT_SET;
+        appBarLinearLayout = (LinearLayout)view.findViewById(R.id.app_bar_layout);
+        mDepartureText = (TextView) view.findViewById(R.id.departure_text);
         mDestinationText = (TextView) view.findViewById(R.id.destination_text);
         mCalculateButton = (Button) view.findViewById(R.id.calculate_button);
-        mMyLocationText.setOnClickListener(new View.OnClickListener() {
+        mAppBarTitleText = (TextView) view.findViewById(R.id.app_bar_title_text);
+        mDepartureText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startSearchActivity();
@@ -115,25 +128,29 @@ public class SearchFragment extends Fragment {
         mProgressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.GONE);
         collapseButton = (ImageView)view.findViewById(R.id.collapse_button);
+        collapseButton.setVisibility(View.INVISIBLE);
         collapseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    setPathFoundToolbar();
+                    if (pathLayoutAdded)
+                        removePathFoundLayout();
+                    else
+                        addPathFoundLayout();
                 }
             }
         });
-        sceneRoot = (ViewGroup) view.findViewById(R.id.app_bar_root);
+        //sceneRoot = (ViewGroup) view.findViewById(R.id.app_bar_root);
         mCalculateButton.setVisibility(View.GONE);
         mCalculateButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                if (mDeparture!=null&&mDestination!=null)
+
+                if (mPath !=null&& mPath.getSource()!=null&& mPath.getDestination()!=null)
                 {
                     getPath();
-                    setPathFoundToolbar();
-
+                    //addPathFoundLayout();
                 }
             }
         });
@@ -141,17 +158,63 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapView.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        mMapView.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        mMapView.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onPause() {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        mMapView.onStop();
+        super.onStop();
+    }
+
+    @Override
+    public void onLowMemory() {
+        mMapView.onLowMemory();
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onDestroy() {
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
     private void createMap(Bundle savedInstanceState, View view) {
 
-        mapView = (MapView) view.findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
+        mMapView = (MapView) view.findViewById(R.id.mapView);
+
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                builder.include(new LatLng(36.717562, 3.192844));
-                builder.include(new LatLng(36.705176, 3.167439));
+                builder.include(Place.NORTH_WEST_CAMPUS_BOUND.getMapBoxLatLng());
+                builder.include(Place.SOUTH_EAST_CAMPUS_BOUND.getMapBoxLatLng());
+
                 mMapboxMap = mapboxMap;
+                mMapboxMap.setMyLocationEnabled(true);
+                mMapboxMap.setLatLngBoundsForCameraTarget(builder.build());
                 getGraph();
                 mMapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
                     @Override
@@ -159,12 +222,24 @@ public class SearchFragment extends Fragment {
                         createChooseMarkerTypeDialog(new Coordinate(point));
                     }
                 });
+                mapboxMap.setMyLocationEnabled(true);
             }
         });
     }
 
     private void startSearchActivity() {
         Intent i = new Intent(getActivity(), SearchQueryActivity.class);
+        if (mMapboxMap.getMyLocation()!=null)
+        {
+            double latitude = mMapboxMap.getMyLocation().getLatitude();
+            double longitude = mMapboxMap.getMyLocation().getLongitude();
+            Coordinate c = new Coordinate(latitude,longitude);
+            mUserLocation = new Place("label",c);
+        }
+
+
+        if (mUserLocation!=null)
+        i.putExtra(USER_LOCATION_JSON,mUserLocation.toJson());
         startActivity(i);
     }
 
@@ -175,9 +250,8 @@ public class SearchFragment extends Fragment {
         }
         mMapboxMap.addPolyline(new PolylineOptions()
                 .addAll(points)
-                .color(Color.parseColor("#222222"))
-                .width(3));
-
+                .color(Color.parseColor("#0078d7"))
+                .width(5));
     }
 
     private void drawAllPolylinesFromGraph(Graph graph) {
@@ -227,7 +301,6 @@ public class SearchFragment extends Fragment {
     private void createChooseMarkerTypeDialog(final Coordinate coordinate){
 
         final AlertDialog.Builder alt_bld = new AlertDialog.Builder(getActivity());
-        //alt_bld.setIcon(R.drawable.icon);
         alt_bld.setTitle("Choisir comme :");
         final CharSequence[] charSequences = new CharSequence[2];
         charSequences[0]="Point de départ";
@@ -248,28 +321,32 @@ public class SearchFragment extends Fragment {
                 mMapboxMap.removeAnnotations(mMapboxMap.getPolylines());
                 if (!checkedItem.equals("Destination"))
                 {
-                    if (mDeparture!=null && mDeparture instanceof Coordinate)
+                    if (mPath.getSource()!=null)
                     {
-                        removeMarker((Coordinate)mDeparture);
+                        removeMarker(mPath.getSource().getCoordinate());
                     }
                     drawMarker(coordinate,"Point de départ",R.drawable.ic_marker_blue_24dp);
-                    if (mDestination!=null)
+                    if (mPath.getDestination()!=null)
                     {
                         mCalculateButton.setVisibility(View.VISIBLE);
+                        changeState(STATE_PATH_SET);
                     }
-                    mDeparture = coordinate;
+                    mPath.setSource(new Place("Prés de",coordinate));
+                    mDepartureText.setText("Prés de");
                 }
                 else
                 {
-                    if (mDestination!=null && mDestination instanceof Coordinate)
+                    if (mPath.getDestination()!=null)
                     {
-                        removeMarker((Coordinate)mDestination);
+                        removeMarker(mPath.getDestination().getCoordinate());
                     }
-                    mDestination = coordinate;
+                    mPath.setDestination(new Place("Prés de",coordinate));
+                    mDestinationText.setText("Prés de");
                     drawMarker(coordinate,"Destination",R.drawable.ic_marker_red_24dp);
-                    if (mDeparture!=null)
+                    if (mPath.getSource()!=null)
                     {
                         mCalculateButton.setVisibility(View.VISIBLE);
+                        changeState(STATE_PATH_SET);
                     }
                 }
             }
@@ -289,52 +366,21 @@ public class SearchFragment extends Fragment {
    {
        mProgressBar.setVisibility(View.VISIBLE);
        mCalculateButton.setVisibility(View.GONE);
-       if (mDeparture instanceof Coordinate && mDestination instanceof Coordinate)
+       if (mPath.getSource().getClass().getName().equals("com.example.nouno.locateme.Data.Place")&&mPath.getDestination().getClass().getName().equals("com.example.nouno.locateme.Data.Place"))
        {
 
-           mGraph.getShortestPath((Coordinate) mDeparture, (Coordinate) mDestination, mMapboxMap.getProjection(),
+           mGraph.getShortestPath(mPath.getSource().getCoordinate(), mPath.getDestination().getCoordinate(), mMapboxMap.getProjection(),
                    new OnSearchFinishListener() {
                        @Override
                        public void OnSearchFinish(Graph graph) {
                            drawAllPolylinesFromGraph(graph);
+                           mPath.setDistance((float)graph.getWeight());
                            mProgressBar.setVisibility(View.GONE);
-                       }
-                   });
-       }
-       if (mDeparture instanceof Coordinate && mDestination instanceof Vertex)
-       {
-           mGraph.getShortestPath((Coordinate) mDeparture, (Vertex) mDestination, mMapboxMap.getProjection(),
-                   new OnSearchFinishListener() {
-                       @Override
-                       public void OnSearchFinish(Graph graph) {
-                           drawAllPolylinesFromGraph(graph);
-                           mProgressBar.setVisibility(View.GONE);
+                           changeState(STATE_PATH_CALCULATED);
                        }
                    });
        }
 
-       if (mDeparture instanceof Vertex && mDestination instanceof Coordinate)
-       {
-           mGraph.getShortestPath((Vertex) mDeparture, (Coordinate) mDestination, mMapboxMap.getProjection(),
-                   new OnSearchFinishListener() {
-                       @Override
-                       public void OnSearchFinish(Graph graph) {
-                           drawAllPolylinesFromGraph(graph);
-                           mProgressBar.setVisibility(View.GONE);
-                       }
-                   });
-       }
-       if (mDeparture instanceof Vertex && mDestination instanceof Vertex)
-       {
-           mGraph.getShortestPath((Vertex) mDeparture, (Vertex) mDestination
-                   , new OnSearchFinishListener() {
-                       @Override
-                       public void OnSearchFinish(Graph graph) {
-                           drawAllPolylinesFromGraph(graph);
-                           mProgressBar.setVisibility(View.GONE);
-                       }
-                   });
-       }
    }
 
    private void removeMarker (Coordinate coordinate)
@@ -349,39 +395,79 @@ public class SearchFragment extends Fragment {
            }
        }
    }
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void setPathFoundToolbar ()
+
+    private void addPathFoundLayout()
     {
-        TransitionManager.go(Scene.getSceneForLayout(sceneRoot,R.layout.path_found_app_bar,getActivity()),
-                TransitionInflater.from(getActivity()).inflateTransition(R.transition.app_bar_default_to_path_found));
-        defaultToolbarIsSet = false;
-        collapseButton = (ImageView) getView().findViewById(R.id.collapse_button);
-        collapseButton.setOnClickListener(null);
-        collapseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setDefaultToolbar();
-            }
-        });
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        mPathLayout = (LinearLayout) inflater.inflate(R.layout.path_found_app_bar, null, false);
+        appBarLinearLayout.addView(mPathLayout);
+        if (state == STATE_PATH_CALCULATED)
+        {
+            Animation animation = AnimationUtils.loadAnimation(getActivity(),R.anim.rotation_from_0_to_180);
+            collapseButton.startAnimation(animation);
+            animation.setFillAfter(true);
+        }
+        pathLayoutAdded = true;
+        TextView distancedurationText = (TextView)mPathLayout.findViewById(R.id.duration_distance_text);
+        distancedurationText.setText(mPath.getDurationString()+" "+mPath.getDistanceString());
+        TextView timeOfArrivalText = (TextView)mPathLayout.findViewById(R.id.time_of_arrival_text);
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
+
+        Date currentLocalTime = cal.getTime();
+        long time = currentLocalTime.getTime();
+        time+=mPath.getDuration()*1000;
+        currentLocalTime = new Time(time);
+        DateFormat date = new SimpleDateFormat("HH:mm");
+        date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
+        String localTime = date.format(currentLocalTime);
+        timeOfArrivalText.setText("Arrivée à "+localTime);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void setDefaultToolbar()
+
+    private void removePathFoundLayout()
     {
-        defaultToolbarIsSet = true;
-        TransitionManager.go(Scene.getSceneForLayout(sceneRoot,R.layout.default_search_app_bar,getActivity()),
-                TransitionInflater.from(getActivity()).inflateTransition(R.transition.app_bar_path_to_default));
-        collapseButton = (ImageView)getView().findViewById(R.id.collapse_button);
-        collapseButton.setOnClickListener(null);
-        collapseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setPathFoundToolbar();
-            }
-        });
+        appBarLinearLayout.removeView(mPathLayout);
+        if (state==STATE_PATH_CALCULATED)
+        {
+            Animation animation = AnimationUtils.loadAnimation(getActivity(),R.anim.rotation_from_180_to_0);
+            collapseButton.startAnimation(animation);
+            animation.setFillAfter(true);
 
+        }
+
+        pathLayoutAdded = false;
     }
-
+    private void changeState (int state)
+    {
+        switch (state) {
+            case STATE_PATH_NOT_SET : collapseButton.setVisibility(View.INVISIBLE);
+                this.state = STATE_PATH_NOT_SET;
+                if (pathLayoutAdded)
+                {
+                    removePathFoundLayout();
+                }
+                mCalculateButton.setVisibility(View.GONE);
+                mAppBarTitleText.setText("Où aller ?");
+                break;
+            case STATE_PATH_SET :
+                collapseButton.clearAnimation();
+                collapseButton.setVisibility(View.INVISIBLE);
+                this.state = STATE_PATH_SET;
+                if (pathLayoutAdded)
+                {
+                    removePathFoundLayout();
+                }
+                mCalculateButton.setVisibility(View.VISIBLE);
+                mAppBarTitleText.setText("Où aller ?");
+                break;
+            case  STATE_PATH_CALCULATED : collapseButton.setVisibility(View.VISIBLE);
+                collapseButton.clearAnimation();
+                this.state=STATE_PATH_CALCULATED;
+                addPathFoundLayout();
+                mCalculateButton.setVisibility(View.GONE);
+                mAppBarTitleText.setText("Itinéraire trouvé");
+        }
+    }
 
 
 }

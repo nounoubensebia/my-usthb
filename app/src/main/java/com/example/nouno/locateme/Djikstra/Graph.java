@@ -4,6 +4,7 @@ import android.graphics.PointF;
 import android.os.AsyncTask;
 
 import com.example.nouno.locateme.Data.Coordinate;
+import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.Utils.MapUtils;
 import com.google.gson.Gson;
@@ -23,7 +24,7 @@ import java.util.List;
 public class Graph {
     private List<Vertex> vertexes;
     private List<Edge> edges;
-    public static final double MAX_DISTANCE = 0.05;
+    public static final double MAX_DISTANCE = 0.03;
 
     public Graph(List<Vertex> vertexes, List<Edge> edges) {
         this.vertexes = vertexes;
@@ -40,7 +41,7 @@ public class Graph {
                 JSONObject vertexJson = vertexesJson.getJSONObject(i);
                 String name = vertexJson.getString("name");
                 long id = vertexJson.getLong("id");
-                Vertex v = new Vertex(id, name);
+                Vertex v = new Vertex(id);
                 vertexes.add(v);
             }
             JSONArray edgesJson = jsonObject.getJSONArray("edges");
@@ -114,7 +115,7 @@ public class Graph {
     private Vertex explodeEdgeAtCoordinate(Edge e, Coordinate polylineCoordinate, Coordinate explosionCoordinate, Projection projection) {
 
         if (polylineCoordinate.equals(e.getCoordinates().get(0))) {
-            Vertex userVertex = new Vertex(getLastVertexId() + 1, (getLastVertexId() + 1) + "");
+            Vertex userVertex = new Vertex(getLastVertexId() + 1);
             ArrayList<Coordinate> newPathCoordinates = new ArrayList<>();
             newPathCoordinates.add(explosionCoordinate);
             newPathCoordinates.add(e.getCoordinates().get(0));
@@ -124,7 +125,7 @@ public class Graph {
             return userVertex;
         }
         if (polylineCoordinate.equals(e.getCoordinates().get(e.getCoordinates().size() - 1))) {
-            Vertex userVertex = new Vertex(getLastVertexId() + 1, (getLastVertexId() + 1) + "");
+            Vertex userVertex = new Vertex(getLastVertexId() + 1);
             ArrayList<Coordinate> newPathCoordinates = new ArrayList<>();
             newPathCoordinates.add(explosionCoordinate);
             newPathCoordinates.add(e.getCoordinates().get(e.getCoordinates().size() - 1));
@@ -161,8 +162,8 @@ public class Graph {
         userToPointPath.add(polylineCoordinate);
         Vertex source = e.getSource();
         Vertex destination = e.getDestination();
-        Vertex pointVertex = new Vertex(getLastVertexId() + 1, getLastVertexId() + 2 + "");
-        Vertex userVertex = new Vertex(getLastVertexId() + 2, getLastVertexId() + 2 + "");
+        Vertex pointVertex = new Vertex(getLastVertexId() + 1);
+        Vertex userVertex = new Vertex(getLastVertexId() + 2);
         Edge sourceToPointEdge = new Edge(getLastEdgeId() + 1, source, pointVertex, MapUtils.calculatePathDistance(sourceToPoint), sourceToPoint);
         Edge PointToDestinationEdge = new Edge(getLastEdgeId() + 2, pointVertex, destination, MapUtils.calculatePathDistance(pointToDestinationPath), pointToDestinationPath);
         Edge userToPointEdge = new Edge(getLastEdgeId() + 3, userVertex, pointVertex, MapUtils.calculatePathDistance(userToPointPath), userToPointPath);
@@ -331,10 +332,6 @@ public class Graph {
 
         return shortestGraph;
     }
-
-
-
-
     private ArrayList<Edge> edgesToExplode(Coordinate userLocation) {
         ArrayList<Edge> edgesToExplode = new ArrayList<>();
         double maxDistance = MAX_DISTANCE;
@@ -356,9 +353,5 @@ public class Graph {
         }
         return weight;
     }
-
-
-
-
 }
 

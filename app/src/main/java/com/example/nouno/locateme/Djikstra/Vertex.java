@@ -7,20 +7,18 @@ import java.util.List;
  */
 public class Vertex {
     final private Long id;
-    final private String name;
 
 
-    public Vertex(long id, String name) {
+
+    public Vertex(long id) {
         this.id = id;
-        this.name = name;
+
     }
     public long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
+
 
     @Override
     public int hashCode() {
@@ -47,10 +45,6 @@ public class Vertex {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
 
     public static Vertex getVertexById (List<Vertex> vertices, long id)
     {
