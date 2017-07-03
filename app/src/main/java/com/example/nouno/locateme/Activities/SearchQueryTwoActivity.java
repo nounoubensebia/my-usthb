@@ -10,6 +10,8 @@ import android.text.Layout;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.nouno.locateme.Data.Path;
@@ -25,8 +27,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private TextView mSetPositionOnMapTextView;
     private EditText departureEditText;
     private EditText destinationEditText;
+    private LinearLayout pathLayout;
     private Path mPath = new Path();
     private View appBarLayout;
+    private View pathCalculProgress;
     public static int REQUEST_DEPARTURE_CODE = 0;
     public static int REQUEST_DESTINATION_CODE = 1;
     @Override
@@ -79,6 +83,13 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 }
             }
         });
+
+        pathLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pathCalculProgress.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void getViews ()
@@ -87,7 +98,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         destinationEditText = (EditText)findViewById(R.id.destination_text);
         mSetPositionOnMapTextView = (TextView)findViewById(R.id.set_position_on_map);
         appBarLayout = findViewById(R.id.app_bar_layout);
-
+        pathLayout = (LinearLayout)findViewById(R.id.path_layout);
+        pathCalculProgress = (ProgressBar)findViewById(R.id.path_progress_bar);
     }
 
     @Override

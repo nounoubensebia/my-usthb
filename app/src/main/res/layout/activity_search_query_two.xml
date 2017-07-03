@@ -292,6 +292,8 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/path_layout"
+            android:animateLayoutChanges="true"
             android:padding="16dp"
             android:background="#FFF"
             android:elevation="4dp"
@@ -308,6 +310,16 @@
                 android:text="Calculer itinéraire"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            <ProgressBar
+                android:visibility="gone"
+                android:layout_marginTop="16dp"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/path_progress_bar"
+                android:indeterminate="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"/>
         </LinearLayout>
     <com.mapbox.mapboxsdk.maps.MapView
         android:elevation="2dp"
