@@ -14,7 +14,7 @@ import java.util.List;
  * Created by nouno on 26/06/2017.
  */
 
-public class MapUtils {
+public class MapGeometryUtils {
 
     public static Coordinate findNearestPoint(Coordinate testa, List<Coordinate> targeta) {
         double distance = -1;

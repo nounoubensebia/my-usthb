@@ -1,6 +1,7 @@
 package com.example.nouno.locateme.Data;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 
 /**
  * Created by nouno on 26/06/2017.
@@ -62,5 +63,16 @@ public class Coordinate {
             return (c.longitude==longitude&&c.latitude==latitude);
         }
         return false;
+    }
+
+    public String toJson ()
+    {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+    public static Coordinate fromJson (String json)
+    {
+        Gson gson = new Gson();
+        return gson.fromJson(json,Coordinate.class);
     }
 }

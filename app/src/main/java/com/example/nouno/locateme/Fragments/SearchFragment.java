@@ -41,7 +41,7 @@ import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.Utils.FileUtils;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.R;
-import com.example.nouno.locateme.Activities.SearchQueryActivity;
+
 
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -228,7 +228,7 @@ public class SearchFragment extends Fragment {
     }
 
     private void startSearchActivity() {
-        Intent i = new Intent(getActivity(), SearchQueryActivity.class);
+
         if (mMapboxMap.getMyLocation()!=null)
         {
             double latitude = mMapboxMap.getMyLocation().getLatitude();
@@ -239,8 +239,10 @@ public class SearchFragment extends Fragment {
 
 
         if (mUserLocation!=null)
-        i.putExtra(USER_LOCATION_JSON,mUserLocation.toJson());
-        startActivity(i);
+        {
+
+        }
+
     }
 
     private void drawPolyline(List<Coordinate> coordinates) {
@@ -263,9 +265,7 @@ public class SearchFragment extends Fragment {
 
     private void drawMarker(Coordinate coordinate, String title, int iconResource) {
         IconFactory iconFactory = IconFactory.getInstance(getActivity());
-
         Icon icon = iconFactory.fromBitmap(getBitmapFromVectorDrawable(iconResource));
-
         mMapboxMap.addMarker(new MarkerOptions()
                 .position(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()))
                 .title(title)

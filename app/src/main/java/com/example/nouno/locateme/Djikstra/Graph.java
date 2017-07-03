@@ -4,9 +4,8 @@ import android.graphics.PointF;
 import android.os.AsyncTask;
 
 import com.example.nouno.locateme.Data.Coordinate;
-import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.OnSearchFinishListener;
-import com.example.nouno.locateme.Utils.MapUtils;
+import com.example.nouno.locateme.Utils.MapGeometryUtils;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.Projection;
@@ -119,7 +118,7 @@ public class Graph {
             ArrayList<Coordinate> newPathCoordinates = new ArrayList<>();
             newPathCoordinates.add(explosionCoordinate);
             newPathCoordinates.add(e.getCoordinates().get(0));
-            Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getSource(), MapUtils.calculatePathDistance(newPathCoordinates), newPathCoordinates);
+            Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getSource(), MapGeometryUtils.calculatePathDistance(newPathCoordinates), newPathCoordinates);
             edges.add(edge);
             vertexes.add(userVertex);
             return userVertex;
@@ -129,7 +128,7 @@ public class Graph {
             ArrayList<Coordinate> newPathCoordinates = new ArrayList<>();
             newPathCoordinates.add(explosionCoordinate);
             newPathCoordinates.add(e.getCoordinates().get(e.getCoordinates().size() - 1));
-            Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getDestination(), MapUtils.calculatePathDistance(newPathCoordinates), newPathCoordinates);
+            Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getDestination(), MapGeometryUtils.calculatePathDistance(newPathCoordinates), newPathCoordinates);
             edges.add(edge);
             vertexes.add(userVertex);
             return userVertex;
@@ -143,7 +142,7 @@ public class Graph {
             PointF previousPoint = projection.toScreenLocation(new LatLng(previousCoord.getLatitude(), previousCoord.getLongitude()));
             PointF currentPoint = projection.toScreenLocation(new LatLng(e.getCoordinates().get(i).getLatitude(), e.getCoordinates().get(i).getLongitude()));
             previousCoord = e.getCoordinates().get(i);
-            if (MapUtils.getLineSegmentIntersection(userPoint, polylinePoint, previousPoint, currentPoint)) {
+            if (MapGeometryUtils.getLineSegmentIntersection(userPoint, polylinePoint, previousPoint, currentPoint)) {
                 order1 = i - 1;
             }
         }
@@ -164,9 +163,9 @@ public class Graph {
         Vertex destination = e.getDestination();
         Vertex pointVertex = new Vertex(getLastVertexId() + 1);
         Vertex userVertex = new Vertex(getLastVertexId() + 2);
-        Edge sourceToPointEdge = new Edge(getLastEdgeId() + 1, source, pointVertex, MapUtils.calculatePathDistance(sourceToPoint), sourceToPoint);
-        Edge PointToDestinationEdge = new Edge(getLastEdgeId() + 2, pointVertex, destination, MapUtils.calculatePathDistance(pointToDestinationPath), pointToDestinationPath);
-        Edge userToPointEdge = new Edge(getLastEdgeId() + 3, userVertex, pointVertex, MapUtils.calculatePathDistance(userToPointPath), userToPointPath);
+        Edge sourceToPointEdge = new Edge(getLastEdgeId() + 1, source, pointVertex, MapGeometryUtils.calculatePathDistance(sourceToPoint), sourceToPoint);
+        Edge PointToDestinationEdge = new Edge(getLastEdgeId() + 2, pointVertex, destination, MapGeometryUtils.calculatePathDistance(pointToDestinationPath), pointToDestinationPath);
+        Edge userToPointEdge = new Edge(getLastEdgeId() + 3, userVertex, pointVertex, MapGeometryUtils.calculatePathDistance(userToPointPath), userToPointPath);
         edges.remove(e);
         edges.add(sourceToPointEdge);
         edges.add(PointToDestinationEdge);
@@ -239,7 +238,7 @@ public class Graph {
         for (Edge e : edgesToExplode) {
             Graph graph = gson.fromJson(json, Graph.class);
             Edge e1 = Edge.getEdgeById(graph.edges, e.getId());
-            Coordinate polylineCoordinate = MapUtils.findNearestPoint(marker, e.getCoordinates());
+            Coordinate polylineCoordinate = MapGeometryUtils.findNearestPoint(marker, e.getCoordinates());
             Vertex source;
             if (isSource) {
                 source = graph.explodeEdgeAtCoordinate(e1, polylineCoordinate, marker, projection);
@@ -299,7 +298,7 @@ public class Graph {
         for (Edge edgeMarker1 : edgesToExplodeMarker1) {
             Graph graph = gson.fromJson(json, Graph.class);
             Edge e1 = Edge.getEdgeById(graph.edges, edgeMarker1.getId());
-            Coordinate polylineCoordinate1 = MapUtils.findNearestPoint(marker1, edgeMarker1.getCoordinates());
+            Coordinate polylineCoordinate1 = MapGeometryUtils.findNearestPoint(marker1, edgeMarker1.getCoordinates());
             Vertex vertex = graph.explodeEdgeAtCoordinate(e1, polylineCoordinate1, marker1, projection);
             if (marker1IsSource)
                 source = vertex;
@@ -310,7 +309,7 @@ public class Graph {
             for (Edge edgeMarker2 : edgesToExplodeMarker2) {
                 Graph explodedGraph = gson.fromJson(explodedGraphJson, Graph.class);
                 Edge e2 = Edge.getEdgeById(explodedGraph.edges, edgeMarker2.getId());
-                Coordinate polylineCoordinate2 = MapUtils.findNearestPoint(marker2, edgeMarker2.getCoordinates());
+                Coordinate polylineCoordinate2 = MapGeometryUtils.findNearestPoint(marker2, edgeMarker2.getCoordinates());
                 vertex = explodedGraph.explodeEdgeAtCoordinate(e2, polylineCoordinate2, marker2, projection);
                 if (marker1IsSource)
                     destination = vertex;
@@ -337,7 +336,7 @@ public class Graph {
         double maxDistance = MAX_DISTANCE;
         while (edgesToExplode.size() == 0) {
             for (Edge e : edges) {
-                if (MapUtils.calculatePointDistanceToPolyline(userLocation, e.getCoordinates()) < maxDistance) {
+                if (MapGeometryUtils.calculatePointDistanceToPolyline(userLocation, e.getCoordinates()) < maxDistance) {
                     edgesToExplode.add(e);
                 }
             }

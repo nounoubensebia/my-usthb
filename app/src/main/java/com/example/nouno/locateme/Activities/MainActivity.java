@@ -62,14 +62,11 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         loadSearchFragment();
-        //getSupportActionBar().setElevation(0);
-        //getSupportActionBar().setTitle("Ou aller ?");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
     }
     private void loadSearchFragment ()
     {
-        //getSupportActionBar().setTitle("Rechercher");
         if (mSearchFragment==null)
         mSearchFragment = new SearchFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.content, mSearchFragment).commit();
@@ -86,13 +83,8 @@ public class MainActivity extends AppCompatActivity {
     }
     private void loadAgendaFragment ()
     {
-        //getSupportActionBar().show();
         mAgendaFragment = new AgendaFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.content, mAgendaFragment).commit();
-        if (mSearchFragment!=null)
-        {
-            //getSupportFragmentManager().beginTransaction().remove(mSearchFragment).commitAllowingStateLoss();
-        }
         if (mSettingsFragment!=null)
         {
             getSupportFragmentManager().beginTransaction().remove(mSettingsFragment).commitAllowingStateLoss();

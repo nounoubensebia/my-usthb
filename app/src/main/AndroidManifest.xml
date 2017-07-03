@@ -27,9 +27,6 @@
             android:name=".Activities.MainActivity"
             android:label="@string/app_name" />
         <activity android:name=".MapTestActivity" />
-        <activity
-            android:name=".Activities.SearchQueryActivity"
-            android:theme="@style/SignupTheme" />
         <activity android:name=".Activities.MapActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
