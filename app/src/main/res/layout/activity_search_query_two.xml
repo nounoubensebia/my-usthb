@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EDEDED"
+    android:animateLayoutChanges="true"
     android:orientation="vertical"
     tools:context="com.example.nouno.locateme.Activities.SearchQueryTwoActivity">
 
@@ -79,7 +80,8 @@
     </LinearLayout>
     <ScrollView
         android:id="@+id/scrollView"
-        android:visibility="gone"
+        android:visibility="visible"
+        tools:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <LinearLayout
@@ -288,21 +290,68 @@
     </LinearLayout>
     </ScrollView>
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinate_layout"
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <android.support.design.widget.FloatingActionButton
+            android:visibility="gone"
+            android:id="@+id/floating"
+            android:layout_width="wrap_content"
+            app:srcCompat="@drawable/ic_navigation_24dp"
+            app:layout_anchor="@+id/path_layout"
+            app:layout_anchorGravity="right"
+            android:layout_marginRight="16dp"
+            android:layout_height="wrap_content" />
         <LinearLayout
+            android:visibility="visible"
             android:id="@+id/path_layout"
-            android:animateLayoutChanges="true"
-            android:padding="16dp"
             android:background="#FFF"
             android:elevation="4dp"
+            android:animateLayoutChanges="true"
             android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="wrap_content">
-
+            <LinearLayout
+                android:padding="16dp"
+                android:id="@+id/path_found_layout"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Itinéraire trouvé"
+                        android:textColor="@color/backgroundColor"
+                        android:fontFamily="sans-serif-light"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_marginTop="8dp"
+                        android:text="56 min 23m"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_marginTop="8dp"
+                        android:text="Arrivé a 23:11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:padding="16dp"
+                android:id="@+id/path_not_found_layout"
+                android:orientation="vertical"
+                android:animateLayoutChanges="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <TextView
+                android:visibility="visible"
                 android:layout_gravity="center"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-condensed"
@@ -320,6 +369,7 @@
                 android:indeterminate="true"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"/>
+            </LinearLayout>
         </LinearLayout>
     <com.mapbox.mapboxsdk.maps.MapView
         android:elevation="2dp"

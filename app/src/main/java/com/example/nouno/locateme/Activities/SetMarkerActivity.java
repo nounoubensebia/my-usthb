@@ -50,6 +50,12 @@ public class SetMarkerActivity extends AppCompatActivity {
                 mMapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
                     @Override
                     public void onMapLongClick(@NonNull final LatLng point) {
+
+                    }
+                });
+                mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(@NonNull final LatLng point) {
                         mConfirmButton.setText("Confirmer");
                         mCustomMapView.getMapboxMap().removeAnnotations();
                         mCustomMapView.drawMarker(new Coordinate(point),"Position sélectionnée",R.drawable.ic_marker_red_24dp);
