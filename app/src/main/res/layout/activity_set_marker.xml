@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.nouno.locateme.Activities.SetMarkerActivity">
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:elevation="0dp"
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:mapbox_cameraTargetLat="36.712126"
+        app:mapbox_cameraTargetLng="3.178768"
+        app:mapbox_cameraZoom="15"
+        app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp" />
+    <Button
+        android:elevation="4dp"
+        android:id="@+id/go_button"
+        android:paddingTop="16dp"
+        android:textSize="16sp"
+        android:paddingBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:textAllCaps="true"
+        android:fontFamily="sans-serif"
+        android:text="Appuyer sur la carte pour placer votre marqueur "
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textColor="#FFF"
+        android:background="@color/backgroundColor"/>
+
+</android.support.design.widget.CoordinatorLayout>

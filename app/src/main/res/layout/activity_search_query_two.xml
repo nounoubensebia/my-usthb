@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EDEDED"
+    android:orientation="vertical"
+    tools:context="com.example.nouno.locateme.Activities.SearchQueryTwoActivity">
+
+    <LinearLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="#37AB2F"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:paddingTop="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/backgroundColor"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <EditText
+                        android:id="@+id/departure_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/green_rounded_button"
+                        android:drawableLeft="@drawable/ic_my_location_white_24dp"
+                        android:drawablePadding="8dp"
+                        android:gravity="center|left"
+                        android:hint="Choisissez un lieu de départ" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <EditText
+                        android:id="@+id/destination_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/green_rounded_button"
+                        android:drawableLeft="@drawable/ic_location_on_white_24dp"
+                        android:drawablePadding="8dp"
+                        android:gravity="center|left"
+                        android:hint="Choisissez votre destination" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="#FFF"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:drawableLeft="@drawable/ic_near_me_black_24dp"
+                android:drawablePadding="8dp"
+                android:text="Utiliser la position actuelle"
+                android:textColor="#616161"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="16dp"
+
+                android:background="#C6C6C6" />
+
+            <TextView
+                android:id="@+id/set_position_on_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:drawableLeft="@drawable/ic_nature_black_24dp"
+                android:drawablePadding="8dp"
+                android:text="Définir la position sur la carte"
+                android:textColor="#616161"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="16dp"
+
+                android:background="#C6C6C6" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="#FFF">
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_width="match_parent"
+
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <ImageView
+
+                    android:layout_width="128dp"
+                    app:srcCompat="@drawable/test2"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:layout_height="100dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+
+                        android:text="Faculté de Physique"
+                        android:textSize="20sp"
+                        android:textColor="@color/backgroundColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/smallLabel"
+                        android:text="Salle 228"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Salle de cours"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="#C6C6C6" />
+            <LinearLayout
+
+                android:layout_marginLeft="16dp"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <ImageView
+
+                    android:layout_width="128dp"
+                    app:srcCompat="@drawable/test"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:layout_height="100dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+
+                        android:text="Département d'informatique"
+                        android:textSize="20sp"
+                        android:textColor="@color/backgroundColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="Salle 228"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Salle de cours"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="#C6C6C6" />
+            <LinearLayout
+
+                android:layout_marginLeft="16dp"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <ImageView
+
+                    android:layout_width="128dp"
+                    app:srcCompat="@drawable/test2"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:layout_height="100dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+
+                        android:text="Faculté de mécanique"
+                        android:textSize="20sp"
+                        android:textColor="@color/backgroundColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="Salle 228"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Salle de cours"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

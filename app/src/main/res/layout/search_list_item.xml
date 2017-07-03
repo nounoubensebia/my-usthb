@@ -28,7 +28,7 @@
             android:layout_height="wrap_content">
         <TextView
             android:id="@+id/biglabel"
-            android:text="Faculté de Tmenyik"
+            android:text="Faculté de Physique"
             android:textSize="20sp"
             android:fontFamily="sans-serif-light"
             android:textColor="@android:color/white"
