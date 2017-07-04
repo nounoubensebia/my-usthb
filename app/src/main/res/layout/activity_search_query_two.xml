@@ -374,15 +374,16 @@
             </LinearLayout>
         </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
+        <ImageView
             android:id="@+id/floating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_marginRight="16dp"
             android:visibility="gone"
+            android:elevation="10dp"
             app:layout_anchor="@id/path_info_layout"
             app:layout_anchorGravity="right"
-            app:srcCompat="@drawable/ic_navigation_24dp" />
+            app:srcCompat="@drawable/fab_directions_arrow" />
 
 
 
