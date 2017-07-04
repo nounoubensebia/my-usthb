@@ -20,6 +20,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 public class MapActivity extends AppCompatActivity {
     MapView mMapView;
     MapboxMap mMapboxMap;
+
     private TextView whereToGoText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

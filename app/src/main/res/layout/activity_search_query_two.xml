@@ -289,98 +289,113 @@
         </LinearLayout>
     </LinearLayout>
     </ScrollView>
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinate_layout"
-        android:animateLayoutChanges="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <android.support.design.widget.FloatingActionButton
-            android:visibility="gone"
-            android:id="@+id/floating"
-            android:layout_width="wrap_content"
-            app:srcCompat="@drawable/ic_navigation_24dp"
-            app:layout_anchor="@+id/path_layout"
-            app:layout_anchorGravity="right"
-            android:layout_marginRight="16dp"
-            android:layout_height="wrap_content" />
-        <LinearLayout
-            android:visibility="visible"
-            android:id="@+id/path_layout"
-            android:background="#FFF"
-            android:elevation="4dp"
-            android:animateLayoutChanges="true"
-            android:layout_gravity="bottom"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:padding="16dp"
-                android:id="@+id/path_found_layout"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:text="Itinéraire trouvé"
-                        android:textColor="@color/backgroundColor"
-                        android:fontFamily="sans-serif-light"
-                        android:textSize="20sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:layout_marginTop="8dp"
-                        android:text="56 min 23m"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:layout_marginTop="8dp"
-                        android:text="Arrivé a 23:11"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:padding="16dp"
-                android:id="@+id/path_not_found_layout"
-                android:orientation="vertical"
-                android:animateLayoutChanges="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <TextView
-                android:visibility="visible"
-                android:layout_gravity="center"
-                android:textSize="20sp"
-                android:fontFamily="sans-serif-condensed"
-                android:textColor="#37AB30"
-                android:text="Calculer itinéraire"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ProgressBar
-                android:visibility="gone"
-                android:layout_marginTop="16dp"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/path_progress_bar"
-                android:indeterminate="true"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"/>
-            </LinearLayout>
-        </LinearLayout>
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:elevation="2dp"
-        android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:mapbox_cameraTargetLat="36.712126"
-        app:mapbox_cameraTargetLng="3.178768"
-        app:mapbox_cameraZoom="15"
-        app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10"
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp" />
+        android:animateLayoutChanges="true">
+        <LinearLayout
+            android:id="@+id/path_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:animateLayoutChanges="true"
+            android:background="#FFF"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/path_calculated_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Itinéraire trouvé"
+                        android:textColor="@color/backgroundColor"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="56 min 23m" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Arrivé a 23:11" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:id="@+id/path_initialized_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Calculer itinéraire"
+                    android:textColor="#37AB30"
+                    android:textSize="20sp"
+                    android:visibility="visible" />
+
+                <ProgressBar
+                    android:id="@+id/path_progress_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="16dp"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:visibility="gone"
+            app:layout_anchor="@id/path_info_layout"
+            app:layout_anchorGravity="right"
+            app:srcCompat="@drawable/ic_navigation_24dp" />
+
+
+
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp"
+            app:mapbox_cameraTargetLat="36.712126"
+            app:mapbox_cameraTargetLng="3.178768"
+            app:mapbox_cameraZoom="15"
+            app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp" />
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>
