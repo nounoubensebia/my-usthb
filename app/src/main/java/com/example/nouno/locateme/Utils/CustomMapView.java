@@ -96,7 +96,7 @@ public class CustomMapView  {
         Icon icon = iconFactory.fromBitmap(getBitmapFromVectorDrawable(iconResource));
         mapboxMap.addMarker(new MarkerOptions()
                 .position(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()))
-                .title(title)
+
                 .icon(icon)
         );
     }
@@ -147,6 +147,17 @@ public class CustomMapView  {
             @Override
             public CameraPosition getCameraPosition(@NonNull MapboxMap mapboxMap) {
                 CameraPosition.Builder builder = new CameraPosition.Builder().target(coordinate.getMapBoxLatLng()).zoom(zoom);
+                return builder.build();
+            }
+        });
+    }
+
+    public void  moveCamera (final Coordinate coordinate)
+    {
+        mapboxMap.moveCamera(new CameraUpdate() {
+            @Override
+            public CameraPosition getCameraPosition(@NonNull MapboxMap mapboxMap) {
+                CameraPosition.Builder builder = new CameraPosition.Builder().target(coordinate.getMapBoxLatLng());
                 return builder.build();
             }
         });

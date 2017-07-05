@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         app:mapbox_cameraTargetLat="36.712126"
         app:mapbox_cameraTargetLng="3.178768"
-        app:mapbox_cameraZoom="15"
+        app:mapbox_cameraZoom="14"
         app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10"
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp" />
@@ -30,7 +30,7 @@
         android:textAllCaps="true"
         android:lines="2"
         android:fontFamily="sans-serif"
-        android:text="Appuyer longtemps sur la position désirée"
+        android:text="Appuyer sur la carte pour sélectionner une position"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:textColor="#FFF"

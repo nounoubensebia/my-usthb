@@ -11,6 +11,7 @@ import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
+import com.google.android.gms.maps.model.Marker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -20,7 +21,8 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 public class SetMarkerActivity extends AppCompatActivity {
     private CustomMapView mCustomMapView;
     private Button mConfirmButton;
-
+    private Marker marker;
+    private Coordinate selectedPlace;
     public static final int RESULT_OK = 1;
 
     @Override
@@ -36,6 +38,8 @@ public class SetMarkerActivity extends AppCompatActivity {
 
         final MapView mMapView = (MapView) findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
+        final Bundle bundle = getIntent().getExtras();
+
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
@@ -45,20 +49,32 @@ public class SetMarkerActivity extends AppCompatActivity {
                 MapboxMap mMapboxMap = mapboxMap;
                 mMapboxMap.setMyLocationEnabled(true);
                 mMapboxMap.setLatLngBoundsForCameraTarget(builder.build());
-                mMapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
-                    @Override
-                    public void onMapLongClick(@NonNull final LatLng point) {
-
-                    }
-                });
+                mCustomMapView = new CustomMapView(mapboxMap,mMapView);
+                final int requestCode = bundle.getInt("requestCode");
+                if (bundle.containsKey("departure"))
+                {
+                    Place departure = Place.fromJson(bundle.getString("departure"));
+                    mCustomMapView.drawMarker(departure.getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
+                    mCustomMapView.moveCamera(departure.getCoordinate());
+                }
+                if (bundle.containsKey("destination"))
+                {
+                    Place departure = Place.fromJson(bundle.getString("destination"));
+                    mCustomMapView.drawMarker(departure.getCoordinate(),"Lieu de départ",R.drawable.ic_marker_red_24dp);
+                    mCustomMapView.moveCamera(departure.getCoordinate());
+                }
                 mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(@NonNull final LatLng point) {
                         mConfirmButton.setText("Confirmer");
-                        mCustomMapView.getMapboxMap().removeAnnotations();
+                        if (selectedPlace!=null)
+                        mCustomMapView.removeMarker(selectedPlace);
+                        if (requestCode == SearchQueryTwoActivity.REQUEST_DEPARTURE_CODE)
+                        mCustomMapView.drawMarker(new Coordinate(point),"Position sélectionnée",R.drawable.ic_marker_blue_24dp);
+                        else
                         mCustomMapView.drawMarker(new Coordinate(point),"Position sélectionnée",R.drawable.ic_marker_red_24dp);
-
                         mCustomMapView.animateCamera(new Coordinate(point),16);
+                        selectedPlace = new Coordinate(point);
                         mConfirmButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -68,7 +84,7 @@ public class SetMarkerActivity extends AppCompatActivity {
                     }
                 });
                 mapboxMap.setMyLocationEnabled(true);
-                mCustomMapView = new CustomMapView(mapboxMap,mMapView);
+
             }
         });
     }

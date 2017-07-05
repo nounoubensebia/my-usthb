@@ -40,6 +40,8 @@
 
 
                     <EditText
+                        android:textSize="16sp"
+                        android:maxLines="1"
                         android:id="@+id/departure_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -59,6 +61,8 @@
 
 
                     <EditText
+                        android:maxLines="1"
+                        android:textSize="16sp"
                         android:id="@+id/destination_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -329,12 +333,14 @@
                         android:textSize="20sp" />
 
                     <TextView
+                        android:id="@+id/text_duration_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="56 min 23m" />
 
                     <TextView
+                        android:id="@+id/text_arrival_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"

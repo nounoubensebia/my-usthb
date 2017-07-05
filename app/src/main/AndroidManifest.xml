@@ -39,7 +39,7 @@
             android:label="Où aller ?"
             android:theme="@style/MainTheme" />
         <activity android:name=".Activities.SetMarkerActivity" android:theme="@style/MainTheme"
-            android:label="Lieu de départ"></activity>
+            android:label="Sélectionner un lieu "></activity>
     </application>
 
 </manifest>
