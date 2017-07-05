@@ -50,13 +50,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private View coordinateLayout;
     private View fab;
     private View scrollView;
-    public static int REQUEST_DEPARTURE_CODE = 0;
-    public static int REQUEST_DESTINATION_CODE = 1;
+    public static final int REQUEST_DEPARTURE_CODE = 0;
+    public static final int REQUEST_DESTINATION_CODE = 1;
     private int state;
     private Graph mGraph;
-    public static int STATE_NO_PATH = 0;
-    public static int STATE_PATH_INITIALIZED = 1;
-    public static int STATE_PATH_CALCULATED = 2;
+    public static final int STATE_NO_PATH = 0;
+    public static final int STATE_PATH_INITIALIZED = 1;
+    public static final int STATE_PATH_CALCULATED = 2;
+    private boolean keyboardShown;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getGraph();
@@ -71,10 +72,17 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     public void onVisibilityChanged(boolean isOpen) {
                        if (!isOpen)
                        {
+                           //updateUiState(state,true,true);
+                           keyboardShown = true;
                            if (state > STATE_NO_PATH)
-                           {
-                               addMapLayout();
-                           }
+                               updateUiState(state,false,true);
+                       }
+                       else
+                       {
+                           keyboardShown = false;
+                           //updateUiState(state,false,false);
+                           if (state>STATE_NO_PATH)
+                           updateUiState(state,true,true);
                        }
                     }
                 });
@@ -96,19 +104,18 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 if (!hasFocus)
                 {
                     if (mPath.getSource()!=null)
+                    departureEditText.setText(mPath.getSource().getLabel());
+                    if (state>STATE_NO_PATH)
                     {
                         departureEditText.setText(mPath.getSource().getLabel());
-                        if (state > STATE_NO_PATH)
+                        if (mPath.getDestination()!=null)
                         {
                             destinationEditText.setFocusableInTouchMode(false);
-                            addMapLayout();
                         }
-
                     }
                 }
-                else
+                if (hasFocus)
                 {
-
                     departureEditText.setText("");
                 }
             }
@@ -124,7 +131,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         if (mPath.getSource()!=null)
                         {
                             departureEditText.setFocusableInTouchMode(false);
-                            addMapLayout();
+
                         }
                     }
                 }
@@ -158,6 +165,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         fab = findViewById(R.id.floating);
         coordinateLayout = findViewById(R.id.coordinate_layout);
         scrollView = findViewById(R.id.scrollView);
+
     }
 
 
@@ -174,7 +182,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             Place destination = Place.fromJson(data.getStringExtra("place"));
             setDestination(destination);
         }
-        initLayout();
+        updateUiState(state,keyboardShown,false);
     }
 
     private void setDeparture (Place departure)
@@ -195,9 +203,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 departureEditText.setFocusableInTouchMode(true);
                 departureEditText.requestFocus();
                 departureEditText.requestFocusFromTouch();
-                if (state>STATE_NO_PATH)
-                removeMapLayout();
                 showKeyboard(departureEditText,0);
+                updateUiState(state,true,true);
             }
         });
 
@@ -212,7 +219,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             destinationEditText.setFocusableInTouchMode(false);
             hideKeyboard();
             appBarLayout.clearFocus();
-            addMapLayout();
+            state = STATE_PATH_INITIALIZED;
         }
     }
 
@@ -235,9 +242,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 destinationEditText.setFocusableInTouchMode(true);
                 destinationEditText.requestFocus();
                 destinationEditText.requestFocusFromTouch();
-                if (mPath.getSource()!=null)
-                    removeMapLayout();
                 showKeyboard(departureEditText,1);
+                updateUiState(state,true,true);
             }
         });
         if (state == STATE_NO_PATH)
@@ -251,7 +257,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             departureEditText.setFocusableInTouchMode(false);
             appBarLayout.clearFocus();
             hideKeyboard();
-            addMapLayout();
+            state = STATE_PATH_INITIALIZED;
         }
     }
     public void hideKeyboard() {
@@ -282,79 +288,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             }
         });
     }
-    private void addMapLayout ()
-    {
-        scrollView.setVisibility(View.GONE);
-        pathNotFoundLayout.setVisibility(View.VISIBLE);
-        mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
-        mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
-        mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
-
-        mCustomMapView.moveCamera(MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),
-                mPath.getDestination().getCoordinate()),18);
-
-        final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());
 
 
-        mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                if (!mCustomMapView.isPointVisible(mPath.getSource().getCoordinate()))
-                {
-                    mCustomMapView.moveCamera(
-                           middlePoint,mCustomMapView.getMapboxMap().getCameraPosition().zoom-3);
-                }
-
-            }
-        });
-
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                coordinateLayout.setVisibility(View.VISIBLE);
-            }
-        },250);
-
-
-    }
-    private void addPathFoundLayout ()
-    {
-        pathNotFoundLayout.setVisibility(View.GONE);
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                pathFoundLayout.setTag(pathFoundLayout.getVisibility());
-                pathFoundLayout.setVisibility(View.VISIBLE);
-                fab.setVisibility(View.VISIBLE);
-                animateFab();
-            }
-        },300);
-
-    }
-
-    private void removePathCalculatedLayout ()
-    {
-        fab.setVisibility(View.GONE);
-        pathCalculProgress.setVisibility(View.GONE);
-        pathFoundLayout.setVisibility(View.GONE);
-        pathNotFoundLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void removeMapLayout()
-    {
-        coordinateLayout.setVisibility(View.GONE);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.setVisibility(View.VISIBLE);
-            }
-        },250);
-    }
 
     private void getPath()
     {
@@ -368,41 +303,13 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 mGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(), new OnSearchFinishListener() {
                     @Override
                     public void OnSearchFinish(Graph graph) {
-                        addPathFoundLayout();
+                        updateUiState(STATE_PATH_CALCULATED,false,true);
                         mCustomMapView.drawPolyline(graph);
                         state = STATE_PATH_CALCULATED;
                     }
                 });
             }
         },2000);
-    }
-    private void initLayout ()
-    {
-        if (state == STATE_NO_PATH)
-        {
-            coordinateLayout.setVisibility(View.GONE);
-            pathLayout.setVisibility(View.GONE);
-            scrollView.setVisibility(View.VISIBLE);
-        }
-        if (state == STATE_PATH_INITIALIZED)
-        {
-            //animateFab();
-            coordinateLayout.setVisibility(View.VISIBLE);
-            fab.setVisibility(View.GONE);
-            pathLayout.setVisibility(View.VISIBLE);
-            pathFoundLayout.setVisibility(View.GONE);
-            pathNotFoundLayout.setVisibility(View.VISIBLE);
-            pathCalculProgress.setVisibility(View.GONE);
-        }
-        if (state == STATE_PATH_CALCULATED)
-        {
-
-            fab.setVisibility(View.VISIBLE);
-            coordinateLayout.setVisibility(View.VISIBLE);
-            pathLayout.setVisibility(View.VISIBLE);
-            pathNotFoundLayout.setVisibility(View.GONE);
-            pathFoundLayout.setVisibility(View.VISIBLE);
-        }
     }
 
     private void animateFab()
@@ -421,5 +328,162 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void updateUiState (int newState,boolean keyboardShown,boolean animate)
+    {
+        switch (newState)
+        {
+            case STATE_NO_PATH :
+                state = STATE_NO_PATH;
+                if (!animate)
+                {
+                    coordinateLayout.setVisibility(View.GONE);
+                    scrollView.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    coordinateLayout.setVisibility(View.GONE);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollView.setVisibility(View.GONE);
+                        }
+                    },250);
+                }
+                break;
+            case STATE_PATH_INITIALIZED :
+                state = STATE_PATH_INITIALIZED;
+                if (!animate)
+                {
+                    if (!keyboardShown)
+                    {
+                        coordinateLayout.setVisibility(View.VISIBLE);
+                        scrollView.setVisibility(View.GONE);
+                        pathFoundLayout.setVisibility(View.GONE);
+                        pathNotFoundLayout.setVisibility(View.VISIBLE);
+                        fab.setVisibility(View.GONE);
+                        pathCalculProgress.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        coordinateLayout.setVisibility(View.GONE);
+                        scrollView.setVisibility(View.VISIBLE);
+
+                    }
+                }
+                else
+                {
+                    if (!keyboardShown)
+                    {
+                        fab.setVisibility(View.GONE);
+                        pathCalculProgress.setVisibility(View.GONE);
+                        scrollView.setVisibility(View.GONE);
+                        pathFoundLayout.setVisibility(View.GONE);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                coordinateLayout.setVisibility(View.VISIBLE);
+                            }
+                        },250);
+
+                    }
+                    else
+                    {
+                        coordinateLayout.setVisibility(View.GONE);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollView.setVisibility(View.VISIBLE);
+                            }
+                        },250);
+
+                    }
+                }
+                createMap();
+                break;
+            case STATE_PATH_CALCULATED :
+                state = STATE_PATH_CALCULATED;
+                if (animate)
+                {
+                    if (!keyboardShown)
+                    {
+                        coordinateLayout.setVisibility(View.VISIBLE);
+                        scrollView.setVisibility(View.GONE);
+                        pathNotFoundLayout.setVisibility(View.GONE);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pathFoundLayout.setVisibility(View.VISIBLE);
+                                fab.setVisibility(View.VISIBLE);
+                                animateFab();
+                            }
+                        },250);
+
+                    }
+                    else
+                    {
+                        coordinateLayout.setVisibility(View.GONE);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollView.setVisibility(View.VISIBLE);
+                            }
+                        },250);
+                    }
+
+                }
+                else
+                {
+                    if (!keyboardShown)
+                    {
+                        coordinateLayout.setVisibility(View.VISIBLE);
+                        scrollView.setVisibility(View.GONE);
+                        pathNotFoundLayout.setVisibility(View.GONE);
+                        pathFoundLayout.setVisibility(View.VISIBLE);
+                        fab.setVisibility(View.VISIBLE);
+                        animateFab();
+                        createMap();
+                    }
+                    else
+                    {
+                        coordinateLayout.setVisibility(View.GONE);
+                        scrollView.setVisibility(View.VISIBLE);
+                    }
+                }
+                break;
+        }
+    }
+
+    private void createMap ()
+    {
+        mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
+        mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
+        mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
+        mCustomMapView.moveCamera(MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),
+                mPath.getDestination().getCoordinate()),18);
+
+        final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());
+
+
+        mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                if (!mCustomMapView.isPointVisible(mPath.getSource().getCoordinate()))
+                {
+                    mCustomMapView.moveCamera(
+                            middlePoint,mCustomMapView.getMapboxMap().getCameraPosition().zoom-3);
+                }
+
+            }
+        });
+
+    }
+
+
 
 }
