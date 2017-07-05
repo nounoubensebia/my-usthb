@@ -198,17 +198,20 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode==REQUEST_DEPARTURE_CODE)
+        if (resultCode == SetMarkerActivity.RESULT_OK)
         {
-            Place departure = Place.fromJson(data.getStringExtra("place"));
-            setDeparture(departure);
+            if (requestCode==REQUEST_DEPARTURE_CODE)
+            {
+                Place departure = Place.fromJson(data.getStringExtra("place"));
+                setDeparture(departure);
+            }
+            else
+            {
+                Place destination = Place.fromJson(data.getStringExtra("place"));
+                setDestination(destination);
+            }
+            updateUiState(state,keyboardShown,false);
         }
-        else
-        {
-            Place destination = Place.fromJson(data.getStringExtra("place"));
-            setDestination(destination);
-        }
-        updateUiState(state,keyboardShown,false);
     }
 
     private void setDeparture (Place departure)
