@@ -384,9 +384,6 @@
             app:layout_anchor="@id/path_info_layout"
             app:layout_anchorGravity="right"
             app:srcCompat="@drawable/fab_directions_arrow" />
-
-
-
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
@@ -394,7 +391,7 @@
             android:elevation="2dp"
             app:mapbox_cameraTargetLat="36.712126"
             app:mapbox_cameraTargetLng="3.178768"
-            app:mapbox_cameraZoom="15"
+            app:mapbox_cameraZoom="20"
             app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp" />

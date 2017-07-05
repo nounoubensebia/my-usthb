@@ -1,14 +1,14 @@
 package com.example.nouno.locateme.Activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -17,9 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
+import com.example.nouno.locateme.Djikstra.Graph;
+import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.R;
+import com.example.nouno.locateme.Utils.CustomMapView;
+import com.example.nouno.locateme.Utils.FileUtils;
+import com.example.nouno.locateme.Utils.MapGeometryUtils;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -27,6 +33,8 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
+
+import java.io.IOException;
 
 public class SearchQueryTwoActivity extends AppCompatActivity {
     private TextView mSetPositionOnMapTextView;
@@ -36,6 +44,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private Path mPath = new Path();
     private View appBarLayout;
     private View pathCalculProgress;
+    private CustomMapView mCustomMapView;
     private View pathNotFoundLayout;
     private View pathFoundLayout;
     private View coordinateLayout;
@@ -44,11 +53,13 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     public static int REQUEST_DEPARTURE_CODE = 0;
     public static int REQUEST_DESTINATION_CODE = 1;
     private int state;
+    private Graph mGraph;
     public static int STATE_NO_PATH = 0;
     public static int STATE_PATH_INITIALIZED = 1;
     public static int STATE_PATH_CALCULATED = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getGraph();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_query_two);
         getSupportActionBar().setElevation(0);
@@ -257,7 +268,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private void createMap(Bundle savedInstanceState) {
 
-        MapView mMapView = (MapView) findViewById(R.id.mapView);
+        final MapView mMapView = (MapView) findViewById(R.id.mapView);
 
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(new OnMapReadyCallback() {
@@ -267,7 +278,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 builder.include(Place.NORTH_WEST_CAMPUS_BOUND.getMapBoxLatLng());
                 builder.include(Place.SOUTH_EAST_CAMPUS_BOUND.getMapBoxLatLng());
                 mapboxMap.setLatLngBoundsForCameraTarget(builder.build());
-
+                mCustomMapView = new CustomMapView(mapboxMap,mMapView);
             }
         });
     }
@@ -275,6 +286,29 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     {
         scrollView.setVisibility(View.GONE);
         pathNotFoundLayout.setVisibility(View.VISIBLE);
+        mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
+        mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
+        mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
+
+        mCustomMapView.moveCamera(MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),
+                mPath.getDestination().getCoordinate()),18);
+
+        final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());
+
+
+        mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                if (!mCustomMapView.isPointVisible(mPath.getSource().getCoordinate()))
+                {
+                    mCustomMapView.moveCamera(
+                           middlePoint,mCustomMapView.getMapboxMap().getCameraPosition().zoom-3);
+                }
+
+            }
+        });
+
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -329,7 +363,16 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                addPathFoundLayout();state = STATE_PATH_CALCULATED;
+
+
+                mGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(), new OnSearchFinishListener() {
+                    @Override
+                    public void OnSearchFinish(Graph graph) {
+                        addPathFoundLayout();
+                        mCustomMapView.drawPolyline(graph);
+                        state = STATE_PATH_CALCULATED;
+                    }
+                });
             }
         },2000);
     }
@@ -367,6 +410,16 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.fab_animation);
         animation.setRepeatCount(Animation.INFINITE);
         fab.startAnimation(animation);
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void getGraph() {
+        try {
+            String json = FileUtils.readFile(this.getAssets().open("GraphJson.txt"));
+            mGraph = new Graph(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

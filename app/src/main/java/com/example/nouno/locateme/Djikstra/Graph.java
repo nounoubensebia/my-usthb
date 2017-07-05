@@ -2,8 +2,10 @@ package com.example.nouno.locateme.Djikstra;
 
 import android.graphics.PointF;
 import android.os.AsyncTask;
+import android.view.View;
 
 import com.example.nouno.locateme.Data.Coordinate;
+import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.Utils.MapGeometryUtils;
 import com.google.gson.Gson;
@@ -351,6 +353,23 @@ public class Graph {
             weight += e.getWeight();
         }
         return weight;
+    }
+
+    public void getShortestPath (Path path,Projection projection, final OnSearchFinishListener onSearchFinishListener)
+    {
+
+        if (path.getSource().getClass().getName().equals("com.example.nouno.locateme.Data.Place")&&path.getDestination().getClass().getName().equals("com.example.nouno.locateme.Data.Place"))
+        {
+
+            this.getShortestPath(path.getSource().getCoordinate(), path.getDestination().getCoordinate(), projection,
+                    new OnSearchFinishListener() {
+                        @Override
+                        public void OnSearchFinish(Graph graph) {
+                            onSearchFinishListener.OnSearchFinish(graph);
+                        }
+                    });
+        }
+
     }
 }
 

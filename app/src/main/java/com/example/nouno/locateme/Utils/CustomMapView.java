@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 
@@ -17,9 +18,13 @@ import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdate;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.VisibleRegion;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.Projection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,21 +65,30 @@ public class CustomMapView  {
         }
         mapboxMap.addPolyline(new PolylineOptions()
                 .addAll(points)
-                .color(Color.parseColor("#0078d7"))
+                .color(Color.parseColor("#37AB30"))
                 .width(5));
     }
 
     public void drawPolyline (Graph graph)
     {
         ArrayList<Coordinate> coordinates = new ArrayList<>();
-        for (Edge e :graph.getEdges())
+        Coordinate endCoord = null;
+        /*for (Edge e :graph.getEdges())
         {
-            for (Coordinate c:e.getCoordinates())
+            /*if (endCoord==null)
+                coordinates.add(e.getCoordinates().get(0));
+            for (int i=1;i<e.getCoordinates().size();i++)
             {
+                Coordinate c = e.getCoordinates().get(i);
                 coordinates.add(c);
             }
+            endCoord = coordinates.get(coordinates.size()-1);
         }
-        drawPolyline(coordinates);
+        drawPolyline(coordinates);*/
+        for (Edge e :graph.getEdges())
+        {
+            drawPolyline(e.getCoordinates());
+        }
     }
 
     public void drawMarker(Coordinate coordinate, String title, int iconResource) {
@@ -115,4 +129,36 @@ public class CustomMapView  {
         }
     }
 
+    public void animateCamera(final Coordinate coordinate, final int zoom)
+    {
+        mapboxMap.animateCamera(new CameraUpdate() {
+            @Override
+            public CameraPosition getCameraPosition(@NonNull MapboxMap mapboxMap) {
+                CameraPosition.Builder builder1 = new CameraPosition.Builder().target(coordinate.getMapBoxLatLng()).zoom(zoom);
+                return builder1.build();
+            }
+        });
+    }
+
+    public void moveCamera (final Coordinate coordinate, final double zoom)
+    {
+        //mapboxMap.setCameraPosition(new CameraPosition.Builder().target(coordinate.getMapBoxLatLng()).zoom(zoom).build());
+        mapboxMap.moveCamera(new CameraUpdate() {
+            @Override
+            public CameraPosition getCameraPosition(@NonNull MapboxMap mapboxMap) {
+                CameraPosition.Builder builder = new CameraPosition.Builder().target(coordinate.getMapBoxLatLng()).zoom(zoom);
+                return builder.build();
+            }
+        });
+    }
+
+    public boolean isPointVisible (Coordinate coordinate)
+    {
+        Projection projection = mapboxMap.getProjection();
+        VisibleRegion visibleRegion = projection.getVisibleRegion();
+        return  (coordinate.getLatitude()<=visibleRegion.latLngBounds.getNorthWest().getLatitude()&&
+                coordinate.getLatitude()>=visibleRegion.latLngBounds.getSouthEast().getLatitude()&&
+                coordinate.getLongitude()>=visibleRegion.latLngBounds.getNorthWest().getLongitude()&&
+                coordinate.getLongitude()<=visibleRegion.latLngBounds.getSouthEast().getLongitude());
+    }
 }

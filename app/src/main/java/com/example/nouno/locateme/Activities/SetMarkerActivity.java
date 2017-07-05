@@ -11,8 +11,6 @@ import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdate;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -60,13 +58,7 @@ public class SetMarkerActivity extends AppCompatActivity {
                         mCustomMapView.getMapboxMap().removeAnnotations();
                         mCustomMapView.drawMarker(new Coordinate(point),"Position sélectionnée",R.drawable.ic_marker_red_24dp);
 
-                        mCustomMapView.getMapboxMap().animateCamera(new CameraUpdate() {
-                            @Override
-                            public CameraPosition getCameraPosition(@NonNull MapboxMap mapboxMap) {
-                                CameraPosition.Builder builder1 = new CameraPosition.Builder().target(point).zoom(16);
-                                return builder1.build();
-                            }
-                        });
+                        mCustomMapView.animateCamera(new Coordinate(point),16);
                         mConfirmButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
