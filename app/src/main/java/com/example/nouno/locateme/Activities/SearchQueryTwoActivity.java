@@ -328,7 +328,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-
+                getGraph();
                 mGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(), new OnSearchFinishListener() {
                     @Override
                     public void OnSearchFinish(Graph graph) {
@@ -346,8 +346,29 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
                         String localTime = date.format(currentLocalTime);
                         arrivalTimeText.setText("Arrivée à "+localTime);
+                        graph.getInstructions(mCustomMapView.getMapboxMap().getProjection());
                     }
                 });
+                /*mGraph.getShortestPath(mGraph.getVertexes().get(0), mGraph.getVertexes().get(16), new OnSearchFinishListener() {
+                    @Override
+                    public void OnSearchFinish(Graph graph) {
+                        updateUiState(STATE_PATH_CALCULATED,false,true);
+                        mCustomMapView.drawPolyline(graph);
+                        state = STATE_PATH_CALCULATED;
+                        mPath.setDistance((float)graph.getWeight());
+                        distancedurationText.setText(mPath.getDurationString()+" "+mPath.getDistanceString());
+                        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
+                        Date currentLocalTime = cal.getTime();
+                        long time = currentLocalTime.getTime();
+                        time+=mPath.getDuration()*1000;
+                        currentLocalTime = new Time(time);
+                        DateFormat date = new SimpleDateFormat("HH:mm");
+                        date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
+                        String localTime = date.format(currentLocalTime);
+                        arrivalTimeText.setText("Arrivée à "+localTime);
+                        graph.getInstructions(mCustomMapView.getMapboxMap().getProjection());
+                    }
+                });*/
             }
         },2000);
     }

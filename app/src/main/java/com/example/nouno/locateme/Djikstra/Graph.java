@@ -1,7 +1,10 @@
 package com.example.nouno.locateme.Djikstra;
 
 import android.graphics.PointF;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 
 import com.example.nouno.locateme.Data.Coordinate;
@@ -17,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -105,7 +109,14 @@ public class Graph {
         List<Edge> newEdges = new ArrayList<>();
         int i = 1;
         for (Edge e1 : edges) {
-            Edge e2 = new Edge(getLastEdgeId() + i, e1.getDestination(), e1.getSource(), e1.getWeight(), e1.getCoordinates());
+            ArrayList<Coordinate> coordinates2 = new ArrayList<>();
+            for (Coordinate coordinate : e1.getCoordinates())
+            {
+                coordinates2.add(coordinate);
+            }
+            Collections.reverse(coordinates2);
+            Edge e2 = new Edge(getLastEdgeId() + i, e1.getDestination(), e1.getSource(), e1.getWeight(), coordinates2);
+
             i++;
             newEdges.add(e2);
         }
@@ -273,7 +284,7 @@ public class Graph {
             @Override
             protected Graph doInBackground(Void... params) {
                 Graph graph1 = getShortestPath(source,destination,projection,true);
-                Graph graph2 = getShortestPath(destination,source,projection,true);
+                Graph graph2 = getShortestPath(destination,source,projection,false);
                 if (graph1.getWeight()<graph2.getWeight())
                 {
                     return graph1;
@@ -371,5 +382,50 @@ public class Graph {
         }
 
     }
+
+    public void getInstructions (Projection projection)
+    {
+        ArrayList<Coordinate> lastPolyline = new ArrayList<>();
+        for (Edge e:edges)
+        {
+            if (lastPolyline.size()>0)
+            {
+
+                Location location1 = new Location("");
+                location1.setLatitude(lastPolyline.get(0).getLatitude());
+                location1.setLongitude(lastPolyline.get(0).getLongitude());
+                Location location2 = new Location("");
+                location2.setLatitude(lastPolyline.get(1).getLatitude());
+                location2.setLongitude(lastPolyline.get(1).getLongitude());
+                double bearing1 = MapGeometryUtils.angleBetween2Lines(lastPolyline.get(0),lastPolyline.get(1),
+                        e.getCoordinates().get(0),e.getCoordinates().get(1),projection);
+                //double bearing1 = location1.bearingTo(location2);
+                location1 = new Location("");
+                location1.setLatitude(e.getCoordinates().get(0).getLatitude());
+                location1.setLongitude(e.getCoordinates().get(0).getLongitude());
+                location2.setLongitude(e.getCoordinates().get(1).getLongitude());
+                location2.setLatitude(e.getCoordinates().get(1).getLatitude());
+                float bearing2 =location1.bearingTo(location2);
+                //bearing1 = bearing2;
+                String movedirection = "";
+                if(bearing1 < -160 || bearing1 >= 160){
+                    movedirection = "front";
+                };
+                if(bearing1 < 160 && bearing1 >= 20){
+                    movedirection = "left";
+                };
+                if(bearing1 < 20 && bearing1 >= -20){
+                    movedirection = "back";
+                };
+                if(bearing1 < -20 && bearing1 >= -160){
+                    movedirection = "right";
+                };
+
+                Log.e("POLYTAG",movedirection+" diff = "+bearing1);
+            }
+            lastPolyline = e.getLastPolyline();
+        }
+    }
+
 }
 

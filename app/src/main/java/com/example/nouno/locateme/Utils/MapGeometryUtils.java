@@ -168,4 +168,32 @@ public class MapGeometryUtils {
         return new Coordinate(Math.toDegrees(lat3),Math.toDegrees(lon3));
     }
 
+    public static double angleBetween2Lines(Coordinate coordinate1, Coordinate coordinate2,Coordinate coordinate3,Coordinate coordinate4,Projection projection)
+    {
+        /*PointF x1 = projection.toScreenLocation(coordinate1.getMapBoxLatLng());
+        PointF x2 = projection.toScreenLocation(coordinate2.getMapBoxLatLng());
+        PointF x3 = projection.toScreenLocation(coordinate3.getMapBoxLatLng());
+        PointF x4 = projection.toScreenLocation(coordinate4.getMapBoxLatLng());
+        double angle1 = Math.atan2(x1.y - x2.y,
+                x1.x - x2.x);
+        double angle2 = Math.atan2(x3.y - x4.y,
+                x3.x - x4.x);
+        return Math.toDegrees(angle1-angle2);*/
+        PointF X1 = projection.toScreenLocation(coordinate1.getMapBoxLatLng());
+        PointF X2 = projection.toScreenLocation(coordinate2.getMapBoxLatLng());
+        PointF X4 = projection.toScreenLocation(coordinate3.getMapBoxLatLng());
+        PointF X3 = projection.toScreenLocation(coordinate4.getMapBoxLatLng());
+
+        float x1 = X2.x-X1.x;
+        float x2 = X4.x-X3.x;
+        float y1 = X2.y-X1.y;
+        float y2 = X4.y-X3.y;
+
+
+        float dot = x1*x2 + y1*y2;
+        float det = x1*y2 - y1*x2;
+
+        return  Math.toDegrees(Math.atan2(det, dot));
+    }
+
 }

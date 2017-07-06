@@ -69,4 +69,12 @@ public class Edge  {
     public ArrayList<Coordinate> getCoordinates() {
         return coordinates;
     }
+
+    public ArrayList<Coordinate> getLastPolyline ()
+    {
+        ArrayList<Coordinate> coordinates = new ArrayList<>();
+        coordinates.add(this.coordinates.get(this.coordinates.size()-2));
+        coordinates.add(this.coordinates.get(this.coordinates.size()-1));
+        return coordinates;
+    }
 }
