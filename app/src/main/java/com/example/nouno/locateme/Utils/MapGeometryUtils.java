@@ -154,31 +154,18 @@ public class MapGeometryUtils {
 
         double dLon = Math.toRadians(lon2 - lon1);
 
-        //convert to radians
         lat1 = Math.toRadians(lat1);
         lat2 = Math.toRadians(lat2);
         lon1 = Math.toRadians(lon1);
-
         double Bx = Math.cos(lat2) * Math.cos(dLon);
         double By = Math.cos(lat2) * Math.sin(dLon);
         double lat3 = Math.atan2(Math.sin(lat1) + Math.sin(lat2), Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By * By));
         double lon3 = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
-
-        //print out in degrees
         return new Coordinate(Math.toDegrees(lat3),Math.toDegrees(lon3));
     }
 
     public static double angleBetween2Lines(Coordinate coordinate1, Coordinate coordinate2,Coordinate coordinate3,Coordinate coordinate4,Projection projection)
     {
-        /*PointF x1 = projection.toScreenLocation(coordinate1.getMapBoxLatLng());
-        PointF x2 = projection.toScreenLocation(coordinate2.getMapBoxLatLng());
-        PointF x3 = projection.toScreenLocation(coordinate3.getMapBoxLatLng());
-        PointF x4 = projection.toScreenLocation(coordinate4.getMapBoxLatLng());
-        double angle1 = Math.atan2(x1.y - x2.y,
-                x1.x - x2.x);
-        double angle2 = Math.atan2(x3.y - x4.y,
-                x3.x - x4.x);
-        return Math.toDegrees(angle1-angle2);*/
         PointF X1 = projection.toScreenLocation(coordinate1.getMapBoxLatLng());
         PointF X2 = projection.toScreenLocation(coordinate2.getMapBoxLatLng());
         PointF X4 = projection.toScreenLocation(coordinate3.getMapBoxLatLng());

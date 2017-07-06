@@ -391,37 +391,24 @@ public class Graph {
             if (lastPolyline.size()>0)
             {
 
-                Location location1 = new Location("");
-                location1.setLatitude(lastPolyline.get(0).getLatitude());
-                location1.setLongitude(lastPolyline.get(0).getLongitude());
-                Location location2 = new Location("");
-                location2.setLatitude(lastPolyline.get(1).getLatitude());
-                location2.setLongitude(lastPolyline.get(1).getLongitude());
-                double bearing1 = MapGeometryUtils.angleBetween2Lines(lastPolyline.get(0),lastPolyline.get(1),
+
+                double angle = MapGeometryUtils.angleBetween2Lines(lastPolyline.get(0),lastPolyline.get(1),
                         e.getCoordinates().get(0),e.getCoordinates().get(1),projection);
-                //double bearing1 = location1.bearingTo(location2);
-                location1 = new Location("");
-                location1.setLatitude(e.getCoordinates().get(0).getLatitude());
-                location1.setLongitude(e.getCoordinates().get(0).getLongitude());
-                location2.setLongitude(e.getCoordinates().get(1).getLongitude());
-                location2.setLatitude(e.getCoordinates().get(1).getLatitude());
-                float bearing2 =location1.bearingTo(location2);
-                //bearing1 = bearing2;
                 String movedirection = "";
-                if(bearing1 < -160 || bearing1 >= 160){
+                if(angle < -160 || angle >= 160){
                     movedirection = "front";
                 };
-                if(bearing1 < 160 && bearing1 >= 20){
+                if(angle < 160 && angle >= 20){
                     movedirection = "left";
                 };
-                if(bearing1 < 20 && bearing1 >= -20){
+                if(angle < 20 && angle >= -20){
                     movedirection = "back";
                 };
-                if(bearing1 < -20 && bearing1 >= -160){
+                if(angle < -20 && angle >= -160){
                     movedirection = "right";
                 };
 
-                Log.e("POLYTAG",movedirection+" diff = "+bearing1);
+                Log.e("POLYTAG",movedirection+" diff = "+angle);
             }
             lastPolyline = e.getLastPolyline();
         }

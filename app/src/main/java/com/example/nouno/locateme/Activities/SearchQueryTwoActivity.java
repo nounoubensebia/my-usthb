@@ -57,6 +57,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private View pathFoundLayout;
     private View coordinateLayout;
     private boolean targetFixed = false;
+    private Path mTarget;
     private View fab;
     private View scrollView;
     public static final int REQUEST_DEPARTURE_CODE = 0;
@@ -67,6 +68,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     public static final int STATE_PATH_INITIALIZED = 1;
     public static final int STATE_PATH_CALCULATED = 2;
     private boolean keyboardShown;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getGraph();
@@ -82,16 +84,16 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                        if (!isOpen)
                        {
                            //updateUiState(state,true,true);
-                           keyboardShown = true;
-                           if (state > STATE_NO_PATH)
-                               updateUiState(state,false,true);
+                           keyboardShown = false;
+                           //if (state > STATE_NO_PATH)
+                               //updateUiState(state,false,true);
                        }
                        else
                        {
-                           keyboardShown = false;
+                           keyboardShown = true;
                            //updateUiState(state,false,false);
-                           if (state>STATE_NO_PATH)
-                           updateUiState(state,true,true);
+                           //if (state>STATE_NO_PATH)
+                           //updateUiState(state,true,true);
                        }
                     }
                 });
@@ -173,6 +175,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 getPath();
             }
         });
+        departureEditText.requestFocus();
     }
 
 
@@ -210,7 +213,11 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 Place destination = Place.fromJson(data.getStringExtra("place"));
                 setDestination(destination);
             }
-            updateUiState(state,keyboardShown,false);
+            updateUiState(state,false,false);
+            if (state > STATE_NO_PATH)
+            {
+                reInitMap();
+            }
         }
     }
 
@@ -314,8 +321,15 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 builder.include(Place.SOUTH_EAST_CAMPUS_BOUND.getMapBoxLatLng());
                 mapboxMap.setLatLngBoundsForCameraTarget(builder.build());
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
+                mapboxMap.getUiSettings().setAllGesturesEnabled(false);
             }
         });
+    }
+
+    private void reInitMap ()
+    {
+        mCustomMapView.moveCamera(new Coordinate(36.712126,3.178768),18);
+
     }
 
 
@@ -349,26 +363,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         graph.getInstructions(mCustomMapView.getMapboxMap().getProjection());
                     }
                 });
-                /*mGraph.getShortestPath(mGraph.getVertexes().get(0), mGraph.getVertexes().get(16), new OnSearchFinishListener() {
-                    @Override
-                    public void OnSearchFinish(Graph graph) {
-                        updateUiState(STATE_PATH_CALCULATED,false,true);
-                        mCustomMapView.drawPolyline(graph);
-                        state = STATE_PATH_CALCULATED;
-                        mPath.setDistance((float)graph.getWeight());
-                        distancedurationText.setText(mPath.getDurationString()+" "+mPath.getDistanceString());
-                        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
-                        Date currentLocalTime = cal.getTime();
-                        long time = currentLocalTime.getTime();
-                        time+=mPath.getDuration()*1000;
-                        currentLocalTime = new Time(time);
-                        DateFormat date = new SimpleDateFormat("HH:mm");
-                        date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
-                        String localTime = date.format(currentLocalTime);
-                        arrivalTimeText.setText("Arrivée à "+localTime);
-                        graph.getInstructions(mCustomMapView.getMapboxMap().getProjection());
-                    }
-                });*/
+
             }
         },2000);
     }
@@ -432,6 +427,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         scrollView.setVisibility(View.VISIBLE);
 
                     }
+                    createMap();
                 }
                 else
                 {
@@ -463,7 +459,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
                     }
                 }
-                createMap();
+                //createMap();
                 break;
             case STATE_PATH_CALCULATED :
                 state = STATE_PATH_CALCULATED;
@@ -522,40 +518,75 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private void createMap ()
     {
-        targetFixed = false;
-        mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
-        mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
-        mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
-        mCustomMapView.moveCamera(MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),
-                mPath.getDestination().getCoordinate()),18);
+        //if (!(mTarget!=null && mTarget.getDestination().getCoordinate().equals(mPath.getDestination().getCoordinate())&&
+        //        mTarget.getSource().getCoordinate().equals(mPath.getSource().getCoordinate())))
+        //{
+            targetFixed = false;
+            mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
+            mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
+            mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
+            mCustomMapView.moveCamera(MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),
+                    mPath.getDestination().getCoordinate()),18);
 
-        final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());
+            final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());
 
 
-        mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                if (!targetFixed)
-                {
-                    if (!(mCustomMapView.isPointVisible(mPath.getSource().getCoordinate())&&mCustomMapView.isPointVisible(mPath.getDestination().getCoordinate())))
+            mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
+                @Override
+                public void onCameraIdle() {
+                    if (!targetFixed)
                     {
-                        if (mCustomMapView.getMapboxMap().getCameraPosition().zoom>13)
-                        mCustomMapView.moveCamera(
-                                middlePoint,mCustomMapView.getMapboxMap().getCameraPosition().zoom-3);
+                        if (!(mCustomMapView.isPointVisible(mPath.getSource().getCoordinate())&&mCustomMapView.isPointVisible(mPath.getDestination().getCoordinate())))
+                        {
+                            if (mCustomMapView.getMapboxMap().getCameraPosition().zoom>13)
+                            mCustomMapView.moveCamera(
+                                    middlePoint,mCustomMapView.getMapboxMap().getCameraPosition().zoom-3);
+                        }
+
+                    }
+                    else
+                    {
+                        targetFixed = true;
+                        mTarget = mPath;
+                        mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
+                            @Override
+                            public void onCameraIdle() {
+
+                            }
+                        });
                     }
 
-                }
-                else
-                {
-                    targetFixed = true;
-                }
 
-
-            }
-        });
+                }
+            });
+        //}
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (state == STATE_NO_PATH||keyboardShown)
+            super.onBackPressed();
+        else
+        {
+            updateUiState(state,false,true);
+            if (departureEditText.hasFocus())
+            {
 
+                departureEditText.setText(mPath.getSource().getLabel());
+                departureEditText.setFocusableInTouchMode(false);
+                departureEditText.clearFocus();
 
+            }
+            if (destinationEditText.hasFocus())
+            {
+
+                destinationEditText.setText(mPath.getDestination().getLabel());
+                destinationEditText.setFocusableInTouchMode(false);
+                destinationEditText.clearFocus();
+
+            }
+
+        }
+    }
 }

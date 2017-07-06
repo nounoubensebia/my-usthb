@@ -73,9 +73,9 @@ public class CustomMapView  {
     {
         ArrayList<Coordinate> coordinates = new ArrayList<>();
         Coordinate endCoord = null;
-        /*for (Edge e :graph.getEdges())
+        for (Edge e :graph.getEdges())
         {
-            /*if (endCoord==null)
+            if (endCoord==null)
                 coordinates.add(e.getCoordinates().get(0));
             for (int i=1;i<e.getCoordinates().size();i++)
             {
@@ -84,16 +84,8 @@ public class CustomMapView  {
             }
             endCoord = coordinates.get(coordinates.size()-1);
         }
-        drawPolyline(coordinates);*/
-        int x = 1;
-        for (Edge e :graph.getEdges())
-        {
-            if (x%2==0)
-                drawPolyline(e.getCoordinates(),"#37AB30");
-            else
-                drawPolyline(e.getCoordinates(),"#000000");
-            x++;
-        }
+        drawPolyline(coordinates,"#37AB30");
+
     }
 
     public void drawMarker(Coordinate coordinate, String title, int iconResource) {
