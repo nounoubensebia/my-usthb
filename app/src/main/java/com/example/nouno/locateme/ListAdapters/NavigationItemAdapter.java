@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.nouno.locateme.Data.NavigationInstruction;
+import com.example.nouno.locateme.Data.NavigationInstructionItem;
 import com.example.nouno.locateme.R;
 
 import java.util.ArrayList;
@@ -19,10 +20,10 @@ import java.util.ArrayList;
  * Created by nouno on 07/07/2017.
  */
 
-public class NavigationItemAdapter extends ArrayAdapter<NavigationInstruction> {
-    public NavigationItemAdapter (Context context, ArrayList<NavigationInstruction> navigationInstructions)
+public class NavigationItemAdapter extends ArrayAdapter<NavigationInstructionItem> {
+    public NavigationItemAdapter (Context context, ArrayList<NavigationInstructionItem> navigationInstructionsItems)
     {
-        super(context,0,navigationInstructions);
+        super(context,0,navigationInstructionsItems);
     }
 
     @NonNull

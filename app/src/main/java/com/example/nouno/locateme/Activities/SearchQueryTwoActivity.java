@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.nouno.locateme.Data.Coordinate;
+import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Djikstra.Graph;
@@ -26,6 +27,7 @@ import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
 import com.example.nouno.locateme.Utils.FileUtils;
 import com.example.nouno.locateme.Utils.MapGeometryUtils;
+import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -68,6 +71,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     public static final int STATE_NO_PATH = 0;
     public static final int STATE_PATH_INITIALIZED = 1;
     public static final int STATE_PATH_CALCULATED = 2;
+    private ArrayList<NavigationInstruction> navigationInstructions;
     private boolean keyboardShown;
 
     @Override
@@ -361,7 +365,17 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
                         String localTime = date.format(currentLocalTime);
                         arrivalTimeText.setText("Arrivée à "+localTime);
-                        graph.getInstructions(mCustomMapView.getMapboxMap().getProjection());
+                        navigationInstructions = graph.getNavigationInstructions(mCustomMapView.getMapboxMap().getProjection());
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Gson gson = new Gson();
+                                String navigationInstructionsJson = gson.toJson(navigationInstructions);
+                                Intent i = new Intent(SearchQueryTwoActivity.this,NavigationActivity.class);
+                                i.putExtra("navigationInstructions",navigationInstructionsJson);
+                                startActivity(i);
+                            }
+                        });
                     }
                 });
 
@@ -560,8 +574,6 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
                 }
             });
-        //}
-
     }
 
     @Override

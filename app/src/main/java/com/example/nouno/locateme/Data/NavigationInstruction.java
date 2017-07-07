@@ -1,5 +1,7 @@
 package com.example.nouno.locateme.Data;
 
+import java.util.ArrayList;
+
 /**
  * Created by nouno on 07/07/2017.
  */
@@ -12,10 +14,14 @@ public class NavigationInstruction {
 
     private int direction;
     private double distance;
-    private boolean isSelected;
-    public NavigationInstruction(int direction, double distance) {
+
+    private ArrayList<Coordinate> polyline;
+
+    public NavigationInstruction(int direction, double distance,ArrayList<Coordinate> polyline) {
         this.direction = direction;
         this.distance = distance;
+
+        this.polyline = polyline;
     }
 
     public int getDirection() {
@@ -48,11 +54,13 @@ public class NavigationInstruction {
         return s;
     }
 
-    public boolean isSelected() {
-        return isSelected;
+
+
+    public ArrayList<Coordinate> getPolyline() {
+        return polyline;
     }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
+    public void setPolyline(ArrayList<Coordinate> polyline) {
+        this.polyline = polyline;
     }
 }

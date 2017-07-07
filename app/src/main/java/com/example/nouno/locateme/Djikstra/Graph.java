@@ -1,19 +1,18 @@
 package com.example.nouno.locateme.Djikstra;
 
 import android.graphics.PointF;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 
 import com.example.nouno.locateme.Data.Coordinate;
+import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.Utils.MapGeometryUtils;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.Projection;
+import com.mapbox.services.commons.utils.MapboxUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -131,7 +130,7 @@ public class Graph {
             ArrayList<Coordinate> newPathCoordinates = new ArrayList<>();
             newPathCoordinates.add(explosionCoordinate);
             newPathCoordinates.add(e.getCoordinates().get(0));
-            Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getSource(), MapGeometryUtils.calculatePathDistance(newPathCoordinates), newPathCoordinates);
+            Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getSource(), MapGeometryUtils.PolylineDistance(newPathCoordinates), newPathCoordinates);
             edges.add(edge);
             vertexes.add(userVertex);
             return userVertex;
@@ -141,7 +140,7 @@ public class Graph {
             ArrayList<Coordinate> newPathCoordinates = new ArrayList<>();
             newPathCoordinates.add(explosionCoordinate);
             newPathCoordinates.add(e.getCoordinates().get(e.getCoordinates().size() - 1));
-            Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getDestination(), MapGeometryUtils.calculatePathDistance(newPathCoordinates), newPathCoordinates);
+            Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getDestination(), MapGeometryUtils.PolylineDistance(newPathCoordinates), newPathCoordinates);
             edges.add(edge);
             vertexes.add(userVertex);
             return userVertex;
@@ -176,9 +175,9 @@ public class Graph {
         Vertex destination = e.getDestination();
         Vertex pointVertex = new Vertex(getLastVertexId() + 1);
         Vertex userVertex = new Vertex(getLastVertexId() + 2);
-        Edge sourceToPointEdge = new Edge(getLastEdgeId() + 1, source, pointVertex, MapGeometryUtils.calculatePathDistance(sourceToPoint), sourceToPoint);
-        Edge PointToDestinationEdge = new Edge(getLastEdgeId() + 2, pointVertex, destination, MapGeometryUtils.calculatePathDistance(pointToDestinationPath), pointToDestinationPath);
-        Edge userToPointEdge = new Edge(getLastEdgeId() + 3, userVertex, pointVertex, MapGeometryUtils.calculatePathDistance(userToPointPath), userToPointPath);
+        Edge sourceToPointEdge = new Edge(getLastEdgeId() + 1, source, pointVertex, MapGeometryUtils.PolylineDistance(sourceToPoint), sourceToPoint);
+        Edge PointToDestinationEdge = new Edge(getLastEdgeId() + 2, pointVertex, destination, MapGeometryUtils.PolylineDistance(pointToDestinationPath), pointToDestinationPath);
+        Edge userToPointEdge = new Edge(getLastEdgeId() + 3, userVertex, pointVertex, MapGeometryUtils.PolylineDistance(userToPointPath), userToPointPath);
         edges.remove(e);
         edges.add(sourceToPointEdge);
         edges.add(PointToDestinationEdge);
@@ -383,35 +382,53 @@ public class Graph {
 
     }
 
-    public void getInstructions (Projection projection)
+    public ArrayList<NavigationInstruction> getNavigationInstructions(Projection projection)
     {
         ArrayList<Coordinate> lastPolyline = new ArrayList<>();
+        ArrayList<Coordinate> savedPolyline = new ArrayList<>();
+        ArrayList<NavigationInstruction> navigationInstructions = new ArrayList<>();
         for (Edge e:edges)
         {
             if (lastPolyline.size()>0)
             {
-
+                for (Coordinate c : lastPolyline)
+                {
+                    savedPolyline.add(c);
+                }
 
                 double angle = MapGeometryUtils.angleBetween2Lines(lastPolyline.get(0),lastPolyline.get(1),
                         e.getCoordinates().get(0),e.getCoordinates().get(1),projection);
-                String movedirection = "";
-                if(angle < -160 || angle >= 160){
-                    movedirection = "front";
-                };
+
+
                 if(angle < 160 && angle >= 20){
-                    movedirection = "left";
+
+                    ArrayList<Coordinate> instructionPolyline = new ArrayList<>();
+                    for (Coordinate c : savedPolyline)
+                    {
+                        instructionPolyline.add(c);
+                    }
+                    navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_LEFT,MapGeometryUtils.PolylineDistance(instructionPolyline),instructionPolyline));
+                    savedPolyline = new ArrayList<>();
                 };
                 if(angle < 20 && angle >= -20){
-                    movedirection = "back";
+
                 };
                 if(angle < -20 && angle >= -160){
-                    movedirection = "right";
+                    ArrayList<Coordinate> instructionPolyline = new ArrayList<>();
+                    for (Coordinate c : savedPolyline)
+                    {
+                        instructionPolyline.add(c);
+                    }
+                    navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_RIGHT,MapGeometryUtils.PolylineDistance(instructionPolyline),instructionPolyline));
+                    savedPolyline = new ArrayList<>();
                 };
 
-                Log.e("POLYTAG",movedirection+" diff = "+angle);
+
             }
             lastPolyline = e.getLastPolyline();
+
         }
+        return navigationInstructions;
     }
 
 }

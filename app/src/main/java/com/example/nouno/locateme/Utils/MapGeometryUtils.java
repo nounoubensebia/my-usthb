@@ -79,7 +79,7 @@ public class MapGeometryUtils {
 
     }
 
-    public static Double calculatePathDistance (ArrayList<Coordinate> coordinates)
+    public static Double PolylineDistance(ArrayList<Coordinate> coordinates)
     {
         Coordinate startCoordinate = coordinates.get(0);
         double distance = 0;
