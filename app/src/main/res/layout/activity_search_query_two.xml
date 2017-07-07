@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/green_rounded_button"
-                        android:drawableLeft="@drawable/ic_my_location_white_24dp"
+                        android:drawableLeft="@drawable/ic_location_blue_small"
                         android:drawablePadding="8dp"
                         android:gravity="center|left"
                         android:hint="Choisissez un lieu de départ" />

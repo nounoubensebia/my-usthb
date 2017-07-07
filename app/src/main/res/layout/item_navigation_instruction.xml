@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+
+            android:paddingLeft="16dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:elevation="4dp"
+                    android:id="@+id/text_instruction_order"
+                    android:layout_gravity="center"
+                    android:text="1"
+                    android:textColor="@color/backgroundColor"
+                    android:textSize="24sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@+id/button_instruction"
+                    android:layout_gravity="center"
+                    android:src="@drawable/button_circle"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+            </FrameLayout>
+            <TextView
+                android:layout_marginRight="16dp"
+                android:textColor="#000"
+                android:id="@+id/text_instruction_description"
+                android:layout_marginLeft="16dp"
+
+                android:text="Marcher 200M puis tourner a gauche"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <View
+            android:id="@+id/view_separation"
+            android:layout_marginLeft="35dp"
+            android:layout_width="1dp"
+            android:layout_height="32dp"
+            android:background="@color/backgroundColor"></View>
+    </LinearLayout>
+
+</LinearLayout>

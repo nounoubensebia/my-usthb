@@ -29,6 +29,7 @@ public class SearchItemAdapter extends ArrayAdapter<SearchSuggestion> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
         SearchSuggestion searchSuggestion = getItem(position);
         View item = convertView;
         if (item ==null)

@@ -56,6 +56,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private View pathNotFoundLayout;
     private View pathFoundLayout;
     private View coordinateLayout;
+    private boolean backPressed = false;
     private boolean targetFixed = false;
     private Path mTarget;
     private View fab;
@@ -569,22 +570,29 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             super.onBackPressed();
         else
         {
-            updateUiState(state,false,true);
-            if (departureEditText.hasFocus())
+            if (coordinateLayout.getVisibility()==View.GONE)
             {
+                updateUiState(state,false,true);
+                if (departureEditText.hasFocus())
+                {
 
-                departureEditText.setText(mPath.getSource().getLabel());
-                departureEditText.setFocusableInTouchMode(false);
-                departureEditText.clearFocus();
+                    departureEditText.setText(mPath.getSource().getLabel());
+                    departureEditText.setFocusableInTouchMode(false);
+                    departureEditText.clearFocus();
 
+                }
+                if (destinationEditText.hasFocus())
+                {
+
+                    destinationEditText.setText(mPath.getDestination().getLabel());
+                    destinationEditText.setFocusableInTouchMode(false);
+                    destinationEditText.clearFocus();
+
+                }
             }
-            if (destinationEditText.hasFocus())
+            else
             {
-
-                destinationEditText.setText(mPath.getDestination().getLabel());
-                destinationEditText.setFocusableInTouchMode(false);
-                destinationEditText.clearFocus();
-
+                super.onBackPressed();
             }
 
         }

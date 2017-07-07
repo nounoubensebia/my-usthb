@@ -28,18 +28,23 @@
             android:label="@string/app_name" />
         <activity android:name=".MapTestActivity" />
         <activity android:name=".Activities.MapActivity">
+
+        </activity>
+        <activity
+            android:name=".Activities.SearchQueryTwoActivity"
+            android:label="Où aller ?"
+            android:theme="@style/MainTheme" />
+        <activity
+            android:name=".Activities.SetMarkerActivity"
+            android:label="Sélectionner un lieu "
+            android:theme="@style/MainTheme" />
+        <activity android:name=".Activities.NavigationActivity" android:theme="@style/MainTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Activities.SearchQueryTwoActivity"
-            android:label="Où aller ?"
-            android:theme="@style/MainTheme" />
-        <activity android:name=".Activities.SetMarkerActivity" android:theme="@style/MainTheme"
-            android:label="Sélectionner un lieu "></activity>
     </application>
 
 </manifest>
