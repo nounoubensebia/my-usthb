@@ -50,10 +50,10 @@ public class NavigationInstruction {
         switch (direction)
         {
             case DIRECTION_LEFT :
-                s+="puis tourner a gauche";
+                s+="puis tourner à gauche";
                 break;
             case DIRECTION_RIGHT :
-                s+="puis tourner a droite";
+                s+="puis tourner à droite";
 
         }
         return s;

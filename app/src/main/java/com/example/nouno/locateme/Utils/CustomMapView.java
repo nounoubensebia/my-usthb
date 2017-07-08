@@ -20,7 +20,9 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdate;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.geometry.VisibleRegion;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -158,6 +160,29 @@ public class CustomMapView  {
                 return builder.build();
             }
         });
+    }
+
+    public void moveCamera (ArrayList<Coordinate> coordinates)
+    {
+        LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
+        for (Coordinate c:coordinates)
+        {
+            latLngBoundsBulder.include(c.getMapBoxLatLng());
+        }
+        LatLngBounds latLngBounds = latLngBoundsBulder.build();
+        mapboxMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,325));
+
+    }
+
+    public void animateCamera (ArrayList<Coordinate> coordinates)
+    {
+        LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
+        for (Coordinate c:coordinates)
+        {
+            latLngBoundsBulder.include(c.getMapBoxLatLng());
+        }
+        LatLngBounds latLngBounds = latLngBoundsBulder.build();
+        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,325));
     }
 
     public boolean isPointVisible (Coordinate coordinate)

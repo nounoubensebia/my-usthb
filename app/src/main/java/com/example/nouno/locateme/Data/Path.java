@@ -14,14 +14,14 @@ public class Path {
     private Place source;
     private Place destination;
     private float distance;
-
+    private Graph graph;
     public Path() {
     }
 
-    private Path(Place source, Place destination,float distance) {
+    private Path(Place source, Place destination,float distance,Graph graph) {
         this.source = source;
         this.destination = destination;
-
+        this.graph = graph;
         this.distance = distance;
     }
 
@@ -63,5 +63,13 @@ public class Path {
 
     public void setDistance(float distance) {
         this.distance = distance;
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graph graph) {
+        this.graph = graph;
     }
 }

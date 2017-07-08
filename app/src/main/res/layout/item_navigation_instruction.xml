@@ -23,6 +23,7 @@
                 <ImageView
                     android:id="@+id/icon_arrow"
                     android:elevation="2dp"
+                    android:rotation="180"
                     app:srcCompat="@drawable/ic_direction_arrow_right_green_24dp"
                     android:layout_gravity="center"
                     android:layout_width="32dp"

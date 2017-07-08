@@ -21,6 +21,7 @@ import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
+import com.example.nouno.locateme.Djikstra.Edge;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.R;
@@ -326,14 +327,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 builder.include(Place.SOUTH_EAST_CAMPUS_BOUND.getMapBoxLatLng());
                 mapboxMap.setLatLngBoundsForCameraTarget(builder.build());
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
-                mapboxMap.getUiSettings().setAllGesturesEnabled(false);
+                mapboxMap.getUiSettings().setAllGesturesEnabled(true);
             }
         });
     }
 
     private void reInitMap ()
     {
-        mCustomMapView.moveCamera(new Coordinate(36.712126,3.178768),18);
+        //mCustomMapView.moveCamera(new Coordinate(36.712126,3.178768),18);
 
     }
 
@@ -352,7 +353,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     @Override
                     public void OnSearchFinish(Graph graph) {
                         updateUiState(STATE_PATH_CALCULATED,false,true);
-                        mCustomMapView.drawPolyline(graph);
+
                         state = STATE_PATH_CALCULATED;
                         mPath.setDistance((float) graph.getWeight());
                         distancedurationText.setText(mPath.getDurationString()+" "+mPath.getDistanceString());
@@ -360,11 +361,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         Date currentLocalTime = cal.getTime();
                         long time = currentLocalTime.getTime();
                         time+=mPath.getDuration()*1000;
+                        mPath.setGraph(graph);
                         currentLocalTime = new Time(time);
                         DateFormat date = new SimpleDateFormat("HH:mm");
                         date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
                         String localTime = date.format(currentLocalTime);
                         arrivalTimeText.setText("Arrivée à "+localTime);
+                        createMap();
+                        mCustomMapView.drawPolyline(graph);
                         navigationInstructions = graph.getNavigationInstructions(mCustomMapView.getMapboxMap().getProjection());
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -473,6 +477,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         },250);
 
                     }
+                    createMap();
                 }
                 //createMap();
                 break;
@@ -540,13 +545,31 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
             mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
             mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
-            mCustomMapView.moveCamera(MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),
-                    mPath.getDestination().getCoordinate()),18);
+            /*mCustomMapView.moveCamera(MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),
+                    mPath.getDestination().getCoordinate()),18);*/
+            ArrayList<Coordinate> boundsCoordinates = new ArrayList<>();
 
             final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());
+            //boundsCoordinates.add(middlePoint);
+            //boundsCoordinates.add(mPath.getSource().getCoordinate());
+            //boundsCoordinates.add(mPath.getDestination().getCoordinate());
+            if (mPath.getGraph()!=null)
+                for (Edge e : mPath.getGraph().getEdges())
+                {
+                    boundsCoordinates.addAll(e.getCoordinates());
+                    mCustomMapView.animateCamera(boundsCoordinates);
+                }
+                else
+                {
+                    boundsCoordinates.add(mPath.getSource().getCoordinate());
+                    boundsCoordinates.add(mPath.getDestination().getCoordinate());
+                    mCustomMapView.moveCamera(boundsCoordinates);
+                }
 
 
-            mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
+
+
+            /*mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
                 @Override
                 public void onCameraIdle() {
                     if (!targetFixed)
@@ -573,7 +596,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
 
                 }
-            });
+            });*/
     }
 
     @Override

@@ -53,16 +53,18 @@ public class NavigationItemAdapter extends ArrayAdapter<NavigationInstructionIte
         View button = item.findViewById(R.id.button_instruction);
         View separationView = item.findViewById(R.id.view_separation);
         View root = item.findViewById(R.id.root);
+        arrowIcon.setRotation(180);
         if (getItem(position).isSelected())
         {
             button.setActivated(true);
             if (getItem(position).getDirection()==NavigationInstruction.DIRECTION_LEFT)
             {
-                arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_subdirectory_arrow_left_white_24dp));
+                arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_subdirectory_arrow_right_white_24dp));
             }
             else
             {
-                arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_subdirectory_arrow_right_white_24dp));
+
+                arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_subdirectory_arrow_left_white_24dp));
             }
         }
         else
@@ -70,11 +72,12 @@ public class NavigationItemAdapter extends ArrayAdapter<NavigationInstructionIte
             button.setActivated(false);
             if (getItem(position).getDirection()==NavigationInstruction.DIRECTION_LEFT)
             {
-                arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_subdirectory_arrow_left_green_24dp));
+                arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_direction_arrow_right_green_24dp));
             }
             else
             {
-                arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_direction_arrow_right_green_24dp));
+
+                arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_subdirectory_arrow_left_green_24dp));
             }
 
         }
@@ -85,9 +88,10 @@ public class NavigationItemAdapter extends ArrayAdapter<NavigationInstructionIte
             separationView.setVisibility(View.GONE);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)root.getLayoutParams();
             layoutParams.setMargins(layoutParams.leftMargin,0,layoutParams.rightMargin,(int)px);
+            arrowIcon.setRotation(0);
             root.setLayoutParams(layoutParams);
             if (getItem(position).isSelected())
-            arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_white_24dp));
+                arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_white_24dp));
             else
                 arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_green_24dp));
         }

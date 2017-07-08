@@ -42,7 +42,7 @@
             android:name=".Activities.SetMarkerActivity"
             android:label="Sélectionner un lieu "
             android:theme="@style/MainTheme" />
-        <activity android:name=".Activities.NavigationActivity" android:theme="@style/MainTheme">
+        <activity android:name=".Activities.NavigationActivity" android:theme="@style/AppTheme">
 
         </activity>
     </application>
