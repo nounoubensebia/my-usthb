@@ -84,7 +84,7 @@ public class NavigationItemAdapter extends ArrayAdapter<NavigationInstructionIte
             float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
             separationView.setVisibility(View.GONE);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)root.getLayoutParams();
-            layoutParams.setMargins(layoutParams.leftMargin,layoutParams.topMargin,layoutParams.rightMargin,(int)px);
+            layoutParams.setMargins(layoutParams.leftMargin,0,layoutParams.rightMargin,(int)px);
             root.setLayoutParams(layoutParams);
             if (getItem(position).isSelected())
             arrowIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_location_white_24dp));
@@ -99,7 +99,7 @@ public class NavigationItemAdapter extends ArrayAdapter<NavigationInstructionIte
             Resources r = item.getResources();
             float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)root.getLayoutParams();
-            layoutParams.setMargins(layoutParams.leftMargin,(int)px,layoutParams.rightMargin,layoutParams.bottomMargin);
+            layoutParams.setMargins(layoutParams.leftMargin,(int)px,layoutParams.rightMargin,0);
             root.setLayoutParams(layoutParams);
 
         }
