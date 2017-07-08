@@ -17,6 +17,7 @@ import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdate;
@@ -60,15 +61,15 @@ public class CustomMapView  {
         this.mapboxMap = mapboxMap;
     }
 
-    public void drawPolyline(List<Coordinate> coordinates,String color) {
+    public Polyline drawPolyline(List<Coordinate> coordinates, String color) {
         ArrayList<LatLng> points = new ArrayList<>();
         for (Coordinate c : coordinates) {
             points.add(new LatLng(c.getLatitude(), c.getLongitude()));
         }
-        mapboxMap.addPolyline(new PolylineOptions()
-                .addAll(points)
-                .color(Color.parseColor(color))
-                .width(5));
+        PolylineOptions polylineOptions = new PolylineOptions().addAll(points).color(Color.parseColor(color));
+
+        mapboxMap.addPolyline(polylineOptions);
+        return polylineOptions.getPolyline();
     }
 
     public void drawPolyline (Graph graph)
@@ -86,7 +87,7 @@ public class CustomMapView  {
             }
             endCoord = coordinates.get(coordinates.size()-1);
         }
-        drawPolyline(coordinates,"#37AB30");
+        drawPolyline(coordinates,"#C6C6C6");
 
     }
 
@@ -162,7 +163,7 @@ public class CustomMapView  {
         });
     }
 
-    public void moveCamera (ArrayList<Coordinate> coordinates)
+    public void moveCamera (ArrayList<Coordinate> coordinates,int padding)
     {
         LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
         for (Coordinate c:coordinates)
@@ -170,11 +171,11 @@ public class CustomMapView  {
             latLngBoundsBulder.include(c.getMapBoxLatLng());
         }
         LatLngBounds latLngBounds = latLngBoundsBulder.build();
-        mapboxMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,325));
+        mapboxMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,padding));
 
     }
 
-    public void animateCamera (ArrayList<Coordinate> coordinates)
+    public void animateCamera (ArrayList<Coordinate> coordinates,int padding)
     {
         LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
         for (Coordinate c:coordinates)
@@ -182,7 +183,35 @@ public class CustomMapView  {
             latLngBoundsBulder.include(c.getMapBoxLatLng());
         }
         LatLngBounds latLngBounds = latLngBoundsBulder.build();
-        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,325));
+        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,padding));
+    }
+
+    public void moveCamera (Graph graph,int padding)
+    {
+        LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
+        for (Edge e:graph.getEdges())
+        {
+            for (Coordinate coordinate : e.getCoordinates())
+            {
+                latLngBoundsBulder.include(coordinate.getMapBoxLatLng());
+            }
+        }
+        LatLngBounds latLngBounds = latLngBoundsBulder.build();
+        mapboxMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,padding));
+    }
+
+    public void animateCamera (Graph graph,int padding)
+    {
+        LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
+        for (Edge e:graph.getEdges())
+        {
+            for (Coordinate coordinate : e.getCoordinates())
+            {
+                latLngBoundsBulder.include(coordinate.getMapBoxLatLng());
+            }
+        }
+        LatLngBounds latLngBounds = latLngBoundsBulder.build();
+        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,padding));
     }
 
     public boolean isPointVisible (Coordinate coordinate)

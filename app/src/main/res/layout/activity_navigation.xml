@@ -7,26 +7,23 @@
     android:layout_height="match_parent"
     tools:context="com.example.nouno.locateme.Activities.NavigationActivity">
 
-    <com.mapbox.mapboxsdk.maps.MapView
 
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:mapbox_cameraTargetLat="36.712126"
-        app:mapbox_cameraTargetLng="3.178768"
-        app:mapbox_cameraZoom="15"
-        app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
-
-    </com.mapbox.mapboxsdk.maps.MapView>
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_gravity="bottom"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.mapbox.mapboxsdk.maps.MapView
             android:layout_weight="1"
-            android:layout_height="0dp"></LinearLayout>
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+
+
+            app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
+
+        </com.mapbox.mapboxsdk.maps.MapView>
+
         <LinearLayout
             android:background="#FFF"
             android:layout_width="match_parent"
@@ -37,7 +34,6 @@
                 android:drawableLeft="@drawable/ic_list_24dp"
                 android:layout_gravity="center"
                 android:drawablePadding="4dp"
-
                 android:textColor="@android:color/holo_red_light"
                 android:gravity="center|left"
                 android:paddingTop="16dp"
@@ -49,7 +45,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <ListView
-
                 android:background="#FFF"
                 android:elevation="4dp"
                 android:id="@+id/list"

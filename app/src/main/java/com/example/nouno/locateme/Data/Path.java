@@ -2,6 +2,7 @@ package com.example.nouno.locateme.Data;
 
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.Utils.MapGeometryUtils;
+import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -71,5 +72,16 @@ public class Path {
 
     public void setGraph(Graph graph) {
         this.graph = graph;
+    }
+
+    public String toJson ()
+    {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+    public static Path fromJson (String json)
+    {
+        Gson gson = new Gson();
+        return gson.fromJson(json,Path.class);
     }
 }

@@ -369,14 +369,15 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         arrivalTimeText.setText("Arrivée à "+localTime);
                         createMap();
                         mCustomMapView.drawPolyline(graph);
-                        navigationInstructions = graph.getNavigationInstructions(mCustomMapView.getMapboxMap().getProjection());
+
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Gson gson = new Gson();
                                 String navigationInstructionsJson = gson.toJson(navigationInstructions);
                                 Intent i = new Intent(SearchQueryTwoActivity.this,NavigationActivity.class);
-                                i.putExtra("navigationInstructions",navigationInstructionsJson);
+
+                                i.putExtra("path",mPath.toJson());
                                 startActivity(i);
                             }
                         });
@@ -538,65 +539,21 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private void createMap ()
     {
-        //if (!(mTarget!=null && mTarget.getDestination().getCoordinate().equals(mPath.getDestination().getCoordinate())&&
-        //        mTarget.getSource().getCoordinate().equals(mPath.getSource().getCoordinate())))
-        //{
             targetFixed = false;
             mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
             mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
             mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
-            /*mCustomMapView.moveCamera(MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),
-                    mPath.getDestination().getCoordinate()),18);*/
             ArrayList<Coordinate> boundsCoordinates = new ArrayList<>();
 
             final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());
-            //boundsCoordinates.add(middlePoint);
-            //boundsCoordinates.add(mPath.getSource().getCoordinate());
-            //boundsCoordinates.add(mPath.getDestination().getCoordinate());
             if (mPath.getGraph()!=null)
-                for (Edge e : mPath.getGraph().getEdges())
-                {
-                    boundsCoordinates.addAll(e.getCoordinates());
-                    mCustomMapView.animateCamera(boundsCoordinates);
-                }
+                mCustomMapView.animateCamera(mPath.getGraph(),350);
                 else
                 {
                     boundsCoordinates.add(mPath.getSource().getCoordinate());
                     boundsCoordinates.add(mPath.getDestination().getCoordinate());
-                    mCustomMapView.moveCamera(boundsCoordinates);
+                    mCustomMapView.moveCamera(boundsCoordinates,350);
                 }
-
-
-
-
-            /*mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
-                @Override
-                public void onCameraIdle() {
-                    if (!targetFixed)
-                    {
-                        if (!(mCustomMapView.isPointVisible(mPath.getSource().getCoordinate())&&mCustomMapView.isPointVisible(mPath.getDestination().getCoordinate())))
-                        {
-                            if (mCustomMapView.getMapboxMap().getCameraPosition().zoom>13)
-                            mCustomMapView.moveCamera(
-                                    middlePoint,mCustomMapView.getMapboxMap().getCameraPosition().zoom-3);
-                        }
-
-                    }
-                    else
-                    {
-                        targetFixed = true;
-                        mTarget = mPath;
-                        mCustomMapView.getMapboxMap().setOnCameraIdleListener(new MapboxMap.OnCameraIdleListener() {
-                            @Override
-                            public void onCameraIdle() {
-
-                            }
-                        });
-                    }
-
-
-                }
-            });*/
     }
 
     @Override
