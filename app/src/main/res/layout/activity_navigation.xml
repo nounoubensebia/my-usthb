@@ -1,133 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context="com.example.nouno.locateme.Activities.NavigationActivity">
-    <!--<LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:paddingTop="16dp"
-            android:paddingLeft="16dp"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_gravity="center"
-                    android:text="1"
-                    android:textColor="@color/backgroundColor"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-        <ImageView
 
-            android:layout_gravity="center"
-            android:src="@drawable/button_circle"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
-            </FrameLayout>
-            <TextView
-                android:layout_marginLeft="16dp"
-                android:text="Marcher 200M puis tourner a gauche"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_marginLeft="40dp"
-            android:layout_width="1dp"
-            android:layout_height="32dp"
-            android:background="@color/backgroundColor"></View>
-    </LinearLayout>
+    <com.mapbox.mapboxsdk.maps.MapView
+
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:mapbox_cameraTargetLat="36.712126"
+        app:mapbox_cameraTargetLng="3.178768"
+        app:mapbox_cameraZoom="15"
+        app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
+
+    </com.mapbox.mapboxsdk.maps.MapView>
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:layout_height="match_parent">
         <LinearLayout
-            android:paddingTop="0dp"
-            android:paddingLeft="16dp"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_gravity="center"
-                    android:text="2"
-                    android:textColor="@color/backgroundColor"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <ImageView
+            android:layout_weight="1"
+            android:layout_height="0dp"></LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_weight="1.5"
+            android:layout_height="1dp">
+            <ListView
 
-                    android:layout_gravity="center"
-                    android:src="@drawable/button_circle"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp" />
-            </FrameLayout>
-            <TextView
-                android:layout_marginLeft="16dp"
-                android:text="Marcher 200M puis tourner a gauche"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:background="#FFF"
+                android:elevation="4dp"
+                android:id="@+id/list"
+                android:listSelector="@android:color/transparent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></ListView>
         </LinearLayout>
-        <View
-            android:layout_marginLeft="40dp"
-            android:layout_width="1dp"
-            android:layout_height="32dp"
-            android:background="@color/backgroundColor"></View>
+
+
     </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:paddingTop="0dp"
-            android:paddingLeft="16dp"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_gravity="center"
-                    android:text="3"
-                    android:textColor="@color/backgroundColor"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <ImageView
 
-                    android:layout_gravity="center"
-                    android:src="@drawable/button_circle"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp" />
-            </FrameLayout>
-            <TextView
-                android:layout_marginLeft="16dp"
-                android:text="Marcher 200M puis tourner a gauche"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-    </LinearLayout>-->
-    <ListView
-        android:layout_marginTop="16dp"
-        android:id="@+id/list"
-        android:listSelector="@android:color/transparent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
-
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -12,7 +12,6 @@ import java.text.NumberFormat;
 public class Path {
     private Place source;
     private Place destination;
-
     private float distance;
 
     public Path() {
@@ -47,9 +46,9 @@ public class Path {
 
     public String getDistanceString ()
     {
-        NumberFormat nf = new DecimalFormat("0.#");
-        String s = nf.format(distance*1000);
-        return s+" m";
+        //NumberFormat nf = new DecimalFormat("0.#");
+        //String s = nf.format(distance*1000);
+        return (int)(distance*1000)+" metres";
     }
 
     public String getDurationString ()

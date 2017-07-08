@@ -387,14 +387,13 @@ public class Graph {
         ArrayList<Coordinate> lastPolyline = new ArrayList<>();
         ArrayList<Coordinate> savedPolyline = new ArrayList<>();
         ArrayList<NavigationInstruction> navigationInstructions = new ArrayList<>();
+        double distance = 0;
         for (Edge e:edges)
         {
+
             if (lastPolyline.size()>0)
             {
-                for (Coordinate c : lastPolyline)
-                {
-                    savedPolyline.add(c);
-                }
+
 
                 double angle = MapGeometryUtils.angleBetween2Lines(lastPolyline.get(0),lastPolyline.get(1),
                         e.getCoordinates().get(0),e.getCoordinates().get(1),projection);
@@ -409,6 +408,8 @@ public class Graph {
                     }
                     navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_LEFT,MapGeometryUtils.PolylineDistance(instructionPolyline),instructionPolyline));
                     savedPolyline = new ArrayList<>();
+
+
                 };
                 if(angle < 20 && angle >= -20){
 
@@ -421,13 +422,19 @@ public class Graph {
                     }
                     navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_RIGHT,MapGeometryUtils.PolylineDistance(instructionPolyline),instructionPolyline));
                     savedPolyline = new ArrayList<>();
+
                 };
 
 
             }
             lastPolyline = e.getLastPolyline();
-
+            for (Coordinate c : e.getCoordinates())
+            {
+                savedPolyline.add(c);
+            }
         }
+        NavigationInstruction navigationInstruction = new NavigationInstruction(NavigationInstruction.DIRECTION_FRONT,MapGeometryUtils.PolylineDistance(savedPolyline),savedPolyline);
+        navigationInstructions.add(navigationInstruction);
         return navigationInstructions;
     }
 

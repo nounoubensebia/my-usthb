@@ -354,7 +354,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         updateUiState(STATE_PATH_CALCULATED,false,true);
                         mCustomMapView.drawPolyline(graph);
                         state = STATE_PATH_CALCULATED;
-                        mPath.setDistance((float)graph.getWeight());
+                        mPath.setDistance((float) graph.getWeight());
                         distancedurationText.setText(mPath.getDurationString()+" "+mPath.getDistanceString());
                         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
                         Date currentLocalTime = cal.getTime();

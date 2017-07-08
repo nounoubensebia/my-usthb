@@ -1,6 +1,7 @@
 package com.example.nouno.locateme.Djikstra;
 
 import com.example.nouno.locateme.Data.Coordinate;
+import com.example.nouno.locateme.Utils.MapGeometryUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class Edge  {
         return source;
     }
     public double getWeight() {
-        return weight;
+        return MapGeometryUtils.PolylineDistance(coordinates);
     }
 
     @Override

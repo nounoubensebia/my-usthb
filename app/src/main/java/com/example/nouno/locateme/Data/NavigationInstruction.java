@@ -42,7 +42,7 @@ public class NavigationInstruction {
 
     public String getInstructionString ()
     {
-        String s = "Marcher "+(int)distance+" métres ";
+        String s = "Marcher "+(int)(distance*1000)+ " métres ";
         switch (direction)
         {
             case DIRECTION_LEFT :
@@ -50,6 +50,7 @@ public class NavigationInstruction {
                 break;
             case DIRECTION_RIGHT :
                 s+="puis tourner a droite";
+
         }
         return s;
     }
