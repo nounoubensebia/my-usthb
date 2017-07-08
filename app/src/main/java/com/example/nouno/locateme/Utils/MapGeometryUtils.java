@@ -183,4 +183,9 @@ public class MapGeometryUtils {
         return  Math.toDegrees(Math.atan2(det, dot));
     }
 
+    public static float getDuration (double distance)
+    {
+        return (float)((distance*1000)/1.4f);
+    }
+
 }

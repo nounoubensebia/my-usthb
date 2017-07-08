@@ -1,5 +1,9 @@
 package com.example.nouno.locateme.Data;
 
+import com.example.nouno.locateme.Utils.MapGeometryUtils;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 /**
@@ -53,6 +57,17 @@ public class NavigationInstruction {
 
         }
         return s;
+    }
+    public float getDuration()
+    {
+        return MapGeometryUtils.getDuration(distance);
+    }
+
+    public String getDurationString ()
+    {
+        NumberFormat nf = new DecimalFormat("0.#");
+        String s = nf.format(getDuration()/60);
+        return s+" min";
     }
 
 

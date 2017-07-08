@@ -1,6 +1,7 @@
 package com.example.nouno.locateme.Data;
 
 import com.example.nouno.locateme.Djikstra.Graph;
+import com.example.nouno.locateme.Utils.MapGeometryUtils;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -41,14 +42,12 @@ public class Path {
     }
 
     public float getDuration() {
-        return (distance*1000)/1.4f;
+        return MapGeometryUtils.getDuration(distance);
     }
 
     public String getDistanceString ()
     {
-        //NumberFormat nf = new DecimalFormat("0.#");
-        //String s = nf.format(distance*1000);
-        return (int)(distance*1000)+" metres";
+       return (int)(distance*1000)+" metres";
     }
 
     public String getDurationString ()
