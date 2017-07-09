@@ -13,6 +13,7 @@
         android:orientation="vertical"
         android:layout_gravity="bottom"
         android:layout_height="match_parent">
+
         <com.mapbox.mapboxsdk.maps.MapView
             android:layout_weight="1"
             android:id="@+id/mapView"
@@ -55,5 +56,6 @@
 
 
     </LinearLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.Place;
@@ -24,14 +26,34 @@ public class SetMarkerActivity extends AppCompatActivity {
     private Marker marker;
     private Coordinate selectedPlace;
     public static final int RESULT_OK = 1;
-
+    private TextView myPositionText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_marker);
         mConfirmButton = (Button) findViewById(R.id.confirm_button);
+        myPositionText = (TextView) findViewById(R.id.text_my_position);
         createMap(savedInstanceState);
+        myPositionText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Coordinate myLocation;
+                if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
+                {
+                myLocation = new Coordinate(mCustomMapView.getMapboxMap().getMyLocation().getLatitude(),
+                        mCustomMapView.getMapboxMap().getMyLocation().getLongitude());
 
+                    if (myLocation.isInsideCampus())
+                    {
+                        mCustomMapView.animateCamera(myLocation,18);
+                    }
+                    else
+                    {
+                        Toast.makeText(SetMarkerActivity.this,"Vous etes en dehors du campus",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
     }
 
     private void createMap(Bundle savedInstanceState) {
@@ -54,12 +76,15 @@ public class SetMarkerActivity extends AppCompatActivity {
                 if (bundle.containsKey("departure"))
                 {
                     Place departure = Place.fromJson(bundle.getString("departure"));
+                    //if (!departure.isMyLocation())
                     mCustomMapView.drawMarker(departure.getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
                     mCustomMapView.moveCamera(departure.getCoordinate());
                 }
                 if (bundle.containsKey("destination"))
                 {
+
                     Place departure = Place.fromJson(bundle.getString("destination"));
+                    if (!departure.isUserLocation())
                     mCustomMapView.drawMarker(departure.getCoordinate(),"Lieu de départ",R.drawable.ic_marker_red_24dp);
                     mCustomMapView.moveCamera(departure.getCoordinate());
                 }
@@ -91,7 +116,7 @@ public class SetMarkerActivity extends AppCompatActivity {
 
     private void startAskingActivity (Coordinate coordinate)
     {
-        Place place = new Place("Prés de la faculté de chimie",coordinate);
+        Place place = new Place("Prés de la faculté de chimie",coordinate,false);
         Intent date = new Intent();
         date.putExtra("place",place.toJson());
         setResult(RESULT_OK,date);

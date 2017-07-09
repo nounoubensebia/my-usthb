@@ -72,6 +72,7 @@ public class NavigationActivity extends AppCompatActivity {
 
                 mapboxMap.setMyLocationEnabled(true);
                 customMapView = new CustomMapView(mapboxMap,mMapView);
+
                 intiMap();
 
             }
@@ -83,9 +84,11 @@ public class NavigationActivity extends AppCompatActivity {
         navigationInstructions = mPath.getGraph().getNavigationInstructions(customMapView.getMapboxMap().getProjection());
         customMapView.moveCamera(mPath.getGraph(),150);
         customMapView.drawPolyline(mPath.getGraph());
-        customMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
-        customMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destincation",R.drawable.ic_marker_red_24dp);
 
+        customMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
+
+        customMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destincation",R.drawable.ic_marker_red_24dp);
+        customMapView.getMapboxMap().setMyLocationEnabled(false);
         populateListView();
     }
 

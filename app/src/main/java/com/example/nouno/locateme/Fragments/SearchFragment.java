@@ -234,7 +234,7 @@ public class SearchFragment extends Fragment {
             double latitude = mMapboxMap.getMyLocation().getLatitude();
             double longitude = mMapboxMap.getMyLocation().getLongitude();
             Coordinate c = new Coordinate(latitude,longitude);
-            mUserLocation = new Place("label",c);
+            //mUserLocation = new Place("label",c);
         }
 
 
@@ -331,7 +331,7 @@ public class SearchFragment extends Fragment {
                         mCalculateButton.setVisibility(View.VISIBLE);
                         changeState(STATE_PATH_SET);
                     }
-                    mPath.setSource(new Place("Prés de",coordinate));
+                    //mPath.setSource(new Place("Prés de",coordinate));
                     mDepartureText.setText("Prés de");
                 }
                 else
@@ -340,7 +340,7 @@ public class SearchFragment extends Fragment {
                     {
                         removeMarker(mPath.getDestination().getCoordinate());
                     }
-                    mPath.setDestination(new Place("Prés de",coordinate));
+                    //mPath.setDestination(new Place("Prés de",coordinate));
                     mDestinationText.setText("Prés de");
                     drawMarker(coordinate,"Destination",R.drawable.ic_marker_red_24dp);
                     if (mPath.getSource()!=null)

@@ -13,10 +13,11 @@ public class Place {
 
     private String label;
     private Coordinate coordinate;
-
-    public Place(String label, Coordinate coordinate) {
+    private boolean isUserLocation;
+    public Place(String label, Coordinate coordinate,boolean isUserLocation) {
         this.label = label;
         this.coordinate = coordinate;
+        this.isUserLocation = isUserLocation;
     }
 
     public String getLabel() {
@@ -46,13 +47,12 @@ public class Place {
         Gson gson = new Gson();
         return gson.fromJson(json,Place.class);
     }
-    public boolean isInsideCampus ()
-    {
-        //TODO handle too far from road
 
-        return  (coordinate.getLatitude()<=NORTH_WEST_CAMPUS_BOUND.getLatitude()&&
-                coordinate.getLatitude()>=SOUTH_EAST_CAMPUS_BOUND.getLatitude()&&
-                coordinate.getLongitude()>=NORTH_WEST_CAMPUS_BOUND.getLongitude()&&
-                coordinate.getLongitude()<=SOUTH_EAST_CAMPUS_BOUND.getLongitude());
+    public boolean isUserLocation() {
+        return isUserLocation;
+    }
+
+    public void setUserLocation(boolean userLocation) {
+        isUserLocation = userLocation;
     }
 }

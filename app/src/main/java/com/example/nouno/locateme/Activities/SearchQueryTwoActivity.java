@@ -16,12 +16,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
-import com.example.nouno.locateme.Djikstra.Edge;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.R;
@@ -74,6 +74,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     public static final int STATE_PATH_CALCULATED = 2;
     private ArrayList<NavigationInstruction> navigationInstructions;
     private boolean keyboardShown;
+    private TextView useCurrentLocationText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +183,34 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             }
         });
         departureEditText.requestFocus();
+        useCurrentLocationText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
+                    {
+                    Coordinate coordinate = new Coordinate(mCustomMapView.getMapboxMap().getMyLocation().getLatitude(),
+                            mCustomMapView.getMapboxMap().getMyLocation().getLongitude());
+                    if (coordinate.isInsideCampus())
+                    {
+                        if (departureEditText.hasFocus())
+                        {
+                            setDeparture(new Place("Ma position",coordinate,true));
+                        }
+                        else {
+                            if (destinationEditText.hasFocus()) {
+                                setDestination(new Place("Ma position", coordinate,true));
+                            }
+                        }
+                        updateUiState(state,true,true);
+                    }
+                    else
+                    {
+                        Toast.makeText(SearchQueryTwoActivity.this,"Vous ne pouvez pas utiliser votre position" +
+                                "vous etes en dehors du campus",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
     }
 
 
@@ -201,6 +230,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         scrollView = findViewById(R.id.scrollView);
         distancedurationText = (TextView)findViewById(R.id.text_duration_distance);
         arrivalTimeText = (TextView)findViewById(R.id.text_arrival_time);
+        useCurrentLocationText = (TextView)findViewById(R.id.text_use_current_location);
     }
 
 
@@ -328,6 +358,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 mapboxMap.setLatLngBoundsForCameraTarget(builder.build());
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
                 mapboxMap.getUiSettings().setAllGesturesEnabled(true);
+                mapboxMap.setMyLocationEnabled(true);
+
             }
         });
     }
@@ -423,7 +455,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            scrollView.setVisibility(View.GONE);
+                            scrollView.setVisibility(View.VISIBLE);
                         }
                     },250);
                 }
@@ -542,7 +574,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             targetFixed = false;
             mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
             mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
-            mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
+
+                mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
             ArrayList<Coordinate> boundsCoordinates = new ArrayList<>();
 
             final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());

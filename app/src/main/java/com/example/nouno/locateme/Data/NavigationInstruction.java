@@ -54,6 +54,9 @@ public class NavigationInstruction {
                 break;
             case DIRECTION_RIGHT :
                 s+="puis tourner à droite";
+                break;
+            default :
+                s+="Pour atteindre votre destination";
 
         }
         return s;

@@ -16,6 +16,19 @@
         app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10"
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp" />
+    <TextView
+        android:elevation="4dp"
+        android:id="@+id/text_my_position"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="16dp"
+        android:text="Ma position"
+        android:drawablePadding="4dp"
+        android:gravity="center"
+        android:drawableRight="@drawable/ic_near_me_black_24dp"
+        android:textColor="@color/backgroundColor"
+        android:background="@drawable/rounded_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <Button
         android:elevation="4dp"
         android:id="@+id/confirm_button"
@@ -35,5 +48,6 @@
         android:paddingRight="8dp"
         android:textColor="#FFF"
         android:background="@color/backgroundColor"/>
+
 
 </android.support.design.widget.CoordinatorLayout>

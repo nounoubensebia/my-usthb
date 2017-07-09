@@ -107,6 +107,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/text_use_current_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="8dp"
@@ -178,14 +179,14 @@
                     android:layout_height="wrap_content">
                     <TextView
 
-                        android:text="Faculté de Physique"
+                        android:text="Salle 228"
                         android:textSize="20sp"
                         android:textColor="@color/backgroundColor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
                         android:id="@+id/smallLabel"
-                        android:text="Salle 228"
+                        android:text="Faculté de physique"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
@@ -228,13 +229,13 @@
                     android:layout_height="wrap_content">
                     <TextView
 
-                        android:text="Département d'informatique"
+                        android:text="Salle 228"
                         android:textSize="20sp"
                         android:textColor="@color/backgroundColor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
-                        android:text="Salle 228"
+                        android:text="Département d'informatique"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
