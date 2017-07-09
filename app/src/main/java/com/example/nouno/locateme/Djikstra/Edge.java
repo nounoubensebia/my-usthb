@@ -78,4 +78,14 @@ public class Edge  {
         coordinates.add(this.coordinates.get(this.coordinates.size()-1));
         return coordinates;
     }
+
+    public static  ArrayList<Coordinate> getPolyline (ArrayList<Edge> edges)
+    {
+        ArrayList<Coordinate> coordinates = new ArrayList<>();
+        for (Edge e:edges)
+        {
+            coordinates.addAll(e.getCoordinates());
+        }
+        return coordinates;
+    }
 }

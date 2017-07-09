@@ -18,14 +18,15 @@ public class NavigationInstruction {
 
     private int direction;
     private double distance;
+    private int startOrder;
+    private int endOrder;
 
-    private ArrayList<Coordinate> polyline;
 
-    public NavigationInstruction(int direction, double distance,ArrayList<Coordinate> polyline) {
+    public NavigationInstruction(int direction, double distance, int startOrder,int endOrder) {
         this.direction = direction;
         this.distance = distance;
-
-        this.polyline = polyline;
+        this.startOrder = startOrder;
+        this.endOrder = endOrder;
     }
 
     public int getDirection() {
@@ -46,17 +47,17 @@ public class NavigationInstruction {
 
     public String getInstructionString ()
     {
-        String s = "Marcher "+(int)(distance*1000)+ " métres ";
+        String s = "Aprés "+(int)(distance*1000)+ " mètres de marche ";
         switch (direction)
         {
             case DIRECTION_LEFT :
-                s+="puis tourner à gauche";
+                s+="tourner à gauche";
                 break;
             case DIRECTION_RIGHT :
-                s+="puis tourner à droite";
+                s+="tourner à droite";
                 break;
             default :
-                s+="Pour atteindre votre destination";
+                s="Votre destination se trouve à "+(int)(distance*1000)+ " mètres";
 
         }
         return s;
@@ -73,13 +74,19 @@ public class NavigationInstruction {
         return s+" min";
     }
 
-
-
-    public ArrayList<Coordinate> getPolyline() {
-        return polyline;
+    public int getStartOrder() {
+        return startOrder;
     }
 
-    public void setPolyline(ArrayList<Coordinate> polyline) {
-        this.polyline = polyline;
+    public void setStartOrder(int startOrder) {
+        this.startOrder = startOrder;
+    }
+
+    public int getEndOrder() {
+        return endOrder;
+    }
+
+    public void setEndOrder(int endOrder) {
+        this.endOrder = endOrder;
     }
 }

@@ -122,4 +122,40 @@ public class SetMarkerActivity extends AppCompatActivity {
         setResult(RESULT_OK,date);
         finish();
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onPause();
+    }
+
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onResume();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onLowMemory();
+    }
 }

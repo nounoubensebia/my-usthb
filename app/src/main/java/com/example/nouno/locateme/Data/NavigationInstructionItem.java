@@ -8,8 +8,9 @@ import java.util.ArrayList;
 
 public class NavigationInstructionItem extends NavigationInstruction {
     private boolean isSelected;
-    public NavigationInstructionItem(int direction, double distance, ArrayList<Coordinate> polyline,boolean isSelected) {
-        super(direction, distance,polyline);
+
+    public NavigationInstructionItem(int direction, double distance, int startOrder, int endOrder, boolean isSelected) {
+        super(direction, distance, startOrder, endOrder);
         this.isSelected = isSelected;
     }
 
