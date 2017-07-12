@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 
@@ -183,7 +184,23 @@ public class CustomMapView  {
             latLngBoundsBulder.include(c.getMapBoxLatLng());
         }
         LatLngBounds latLngBounds = latLngBoundsBulder.build();
+
+
         mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,padding));
+    }
+
+    public void easeCamera (ArrayList<Coordinate> coordinates,int padding,int duration)
+    {
+        LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
+        for (Coordinate c:coordinates)
+        {
+            latLngBoundsBulder.include(c.getMapBoxLatLng());
+        }
+        LatLngBounds latLngBounds = latLngBoundsBulder.build();
+
+        CameraPosition cameraPosition = mapboxMap.getCameraForLatLngBounds(latLngBounds,new int[4]);
+
+        mapboxMap.easeCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,padding),duration);
     }
 
     public void moveCamera (Graph graph,int padding)
@@ -212,6 +229,34 @@ public class CustomMapView  {
         }
         LatLngBounds latLngBounds = latLngBoundsBulder.build();
         mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,padding));
+    }
+
+   public void animateCamera (final float bearing)
+   {
+       mapboxMap.animateCamera(new CameraUpdate() {
+           @Nullable
+           @Override
+           public CameraPosition getCameraPosition(@NonNull MapboxMap mapboxMap) {
+               CameraPosition.Builder builder = new CameraPosition.Builder();
+               builder.bearing(bearing);
+               builder.target(mapboxMap.getCameraPosition().target);
+               return builder.build();
+           }
+       });
+
+   }
+
+    public void moveCamera (final float bearing)
+    {
+        mapboxMap.moveCamera(new CameraUpdate() {
+            @Nullable
+            @Override
+            public CameraPosition getCameraPosition(@NonNull MapboxMap mapboxMap) {
+                CameraPosition.Builder builder = new CameraPosition.Builder();
+                builder.bearing(bearing);
+                return builder.build();
+            }
+        });
     }
 
     public boolean isPointVisible (Coordinate coordinate)

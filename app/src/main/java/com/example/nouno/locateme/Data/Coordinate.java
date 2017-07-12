@@ -1,5 +1,7 @@
 package com.example.nouno.locateme.Data;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
@@ -86,5 +88,24 @@ public class Coordinate {
                 this.getLatitude()>=SOUTH_EAST_CAMPUS_BOUND.getLatitude()&&
                 this.getLongitude()>=NORTH_WEST_CAMPUS_BOUND.getLongitude()&&
                 this.getLongitude()<=SOUTH_EAST_CAMPUS_BOUND.getLongitude());
+    }
+
+    public float bearingTo(Coordinate coordinate)
+    {
+        Location loc1 = new Location("");
+        Location loc2 = new Location("");
+        loc1.setLatitude(this.latitude);
+        loc1.setLongitude(this.longitude);
+        loc2.setLongitude(coordinate.longitude);
+        loc2.setLatitude(coordinate.latitude);
+        return loc1.bearingTo(loc2);
+    }
+
+    public float getBearing ()
+    {
+        Location loc1 = new Location("");
+        loc1.setLatitude(this.latitude);
+        loc1.setLongitude(this.longitude);
+        return loc1.getBearing();
     }
 }

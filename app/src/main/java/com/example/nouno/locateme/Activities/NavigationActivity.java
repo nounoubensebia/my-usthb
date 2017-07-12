@@ -22,6 +22,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 public class NavigationActivity extends AppCompatActivity {
     private ListView listView;
@@ -34,7 +35,7 @@ public class NavigationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
-        listView = (ListView)findViewById(R.id.list);
+        getViews();
         selectedPolylines = new ArrayList<>();
         createMap(savedInstanceState);
         getIntentInfo();
@@ -75,6 +76,12 @@ public class NavigationActivity extends AppCompatActivity {
         });
     }
 
+    private void getViews ()
+    {
+        listView = (ListView)findViewById(R.id.list);
+        
+    }
+
     private void intiMap ()
     {
         navigationInstructions = mPath.getGraph().getNavigationInstructions(mCustomMapView.getMapboxMap().getProjection());
@@ -85,6 +92,8 @@ public class NavigationActivity extends AppCompatActivity {
 
         mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destination",R.drawable.ic_marker_red_24dp);
         mCustomMapView.getMapboxMap().setMyLocationEnabled(false);
+        mCustomMapView.getMapboxMap().getUiSettings().setCompassEnabled(true);
+        mCustomMapView.getMapboxMap().getUiSettings().setCompassFadeFacingNorth(false);
         populateListView();
     }
 
@@ -127,11 +136,12 @@ public class NavigationActivity extends AppCompatActivity {
                     ArrayList<Edge> previousEdges = mPath.getGraph().getEdges(0,navigationInstructionItem.getStartOrder()-1);
                     ArrayList<Edge> currentEdges = mPath.getGraph().getEdges(navigationInstructionItem.getStartOrder(),navigationInstructionItem.getEndOrder());
                     ArrayList<Coordinate> previousPolyline = Edge.getPolyline(previousEdges);
-                    ArrayList<Coordinate> currentPolyline = Edge.getPolyline(currentEdges);
+                    final ArrayList<Coordinate> currentPolyline = Edge.getPolyline(currentEdges);
                     //if (previousPolyline.size()>0)
                     //selectedPolylines.add(mCustomMapView.drawPolyline(previousPolyline,"#0078d7"));
                     selectedPolylines.add(mCustomMapView.drawPolyline(currentPolyline,"#37AB30"));
                     mCustomMapView.animateCamera(currentPolyline,150);
+
                 }
                 else
                 {
