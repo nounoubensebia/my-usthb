@@ -8,15 +8,9 @@
     android:animateLayoutChanges="true"
     tools:context="com.example.nouno.locateme.Activities.NavigationActivity">
 
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/mapView"
 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
 
-    </com.mapbox.mapboxsdk.maps.MapView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,9 +47,18 @@
 
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="0dp"></LinearLayout>
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/mapView"
+
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
+        </com.mapbox.mapboxsdk.maps.MapView>
         <!--android:layout_height="1dp"
             android:layout_weight="1.2"-->
         <LinearLayout
