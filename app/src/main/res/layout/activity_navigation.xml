@@ -8,7 +8,15 @@
     android:animateLayoutChanges="true"
     tools:context="com.example.nouno.locateme.Activities.NavigationActivity">
 
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapView"
 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
+
+    </com.mapbox.mapboxsdk.maps.MapView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,6 +24,7 @@
         android:layout_gravity="bottom"
         android:orientation="vertical">
         <LinearLayout
+
             android:id="@+id/layout_direction"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
@@ -42,27 +51,27 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <com.mapbox.mapboxsdk.maps.MapView
-            android:id="@+id/mapView"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
             android:layout_weight="1"
-            app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
-
-        </com.mapbox.mapboxsdk.maps.MapView>
-
+            android:layout_height="0dp"></LinearLayout>
+        <!--android:layout_height="1dp"
+            android:layout_weight="1.2"-->
         <LinearLayout
             android:id="@+id/layout_path_instructions"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_weight="1.2"
-            tools:layout_weight="0"
+            android:layout_weight="0"
+            android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            tools:layout_height="wrap_content"
             android:background="#FFF"
             android:orientation="vertical">
 
             <LinearLayout
+                android:elevation="4dp"
+                android:background="#FFF"
+                android:visibility="visible"
+                android:id="@+id/layout_path_duration_distance"
                 android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
@@ -108,6 +117,7 @@
                     android:textSize="16sp" />
 
                 <ImageView
+                    android:id="@+id/button_show_path_instructions_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center"

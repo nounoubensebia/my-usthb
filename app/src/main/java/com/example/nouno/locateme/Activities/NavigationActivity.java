@@ -1,10 +1,14 @@
 package com.example.nouno.locateme.Activities;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.NavigationInstruction;
@@ -22,7 +26,6 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
 public class NavigationActivity extends AppCompatActivity {
     private ListView listView;
@@ -30,7 +33,14 @@ public class NavigationActivity extends AppCompatActivity {
     private ArrayList<NavigationInstructionItem> navigationInstructionItems;
     private ArrayList<Polyline> selectedPolylines = null;
     private CustomMapView mCustomMapView;
+    private View pathInstructionsLayout;
+    private View pathDuraitonDistanceLayout;
+    private TextView pathTitleText;
+    private View directionLayout;
     private Path mPath;
+    private View showPathInstructionsListButton;
+    private boolean showPathInstructionsList = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +49,13 @@ public class NavigationActivity extends AppCompatActivity {
         selectedPolylines = new ArrayList<>();
         createMap(savedInstanceState);
         getIntentInfo();
-
+        showPathInstructionsListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeState(!showPathInstructionsList);
+                showPathInstructionsList = !showPathInstructionsList;
+            }
+        });
 
     }
 
@@ -70,7 +86,7 @@ public class NavigationActivity extends AppCompatActivity {
                 mapboxMap.setMyLocationEnabled(true);
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
 
-                intiMap();
+                intiMapPathInstructionsList();
 
             }
         });
@@ -79,10 +95,59 @@ public class NavigationActivity extends AppCompatActivity {
     private void getViews ()
     {
         listView = (ListView)findViewById(R.id.list);
-        
+        pathInstructionsLayout = findViewById(R.id.layout_path_instructions);
+        pathDuraitonDistanceLayout = findViewById(R.id.layout_path_duration_distance);
+        pathTitleText = (TextView) findViewById(R.id.text_path);
+        directionLayout = findViewById(R.id.layout_direction);
+        showPathInstructionsListButton = findViewById(R.id.button_show_path_instructions_list);
     }
 
-    private void intiMap ()
+    private void changeInstructionsLayoutSettings (boolean showPathList)
+    {
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) pathInstructionsLayout.getLayoutParams();
+        if (!showPathList)
+        {
+            layoutParams.weight = 0;
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        }
+        else
+        {
+            layoutParams.weight = 1.2f;
+            layoutParams.height = 0;
+        }
+        pathInstructionsLayout.setLayoutParams(layoutParams);
+    }
+
+    private void changeState (boolean showPathInstructionsList) {
+        Handler handler = new Handler();
+        changeInstructionsLayoutSettings(showPathInstructionsList);
+        //pathDuraitonDistanceLayout.setVisibility(View.GONE);
+        directionLayout.setVisibility(View.GONE);
+        if (showPathInstructionsList)
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //pathTitleText.setVisibility(View.VISIBLE);
+               populateListView();
+            }
+        },250);
+        else
+        {
+            listView.setVisibility(View.GONE);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    directionLayout.setVisibility(View.VISIBLE);
+                    //pathDuraitonDistanceLayout.setVisibility(View.VISIBLE);
+                    //directionLayout.setVisibility(View.VISIBLE);
+                }
+            },250);
+        }
+    }
+
+
+
+    private void intiMapPathInstructionsList()
     {
         navigationInstructions = mPath.getGraph().getNavigationInstructions(mCustomMapView.getMapboxMap().getProjection());
         mCustomMapView.moveCamera(mPath.getGraph(),150);
@@ -94,11 +159,12 @@ public class NavigationActivity extends AppCompatActivity {
         mCustomMapView.getMapboxMap().setMyLocationEnabled(false);
         mCustomMapView.getMapboxMap().getUiSettings().setCompassEnabled(true);
         mCustomMapView.getMapboxMap().getUiSettings().setCompassFadeFacingNorth(false);
-        populateListView();
+        //populateListView();
     }
 
     private void populateListView ()
     {
+        listView.setVisibility(View.VISIBLE);
         navigationInstructionItems = new ArrayList<NavigationInstructionItem>();
         for (NavigationInstruction navigationInstruction : navigationInstructions)
         {
