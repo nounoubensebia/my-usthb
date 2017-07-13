@@ -263,7 +263,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         {
             state = STATE_PATH_INITIALIZED;
         }
-        departure.setLabel("Prés de la faculté de chimie");
+        //departure.setLabel("Prés de la faculté de chimie");
         mPath.setSource(departure);
         departureEditText.setText(departure.getLabel());
         departureEditText.clearFocus();
@@ -301,7 +301,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         {
             state = STATE_PATH_INITIALIZED;
         }
-        destination.setLabel("Prés de la faculté de mathématiques");
+        //destination.setLabel("Prés de la faculté de mathématiques");
         mPath.setDestination(destination);
         destinationEditText.clearFocus();
         destinationEditText.setFocusableInTouchMode(false);

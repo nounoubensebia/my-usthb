@@ -14,6 +14,8 @@ import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.R;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.constants.MyBearingTracking;
+import com.mapbox.mapboxsdk.constants.MyLocationTracking;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -58,6 +60,8 @@ public class MapActivity extends AppCompatActivity {
                 mMapboxMap = mapboxMap;
                 mMapboxMap.setMyLocationEnabled(true);
                 mMapboxMap.setLatLngBoundsForCameraTarget(builder.build());
+                //mMapboxMap.getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
+                //mMapboxMap.getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
                 //getGraph();
                 mMapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
                     @Override

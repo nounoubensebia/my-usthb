@@ -141,6 +141,17 @@ public class CustomMapView  {
         });
     }
 
+    public void animateCamera (final Coordinate coordinate, final int zoom, final double bearing)
+    {
+        mapboxMap.animateCamera(new CameraUpdate() {
+            @Override
+            public CameraPosition getCameraPosition(@NonNull MapboxMap mapboxMap) {
+                CameraPosition.Builder builder1 = new CameraPosition.Builder().target(coordinate.getMapBoxLatLng()).zoom(zoom).bearing(bearing);
+                return builder1.build();
+            }
+        });
+    }
+
     public void moveCamera (final Coordinate coordinate, final double zoom)
     {
         //mapboxMap.setCameraPosition(new CameraPosition.Builder().target(coordinate.getMapBoxLatLng()).zoom(zoom).build());
@@ -188,6 +199,19 @@ public class CustomMapView  {
 
         mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,padding));
     }
+    public void animateCamera (ArrayList<Coordinate> coordinates,int paddingLeft,int paddingTop,int paddingRight,int paddingBottom)
+    {
+        LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
+        for (Coordinate c:coordinates)
+        {
+            latLngBoundsBulder.include(c.getMapBoxLatLng());
+        }
+        LatLngBounds latLngBounds = latLngBoundsBulder.build();
+
+
+        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,paddingLeft,paddingTop,paddingRight,paddingBottom));
+    }
+
 
     public void easeCamera (ArrayList<Coordinate> coordinates,int padding,int duration)
     {
@@ -229,6 +253,21 @@ public class CustomMapView  {
         }
         LatLngBounds latLngBounds = latLngBoundsBulder.build();
         mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,padding));
+    }
+
+    public void animateCamera (Graph graph,int paddingLeft,int paddingTop,int paddingRight,int paddingBottom)
+    {
+        LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
+        for (Edge e:graph.getEdges())
+        {
+            for (Coordinate coordinate : e.getCoordinates())
+            {
+                latLngBoundsBulder.include(coordinate.getMapBoxLatLng());
+            }
+        }
+        LatLngBounds latLngBounds = latLngBoundsBulder.build();
+        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,paddingLeft,paddingTop,
+                paddingRight,paddingBottom));
     }
 
    public void animateCamera (final float bearing)

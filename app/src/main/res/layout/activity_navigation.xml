@@ -2,23 +2,32 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_coordinator_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:animateLayoutChanges="true"
     tools:context="com.example.nouno.locateme.Activities.NavigationActivity">
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapView"
 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
+    </com.mapbox.mapboxsdk.maps.MapView>
 
 
 
     <LinearLayout
+        android:id="@+id/layout_linear_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:layout_gravity="bottom"
         android:orientation="vertical">
         <LinearLayout
-
+            android:visibility="visible"
             android:id="@+id/layout_direction"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
@@ -36,6 +45,7 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"/>
             <TextView
+                android:id="@+id/text_instruction"
                 android:layout_gravity="center"
                 android:textSize="20sp"
                 android:layout_marginLeft="4dp"
@@ -46,19 +56,26 @@
         </LinearLayout>
 
 
-        <LinearLayout
-            android:visibility="gone"
+        <android.support.design.widget.CoordinatorLayout
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:layout_height="0dp"></LinearLayout>
-        <com.mapbox.mapboxsdk.maps.MapView
-            android:id="@+id/mapView"
+            android:layout_height="0dp">
+            <TextView
+                android:elevation="4dp"
+                android:id="@+id/text_my_position"
+                android:layout_gravity="bottom|right"
+               android:layout_margin="16dp"
+                android:text="Centrer"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:drawableRight="@drawable/ic_near_me_black_24dp"
+                android:textColor="@color/backgroundColor"
+                android:background="@drawable/rounded_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </android.support.design.widget.CoordinatorLayout>
 
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
-        </com.mapbox.mapboxsdk.maps.MapView>
         <!--android:layout_height="1dp"
             android:layout_weight="1.2"-->
         <LinearLayout
@@ -71,41 +88,81 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:elevation="4dp"
+
                 android:background="#FFF"
                 android:visibility="visible"
-                android:id="@+id/layout_path_duration_distance"
-                android:paddingBottom="16dp"
-                android:paddingLeft="16dp"
-                android:paddingTop="16dp"
+
+
+
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
                 android:gravity="center|start"
                 android:orientation="horizontal">
                 <LinearLayout
+                    android:visibility="visible"
+                    android:id="@+id/layout_path_duration_distance"
                     android:animateLayoutChanges="true"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_weight="1"
                     android:layout_height="wrap_content">
-                <TextView
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:textSize="20sp"
-                    android:text="12 Métres"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                    <TextView
-                        android:gravity="center"
+                    <LinearLayout
+                        android:padding="8dp"
+                        android:orientation="vertical"
                         android:layout_weight="1"
-                        android:textSize="20sp"
-                        android:text="15 minutes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:textColor="@color/backgroundColor"
+                            android:gravity="center"
+                            android:layout_weight="1"
+                            android:textSize="20sp"
+                            android:layout_gravity="center"
+                            android:text="12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textColor="@color/backgroundColor"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_weight="1"
+                            android:textSize="20sp"
+                            android:text="Métres"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:padding="8dp"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:textColor="@color/backgroundColor"
+                            android:gravity="center"
+                            android:layout_weight="1"
+                            android:textSize="20sp"
+                            android:layout_gravity="center"
+                            android:text="15"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textColor="@color/backgroundColor"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_weight="1"
+                            android:textSize="20sp"
+                            android:text="Minutes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <TextView
+                    android:layout_marginLeft="16dp"
                     android:visibility="gone"
                     android:id="@+id/text_path"
                     android:layout_width="0dp"
@@ -118,23 +175,31 @@
                     android:text="Itinéraire"
                     android:textColor="@android:color/holo_red_light"
                     android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/button_show_path_instructions_list"
+                <FrameLayout
+                    android:background="?android:selectableItemBackground"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
                     android:layout_gravity="right|center"
-                    android:layout_marginRight="16dp"
-                    app:srcCompat="@drawable/ic_arrow_down_24dp" />
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/button_show_path_instructions_list"
+                        android:layout_width="wrap_content"
+                        android:rotation="180"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_arrow_down_24dp" />
+                </FrameLayout>
+
             </LinearLayout>
 
             <ListView
+
                 android:visibility="gone"
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FFF"
-                android:elevation="4dp"
+
                 android:listSelector="@android:color/transparent"></ListView>
         </LinearLayout>
 

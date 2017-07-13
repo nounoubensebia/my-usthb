@@ -1,18 +1,24 @@
 package com.example.nouno.locateme.Activities;
 
+import android.location.Location;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.NavigationInstructionItem;
+import com.example.nouno.locateme.Data.Navigator;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Djikstra.Edge;
@@ -20,10 +26,13 @@ import com.example.nouno.locateme.ListAdapters.NavigationItemAdapter;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
 import com.mapbox.mapboxsdk.annotations.Polyline;
+import com.mapbox.mapboxsdk.constants.MyBearingTracking;
+import com.mapbox.mapboxsdk.constants.MyLocationTracking;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.TrackingSettings;
 
 import java.util.ArrayList;
 
@@ -38,6 +47,8 @@ public class NavigationActivity extends AppCompatActivity {
     private TextView pathTitleText;
     private View directionLayout;
     private Path mPath;
+    private Navigator mNavigator;
+    private boolean followUser = true;
     private View showPathInstructionsListButton;
     private boolean showPathInstructionsList = false;
 
@@ -47,15 +58,19 @@ public class NavigationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_navigation);
         getViews();
         selectedPolylines = new ArrayList<>();
-        createMap(savedInstanceState);
         getIntentInfo();
+        createMap(savedInstanceState);
+
         showPathInstructionsListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeState(!showPathInstructionsList);
-                showPathInstructionsList = !showPathInstructionsList;
+
+                    changeState(!showPathInstructionsList);
+                    showPathInstructionsList = !showPathInstructionsList;
+
             }
         });
+        //initNavigationMap();
 
     }
 
@@ -66,6 +81,24 @@ public class NavigationActivity extends AppCompatActivity {
 
     }
 
+    private void initNavigationMap ()
+    {
+
+        navigationInstructionItems = new ArrayList<NavigationInstructionItem>();
+        navigationInstructions = mPath.getGraph().getNavigationInstructions(mCustomMapView.getMapboxMap().getProjection());
+        for (NavigationInstruction navigationInstruction : navigationInstructions)
+        {
+            navigationInstructionItems.add(new NavigationInstructionItem(navigationInstruction.getDirection(),navigationInstruction.getDistance(),navigationInstruction.getStartOrder(),navigationInstruction.getEndOrder(),false));
+        }
+        mNavigator = new Navigator(navigationInstructionItems,mPath.getGraph());
+        mCustomMapView.drawPolyline(mPath.getGraph());
+        mCustomMapView.drawPolyline(mNavigator.getCurrentPolyline(),"#37AB30");
+
+        double bearing = mNavigator.getCurrentPolyline().get(0).bearingTo(mNavigator.getCurrentPolyline().get(1));
+        mCustomMapView.animateCamera(mNavigator.getCurrentPolyline().get(0),18,bearing);
+        mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
+        mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destination",R.drawable.ic_marker_red_24dp);
+    }
     private void createMap(Bundle savedInstanceState) {
 
         final MapView mMapView = (MapView) findViewById(R.id.mapView);
@@ -77,19 +110,57 @@ public class NavigationActivity extends AppCompatActivity {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 builder.include(Place.NORTH_WEST_CAMPUS_BOUND.getMapBoxLatLng());
                 builder.include(Place.SOUTH_EAST_CAMPUS_BOUND.getMapBoxLatLng());
-
                 MapboxMap mMapboxMap = mapboxMap;
-                mMapboxMap.setMyLocationEnabled(true);
                 mMapboxMap.setLatLngBoundsForCameraTarget(builder.build());
-                //getGraph();
-
                 mapboxMap.setMyLocationEnabled(true);
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
+                if (isUserInsideCampus()) {
+                    mCustomMapView.getMapboxMap().getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
+                    //mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
 
-                intiMapPathInstructionsList();
+                    initNavigationMap();
+                    //ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
+                    //coordinates.add(getUserLocation());
+                    //coordinates.add(mNavigator.getCurrentPolyline().get(0));
+                    //mCustomMapView.animateCamera(coordinates,18);
+                }
+                else
+                {
+                    intiMapPathInstructionsList();
+                    changeState(true);
+                    Toast.makeText(NavigationActivity.this,"Vous êtes dehors du campus navigation GPS impossible",Toast.LENGTH_LONG).show();
+                }
+
 
             }
         });
+    }
+
+    private void trackUser ()
+    {
+
+    }
+
+    private Coordinate getUserLocation ()
+    {
+        if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
+        {
+        double latitude = mCustomMapView.getMapboxMap().getMyLocation().getLatitude();
+        double longitude = mCustomMapView.getMapboxMap().getMyLocation().getLongitude();
+        return new Coordinate(latitude,longitude);}
+        return null;
+    }
+
+    private boolean isUserInsideCampus ()
+    {
+        if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
+        {
+            double latitude = mCustomMapView.getMapboxMap().getMyLocation().getLatitude();
+            double longitude = mCustomMapView.getMapboxMap().getMyLocation().getLongitude();
+            Coordinate coordinate = new Coordinate(latitude,longitude);
+            return coordinate.isInsideCampus();
+        }
+        return  false;
     }
 
     private void getViews ()
@@ -121,28 +192,45 @@ public class NavigationActivity extends AppCompatActivity {
     private void changeState (boolean showPathInstructionsList) {
         Handler handler = new Handler();
         changeInstructionsLayoutSettings(showPathInstructionsList);
-        //pathDuraitonDistanceLayout.setVisibility(View.GONE);
+        showPathInstructionsListButton.clearAnimation();
+        pathDuraitonDistanceLayout.setVisibility(View.GONE);
         directionLayout.setVisibility(View.GONE);
+        Animation animation;
         if (showPathInstructionsList)
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //pathTitleText.setVisibility(View.VISIBLE);
-               populateListView();
+        {
+            if (!isUserInsideCampus())
+            {
+                showPathInstructionsListButton.setVisibility(View.GONE);
             }
-        },250);
+            animation = AnimationUtils.loadAnimation(NavigationActivity.this,R.anim.rotation_from_0_to_180);
+            mCustomMapView.animateCamera(mPath.getGraph(),150,150,150,1000);
+            pathTitleText.setVisibility(View.VISIBLE);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    populateListView();
+                }
+            },250);
+        }
         else
         {
+            pathTitleText.setVisibility(View.GONE);
+            clearSelectedPolylines();
+            animation = AnimationUtils.loadAnimation(NavigationActivity.this,R.anim.rotation_from_180_to_0);
             listView.setVisibility(View.GONE);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    pathDuraitonDistanceLayout.setVisibility(View.VISIBLE);
                     directionLayout.setVisibility(View.VISIBLE);
-                    //pathDuraitonDistanceLayout.setVisibility(View.VISIBLE);
-                    //directionLayout.setVisibility(View.VISIBLE);
+
                 }
             },250);
         }
+
+        animation.setFillAfter(true);
+        showPathInstructionsListButton.startAnimation(animation);
     }
 
 
@@ -156,7 +244,7 @@ public class NavigationActivity extends AppCompatActivity {
         mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
 
         mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destination",R.drawable.ic_marker_red_24dp);
-        mCustomMapView.getMapboxMap().setMyLocationEnabled(false);
+       // mCustomMapView.getMapboxMap().setMyLocationEnabled(false);
         mCustomMapView.getMapboxMap().getUiSettings().setCompassEnabled(true);
         mCustomMapView.getMapboxMap().getUiSettings().setCompassFadeFacingNorth(false);
         //populateListView();
@@ -179,11 +267,7 @@ public class NavigationActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int selectedPosition = -1;
                 int pos = 0;
-                if (selectedPolylines.size()>0)
-                {
-                    for (Polyline polyline :selectedPolylines)
-                    mCustomMapView.getMapboxMap().removeAnnotation(polyline);
-                }
+                clearSelectedPolylines();
                 for (NavigationInstructionItem navigationInstruction:navigationInstructionItems)
                 {
 
@@ -206,12 +290,12 @@ public class NavigationActivity extends AppCompatActivity {
                     //if (previousPolyline.size()>0)
                     //selectedPolylines.add(mCustomMapView.drawPolyline(previousPolyline,"#0078d7"));
                     selectedPolylines.add(mCustomMapView.drawPolyline(currentPolyline,"#37AB30"));
-                    mCustomMapView.animateCamera(currentPolyline,150);
+                    mCustomMapView.animateCamera(currentPolyline,150,150,150,1000);
 
                 }
                 else
                 {
-                    mCustomMapView.animateCamera(mPath.getGraph(),150);
+                    mCustomMapView.animateCamera(mPath.getGraph(),150,150,150,1000);
                     navigationInstructionItems.get(selectedPosition).setSelected(false);
                 }
 
@@ -223,6 +307,15 @@ public class NavigationActivity extends AppCompatActivity {
         });
         listView.setDividerHeight(0);
     }
+    private void clearSelectedPolylines()
+    {
+        if (selectedPolylines!=null&&selectedPolylines.size()>0)
+        {
+            for (Polyline polyline :selectedPolylines)
+                mCustomMapView.getMapboxMap().removeAnnotation(polyline);
+        }
+    }
+
 
     @Override
     protected void onPause() {
