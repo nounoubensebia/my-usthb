@@ -152,6 +152,18 @@ public class CustomMapView  {
         });
     }
 
+
+    public void moveCamera (final Coordinate coordinate, final int zoom, final double bearing)
+    {
+        mapboxMap.moveCamera(new CameraUpdate() {
+            @Override
+            public CameraPosition getCameraPosition(@NonNull MapboxMap mapboxMap) {
+                CameraPosition.Builder builder1 = new CameraPosition.Builder().target(coordinate.getMapBoxLatLng()).zoom(zoom).bearing(bearing);
+                return builder1.build();
+            }
+        });
+    }
+
     public void moveCamera (final Coordinate coordinate, final double zoom)
     {
         //mapboxMap.setCameraPosition(new CameraPosition.Builder().target(coordinate.getMapBoxLatLng()).zoom(zoom).build());

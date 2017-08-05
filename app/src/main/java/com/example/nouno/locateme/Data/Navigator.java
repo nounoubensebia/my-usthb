@@ -62,4 +62,22 @@ public class Navigator {
     {
         return navigationInstructionItems.get(currentItem);
     }
+    public int getRemainingDistance ()
+    {
+        double distance = 0;
+        for (int i=currentItem;i<navigationInstructionItems.size();i++)
+        {
+            distance+=navigationInstructionItems.get(i).getDistance();
+        }
+        return (int)(distance*1000);
+    }
+    public int getRemainingDuration ()
+    {
+        double duration = 0;
+        for (int i=currentItem;i<navigationInstructionItems.size();i++)
+        {
+            duration +=navigationInstructionItems.get(i).getDuration();
+        }
+        return (int)(duration/60);
+    }
 }

@@ -116,7 +116,7 @@ public class SetMarkerActivity extends AppCompatActivity {
 
     private void startAskingActivity (Coordinate coordinate)
     {
-        Place place = new Place("Définie sur la carte",coordinate,false);
+        Place place = new Place("Mon marqueur",coordinate,false);
         Intent date = new Intent();
         date.putExtra("place",place.toJson());
         setResult(RESULT_OK,date);

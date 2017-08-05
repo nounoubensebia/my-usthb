@@ -18,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.nouno.locateme.Data.Bloc;
+import com.example.nouno.locateme.Data.Classroom;
 import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
@@ -75,9 +77,21 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private ArrayList<NavigationInstruction> navigationInstructions;
     private boolean keyboardShown;
     private TextView useCurrentLocationText;
+    private ArrayList<Bloc> blocs;
+
+    private void testBlocks ()
+    {
+        blocs = new ArrayList<>();
+        ArrayList<Classroom> classrooms = new ArrayList<>();
+        classrooms.add(new Classroom("Salle 228","Desc"));
+        blocs.add(new Bloc(null,"Faculté d'informatique",classrooms));
+        blocs.add(new Bloc(null,"Faculté d'életronique",classrooms));
+        blocs.add(new Bloc(null,"Faculté de biologie",classrooms));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        testBlocks();
         getGraph();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_query_two);
@@ -151,6 +165,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 if (hasFocus)
                 {
                     departureEditText.setText("");
+
                 }
             }
         });
@@ -385,7 +400,6 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     @Override
                     public void OnSearchFinish(Graph graph) {
                         updateUiState(STATE_PATH_CALCULATED,false,true);
-
                         state = STATE_PATH_CALCULATED;
                         mPath.setDistance((float) graph.getWeight());
                         distancedurationText.setText(mPath.getDurationString()+" "+mPath.getDistanceString());

@@ -43,4 +43,21 @@ public class Bloc {
     public void setClassrooms(ArrayList<Classroom> classrooms) {
         this.classrooms = classrooms;
     }
+
+    public boolean containsString (String string)
+    {
+        return name.contains(string);
+    }
+    public ArrayList<Classroom> containsClassrooms (String string)
+    {
+        ArrayList<Classroom> classrooms1 = new ArrayList<>();
+        for (Classroom classroom:classrooms)
+        {
+            if (classroom.getName().contains(string))
+            {
+                classrooms1.add(classroom);
+            }
+        }
+        return classrooms1;
+    }
 }

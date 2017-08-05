@@ -403,6 +403,7 @@ public class Graph {
 
 
                 if(angle < 160 && angle >= 20){
+                    Log.e("TAGT",angle+"");
                     double distance = 0;
                     endOrder = i-1;
                     ArrayList<Edge> edges = getEdges(startOrder,endOrder);
@@ -419,6 +420,7 @@ public class Graph {
 
                 };
                 if(angle < -20 && angle >= -160){
+                    Log.e("TAGT",angle+"");
                     double distance = 0;
                     endOrder = i-1;
                     ArrayList<Edge> edges = getEdges(startOrder,endOrder);

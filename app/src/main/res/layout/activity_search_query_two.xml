@@ -91,7 +91,7 @@
     <ScrollView
         android:id="@+id/scrollView"
         android:visibility="visible"
-        tools:visibility="gone"
+        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <LinearLayout
@@ -160,7 +160,6 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_width="match_parent"
-
                 android:orientation="horizontal"
                 android:layout_height="wrap_content">
 
@@ -278,13 +277,13 @@
                     android:layout_height="wrap_content">
                     <TextView
 
-                        android:text="Faculté de mécanique"
+                        android:text="Salle 228"
                         android:textSize="20sp"
                         android:textColor="@color/backgroundColor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
-                        android:text="Salle 228"
+                        android:text="Faculté de mécanique"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView

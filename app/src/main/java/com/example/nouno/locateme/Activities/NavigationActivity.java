@@ -51,6 +51,10 @@ public class NavigationActivity extends AppCompatActivity {
     private boolean followUser = true;
     private View showPathInstructionsListButton;
     private boolean showPathInstructionsList = false;
+    private TextView instructionsText;
+    private TextView distanceText;
+    private TextView durationText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,7 @@ public class NavigationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                    changeState(!showPathInstructionsList);
+                    changeState(!showPathInstructionsList,true);
                     showPathInstructionsList = !showPathInstructionsList;
 
             }
@@ -81,7 +85,7 @@ public class NavigationActivity extends AppCompatActivity {
 
     }
 
-    private void initNavigationMap ()
+    private void initNavigationMap (boolean animate)
     {
 
         navigationInstructionItems = new ArrayList<NavigationInstructionItem>();
@@ -92,12 +96,18 @@ public class NavigationActivity extends AppCompatActivity {
         }
         mNavigator = new Navigator(navigationInstructionItems,mPath.getGraph());
         mCustomMapView.drawPolyline(mPath.getGraph());
-        mCustomMapView.drawPolyline(mNavigator.getCurrentPolyline(),"#37AB30");
+        //mCustomMapView.drawPolyline(mNavigator.getCurrentPolyline(),"#37AB30");
 
         double bearing = mNavigator.getCurrentPolyline().get(0).bearingTo(mNavigator.getCurrentPolyline().get(1));
-        mCustomMapView.animateCamera(mNavigator.getCurrentPolyline().get(0),18,bearing);
+        if (animate)
+            mCustomMapView.animateCamera(mNavigator.getCurrentPolyline().get(0),18,bearing);
+        else
+            mCustomMapView.moveCamera(mNavigator.getCurrentPolyline().get(0),18,bearing);
         mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
         mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destination",R.drawable.ic_marker_red_24dp);
+        instructionsText.setText(mNavigator.getNavigationInstructionItem().getInstructionString());
+        durationText.setText(mNavigator.getRemainingDuration()+"");
+        distanceText.setText(mNavigator.getRemainingDistance()+"");
     }
     private void createMap(Bundle savedInstanceState) {
 
@@ -118,7 +128,7 @@ public class NavigationActivity extends AppCompatActivity {
                     mCustomMapView.getMapboxMap().getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
                     //mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
 
-                    initNavigationMap();
+                    initNavigationMap(false);
                     //ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
                     //coordinates.add(getUserLocation());
                     //coordinates.add(mNavigator.getCurrentPolyline().get(0));
@@ -126,9 +136,9 @@ public class NavigationActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    intiMapPathInstructionsList();
-                    changeState(true);
-                    Toast.makeText(NavigationActivity.this,"Vous êtes dehors du campus navigation GPS impossible",Toast.LENGTH_LONG).show();
+                    intiMapPathInstructionsList(false);
+                    changeState(true,false);
+
                 }
 
 
@@ -171,6 +181,9 @@ public class NavigationActivity extends AppCompatActivity {
         pathTitleText = (TextView) findViewById(R.id.text_path);
         directionLayout = findViewById(R.id.layout_direction);
         showPathInstructionsListButton = findViewById(R.id.button_show_path_instructions_list);
+        distanceText = (TextView)findViewById(R.id.text_distance);
+        durationText = (TextView)findViewById(R.id.text_duration);
+        instructionsText = (TextView)findViewById(R.id.text_instruction);
     }
 
     private void changeInstructionsLayoutSettings (boolean showPathList)
@@ -189,7 +202,7 @@ public class NavigationActivity extends AppCompatActivity {
         pathInstructionsLayout.setLayoutParams(layoutParams);
     }
 
-    private void changeState (boolean showPathInstructionsList) {
+    private void changeState (boolean showPathInstructionsList,boolean animate) {
         Handler handler = new Handler();
         changeInstructionsLayoutSettings(showPathInstructionsList);
         showPathInstructionsListButton.clearAnimation();
@@ -212,33 +225,49 @@ public class NavigationActivity extends AppCompatActivity {
                     populateListView();
                 }
             },250);
+            if (!isUserInsideCampus())
+            {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(NavigationActivity.this,"Vous êtes dehors du campus navigation GPS impossible",Toast.LENGTH_LONG).show();
+                    }
+                },1000);
+            }
+            intiMapPathInstructionsList(animate);
         }
         else
         {
             pathTitleText.setVisibility(View.GONE);
+            pathDuraitonDistanceLayout.setVisibility(View.VISIBLE);
             clearSelectedPolylines();
             animation = AnimationUtils.loadAnimation(NavigationActivity.this,R.anim.rotation_from_180_to_0);
             listView.setVisibility(View.GONE);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    pathDuraitonDistanceLayout.setVisibility(View.VISIBLE);
+
                     directionLayout.setVisibility(View.VISIBLE);
 
                 }
             },250);
+            initNavigationMap(animate);
         }
 
         animation.setFillAfter(true);
         showPathInstructionsListButton.startAnimation(animation);
+
     }
 
 
 
-    private void intiMapPathInstructionsList()
+    private void intiMapPathInstructionsList(boolean animate)
     {
         navigationInstructions = mPath.getGraph().getNavigationInstructions(mCustomMapView.getMapboxMap().getProjection());
-        mCustomMapView.moveCamera(mPath.getGraph(),150);
+        if (!animate)
+            mCustomMapView.moveCamera(mPath.getGraph(),150);
+        else
+            mCustomMapView.animateCamera(mPath.getGraph(),150);
         mCustomMapView.drawPolyline(mPath.getGraph());
 
         mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
