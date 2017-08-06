@@ -1,7 +1,10 @@
 package com.example.nouno.locateme.Data;
 
+import android.util.Log;
+
 import com.example.nouno.locateme.Djikstra.Edge;
 import com.example.nouno.locateme.Djikstra.Graph;
+import com.example.nouno.locateme.Utils.MapGeometryUtils;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -58,6 +61,29 @@ public class Navigator {
         return coordinates;
     }
 
+    public int getItemByUserLocation (Coordinate userLocation)
+    {
+        long id = MapGeometryUtils.findNearestEdgeId(userLocation,graph);
+        int order = 0;
+        for (NavigationInstructionItem navigationInstructionItem:navigationInstructionItems)
+        {
+            for (Edge e:graph.getEdges(navigationInstructionItem.getStartOrder(),navigationInstructionItem.getEndOrder()))
+            {
+                if (e.getId()==id)
+                {
+                    return order;
+                }
+            }
+            order++;
+        }
+        return -1;
+    }
+
+    public void goTo (int item)
+    {
+        currentItem = item;
+    }
+
     public NavigationInstructionItem getNavigationInstructionItem()
     {
         return navigationInstructionItems.get(currentItem);
@@ -79,5 +105,12 @@ public class Navigator {
             duration +=navigationInstructionItems.get(i).getDuration();
         }
         return (int)(duration/60);
+    }
+
+    public boolean atLastInstruction ()
+    {
+        Log.e("ITEM",navigationInstructionItems.size()+"");
+        Log.e("ITEM",currentItem+"");
+        return navigationInstructionItems.size() == (currentItem+1);
     }
 }

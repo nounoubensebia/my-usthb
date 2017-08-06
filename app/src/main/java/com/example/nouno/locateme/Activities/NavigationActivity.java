@@ -1,6 +1,8 @@
 package com.example.nouno.locateme.Activities;
 
+import android.annotation.TargetApi;
 import android.location.Location;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +11,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,7 +34,6 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.TrackingSettings;
 
 import java.util.ArrayList;
 
@@ -54,8 +55,8 @@ public class NavigationActivity extends AppCompatActivity {
     private TextView instructionsText;
     private TextView distanceText;
     private TextView durationText;
-
-
+    private TextView myPositionText;
+    private ImageView instructionImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,13 +69,15 @@ public class NavigationActivity extends AppCompatActivity {
         showPathInstructionsListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                    changeState(!showPathInstructionsList,true);
-                    showPathInstructionsList = !showPathInstructionsList;
+                if (true)
+                    //if (mPath.getSource().isUserLocation())
+                    {
+                        changeState(!showPathInstructionsList,true);
+                        showPathInstructionsList = !showPathInstructionsList;
+                    }
 
             }
         });
-        //initNavigationMap();
 
     }
 
@@ -100,14 +103,15 @@ public class NavigationActivity extends AppCompatActivity {
 
         double bearing = mNavigator.getCurrentPolyline().get(0).bearingTo(mNavigator.getCurrentPolyline().get(1));
         if (animate)
-            mCustomMapView.animateCamera(mNavigator.getCurrentPolyline().get(0),18,bearing);
+            mCustomMapView.animateCamera(getUserLocation(),18,mCustomMapView.getMapboxMap().getMyLocation().getBearing());
         else
-            mCustomMapView.moveCamera(mNavigator.getCurrentPolyline().get(0),18,bearing);
+            mCustomMapView.moveCamera(getUserLocation(),18,mCustomMapView.getMapboxMap().getMyLocation().getBearing());
         mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
         mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destination",R.drawable.ic_marker_red_24dp);
-        instructionsText.setText(mNavigator.getNavigationInstructionItem().getInstructionString());
-        durationText.setText(mNavigator.getRemainingDuration()+"");
-        distanceText.setText(mNavigator.getRemainingDistance()+"");
+        //instructionsText.setText(mNavigator.getNavigationInstructionItem().getInstructionString());
+        //durationText.setText(mNavigator.getRemainingDuration()+"");
+        //distanceText.setText(mNavigator.getRemainingDistance()+"");
+        startTrackingUser();
     }
     private void createMap(Bundle savedInstanceState) {
 
@@ -127,12 +131,17 @@ public class NavigationActivity extends AppCompatActivity {
                 if (isUserInsideCampus()) {
                     mCustomMapView.getMapboxMap().getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
                     //mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
+                    //
+                    // if (mPath.getSource().isUserLocation())
+                    if (true)
+                        initNavigationMap(false);
+                    else
+                    {
+                        changeState(true,false);
+                        Toast.makeText(NavigationActivity.this,"Navigation impossible",Toast.LENGTH_LONG).show();
+                        intiMapPathInstructionsList(false);
+                    }
 
-                    initNavigationMap(false);
-                    //ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
-                    //coordinates.add(getUserLocation());
-                    //coordinates.add(mNavigator.getCurrentPolyline().get(0));
-                    //mCustomMapView.animateCamera(coordinates,18);
                 }
                 else
                 {
@@ -140,14 +149,64 @@ public class NavigationActivity extends AppCompatActivity {
                     changeState(true,false);
 
                 }
+                myPositionText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
+                        mCustomMapView.getMapboxMap().getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
+                    }
+                });
 
 
             }
         });
     }
 
-    private void trackUser ()
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void startTrackingUser()
     {
+        mNavigator.goTo(mNavigator.getItemByUserLocation(getUserLocation()));
+        distanceText.setText(mNavigator.getRemainingDistance()+"");
+        durationText.setText(mNavigator.getRemainingDuration()+"");
+        NavigationInstructionItem navigationInstructionItem = mNavigator.getNavigationInstructionItem();
+        instructionsText.setText(navigationInstructionItem.getInstructionString());
+        if (navigationInstructionItem.getDirection()==NavigationInstruction.DIRECTION_RIGHT)
+            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_subdirectory_arrow_left_white_24dp));
+        if (navigationInstructionItem.getDirection()==NavigationInstruction.DIRECTION_LEFT)
+            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_subdirectory_arrow_right_white_24dp));
+        if (mNavigator.atLastInstruction())
+        {
+            instructionImage.setRotation(0);
+            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_location_white_24dp));
+        }
+        mCustomMapView.getMapboxMap().setOnMyLocationChangeListener(new MapboxMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(@Nullable Location location) {
+                mNavigator.goTo(mNavigator.getItemByUserLocation(new Coordinate(location.getLatitude(),
+                        location.getLongitude())));
+                distanceText.setText(mNavigator.getRemainingDistance()+"");
+                durationText.setText(mNavigator.getRemainingDuration()+"");
+                NavigationInstructionItem navigationInstructionItem = mNavigator.getNavigationInstructionItem();
+                instructionsText.setText(navigationInstructionItem.getInstructionString());
+                if (navigationInstructionItem.getDirection()==NavigationInstruction.DIRECTION_RIGHT)
+                    instructionImage.setImageDrawable(getDrawable(R.drawable.ic_subdirectory_arrow_left_white_24dp));
+                if (navigationInstructionItem.getDirection()==NavigationInstruction.DIRECTION_LEFT)
+                    instructionImage.setImageDrawable(getDrawable(R.drawable.ic_subdirectory_arrow_right_white_24dp));
+                if (mNavigator.atLastInstruction())
+                {
+                    instructionImage.setRotation(0);
+                    instructionImage.setImageDrawable(getDrawable(R.drawable.ic_location_white_24dp));
+                }
+            }
+        });
+    }
+    public void trackUserLocation ()
+    {
+        mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
+    }
+    public void stopTrackingUser ()
+    {
+
 
     }
 
@@ -155,9 +214,12 @@ public class NavigationActivity extends AppCompatActivity {
     {
         if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
         {
-        double latitude = mCustomMapView.getMapboxMap().getMyLocation().getLatitude();
-        double longitude = mCustomMapView.getMapboxMap().getMyLocation().getLongitude();
-        return new Coordinate(latitude,longitude);}
+            mCustomMapView.getMapboxMap().setMyLocationEnabled(true);
+
+            double latitude = mCustomMapView.getMapboxMap().getMyLocation().getLatitude();
+            double longitude = mCustomMapView.getMapboxMap().getMyLocation().getLongitude();
+            return new Coordinate(latitude,longitude);
+        }
         return null;
     }
 
@@ -184,6 +246,8 @@ public class NavigationActivity extends AppCompatActivity {
         distanceText = (TextView)findViewById(R.id.text_distance);
         durationText = (TextView)findViewById(R.id.text_duration);
         instructionsText = (TextView)findViewById(R.id.text_instruction);
+        myPositionText = (TextView)findViewById(R.id.text_my_position);
+        instructionImage = (ImageView)findViewById(R.id.image_instruction);
     }
 
     private void changeInstructionsLayoutSettings (boolean showPathList)
@@ -211,6 +275,7 @@ public class NavigationActivity extends AppCompatActivity {
         Animation animation;
         if (showPathInstructionsList)
         {
+            myPositionText.setVisibility(View.INVISIBLE);
             if (!isUserInsideCampus())
             {
                 showPathInstructionsListButton.setVisibility(View.GONE);
@@ -238,6 +303,7 @@ public class NavigationActivity extends AppCompatActivity {
         }
         else
         {
+            myPositionText.setVisibility(View.VISIBLE);
             pathTitleText.setVisibility(View.GONE);
             pathDuraitonDistanceLayout.setVisibility(View.VISIBLE);
             clearSelectedPolylines();
@@ -252,6 +318,7 @@ public class NavigationActivity extends AppCompatActivity {
                 }
             },250);
             initNavigationMap(animate);
+            //startTrackingUser();
         }
 
         animation.setFillAfter(true);
@@ -273,10 +340,8 @@ public class NavigationActivity extends AppCompatActivity {
         mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
 
         mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destination",R.drawable.ic_marker_red_24dp);
-       // mCustomMapView.getMapboxMap().setMyLocationEnabled(false);
         mCustomMapView.getMapboxMap().getUiSettings().setCompassEnabled(true);
         mCustomMapView.getMapboxMap().getUiSettings().setCompassFadeFacingNorth(false);
-        //populateListView();
     }
 
     private void populateListView ()
@@ -288,7 +353,6 @@ public class NavigationActivity extends AppCompatActivity {
 
             navigationInstructionItems.add(new NavigationInstructionItem(navigationInstruction.getDirection(),navigationInstruction.getDistance(),navigationInstruction.getStartOrder(),navigationInstruction.getEndOrder(),false));
         }
-        //navigationInstructionItems.get(0).setSelected(true);
         final NavigationItemAdapter navigationItemAdapter = new NavigationItemAdapter(this,navigationInstructionItems);
         listView.setAdapter(navigationItemAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -316,8 +380,6 @@ public class NavigationActivity extends AppCompatActivity {
                     ArrayList<Edge> currentEdges = mPath.getGraph().getEdges(navigationInstructionItem.getStartOrder(),navigationInstructionItem.getEndOrder());
                     ArrayList<Coordinate> previousPolyline = Edge.getPolyline(previousEdges);
                     final ArrayList<Coordinate> currentPolyline = Edge.getPolyline(currentEdges);
-                    //if (previousPolyline.size()>0)
-                    //selectedPolylines.add(mCustomMapView.drawPolyline(previousPolyline,"#0078d7"));
                     selectedPolylines.add(mCustomMapView.drawPolyline(currentPolyline,"#37AB30"));
                     mCustomMapView.animateCamera(currentPolyline,150,150,150,1000);
 

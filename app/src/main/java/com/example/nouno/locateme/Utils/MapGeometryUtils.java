@@ -4,6 +4,8 @@ package com.example.nouno.locateme.Utils;
 import android.graphics.PointF;
 
 import com.example.nouno.locateme.Data.Coordinate;
+import com.example.nouno.locateme.Djikstra.Edge;
+import com.example.nouno.locateme.Djikstra.Graph;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
 import com.mapbox.mapboxsdk.maps.Projection;
@@ -102,8 +104,22 @@ public class MapGeometryUtils {
         return Haversine.distance(point,nearestPoint);
     }
 
-
-
+    public static long findNearestEdgeId (Coordinate coordinate,Graph graph)
+    {
+        long closestEdgeId = -1;
+        double minDistance = 10000;
+        for (Edge e:graph.getEdges())
+        {
+            ArrayList <Coordinate> polyline = e.getCoordinates();
+            double distance = calculatePointDistanceToPolyline(coordinate,polyline);
+            if (distance<minDistance)
+            {
+                minDistance = distance;
+                closestEdgeId = e.getId();
+            }
+        }
+        return closestEdgeId;
+    }
 
     private static double getA (PointF a, PointF b)
     {
