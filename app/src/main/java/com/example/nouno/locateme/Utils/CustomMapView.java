@@ -282,6 +282,21 @@ public class CustomMapView  {
                 paddingRight,paddingBottom));
     }
 
+    public void moveCamera (Graph graph,int paddingLeft,int paddingTop,int paddingRight,int paddingBottom)
+    {
+        LatLngBounds.Builder latLngBoundsBulder = new LatLngBounds.Builder();
+        for (Edge e:graph.getEdges())
+        {
+            for (Coordinate coordinate : e.getCoordinates())
+            {
+                latLngBoundsBulder.include(coordinate.getMapBoxLatLng());
+            }
+        }
+        LatLngBounds latLngBounds = latLngBoundsBulder.build();
+        mapboxMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,paddingLeft,paddingTop,
+                paddingRight,paddingBottom));
+    }
+
    public void animateCamera (final float bearing)
    {
        mapboxMap.animateCamera(new CameraUpdate() {

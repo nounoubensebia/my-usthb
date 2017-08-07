@@ -1,6 +1,8 @@
 package com.example.nouno.locateme.Activities;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
@@ -23,10 +25,16 @@ import com.example.nouno.locateme.Data.NavigationInstructionItem;
 import com.example.nouno.locateme.Data.Navigator;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
+import com.example.nouno.locateme.DialogUtils;
 import com.example.nouno.locateme.Djikstra.Edge;
+import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.ListAdapters.NavigationItemAdapter;
+import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
+import com.example.nouno.locateme.Utils.FileUtils;
+import com.example.nouno.locateme.Utils.Haversine;
+import com.example.nouno.locateme.Utils.MapGeometryUtils;
 import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.constants.MyBearingTracking;
 import com.mapbox.mapboxsdk.constants.MyLocationTracking;
@@ -35,6 +43,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class NavigationActivity extends AppCompatActivity {
@@ -57,6 +66,10 @@ public class NavigationActivity extends AppCompatActivity {
     private TextView durationText;
     private TextView myPositionText;
     private ImageView instructionImage;
+    private Graph entireGraph;
+    private boolean calculateNewPath = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,9 +121,6 @@ public class NavigationActivity extends AppCompatActivity {
             mCustomMapView.moveCamera(getUserLocation(),18,mCustomMapView.getMapboxMap().getMyLocation().getBearing());
         mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
         mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destination",R.drawable.ic_marker_red_24dp);
-        //instructionsText.setText(mNavigator.getNavigationInstructionItem().getInstructionString());
-        //durationText.setText(mNavigator.getRemainingDuration()+"");
-        //distanceText.setText(mNavigator.getRemainingDistance()+"");
         startTrackingUser();
     }
     private void createMap(Bundle savedInstanceState) {
@@ -165,10 +175,22 @@ public class NavigationActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startTrackingUser()
     {
+        trackUser();
+
+        mCustomMapView.getMapboxMap().setOnMyLocationChangeListener(new MapboxMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(@Nullable Location location) {
+               trackUser();
+            }
+        });
+    }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void trackUser ()
+    {
         mNavigator.goTo(mNavigator.getItemByUserLocation(getUserLocation()));
         distanceText.setText(mNavigator.getRemainingDistance()+"");
         durationText.setText(mNavigator.getRemainingDuration()+"");
-        NavigationInstructionItem navigationInstructionItem = mNavigator.getNavigationInstructionItem();
+        final NavigationInstructionItem navigationInstructionItem = mNavigator.getNavigationInstructionItem();
         instructionsText.setText(navigationInstructionItem.getInstructionString());
         if (navigationInstructionItem.getDirection()==NavigationInstruction.DIRECTION_RIGHT)
             instructionImage.setImageDrawable(getDrawable(R.drawable.ic_subdirectory_arrow_left_white_24dp));
@@ -179,27 +201,54 @@ public class NavigationActivity extends AppCompatActivity {
             instructionImage.setRotation(0);
             instructionImage.setImageDrawable(getDrawable(R.drawable.ic_location_white_24dp));
         }
-        mCustomMapView.getMapboxMap().setOnMyLocationChangeListener(new MapboxMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(@Nullable Location location) {
-                mNavigator.goTo(mNavigator.getItemByUserLocation(new Coordinate(location.getLatitude(),
-                        location.getLongitude())));
-                distanceText.setText(mNavigator.getRemainingDistance()+"");
-                durationText.setText(mNavigator.getRemainingDuration()+"");
-                NavigationInstructionItem navigationInstructionItem = mNavigator.getNavigationInstructionItem();
-                instructionsText.setText(navigationInstructionItem.getInstructionString());
-                if (navigationInstructionItem.getDirection()==NavigationInstruction.DIRECTION_RIGHT)
-                    instructionImage.setImageDrawable(getDrawable(R.drawable.ic_subdirectory_arrow_left_white_24dp));
-                if (navigationInstructionItem.getDirection()==NavigationInstruction.DIRECTION_LEFT)
-                    instructionImage.setImageDrawable(getDrawable(R.drawable.ic_subdirectory_arrow_right_white_24dp));
-                if (mNavigator.atLastInstruction())
-                {
-                    instructionImage.setRotation(0);
-                    instructionImage.setImageDrawable(getDrawable(R.drawable.ic_location_white_24dp));
-                }
-            }
-        });
+        if (MapGeometryUtils.findDistance(mPath.getGraph(),getUserLocation())>0.020&&!calculateNewPath)
+        {
+            instructionsText.setText("Vous etes trop loin de l'itinéraire calculé");
+            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_priority_high_black_24dp));
+            distanceText.setText("N/A");
+            durationText.setText("N/A");
+            calculateNewPath = true;
+            Dialog reCalculateDialog = DialogUtils.buildClickableWarningDialog("Vous etes trop loin de l'itinéraire calculé.", "" +
+                            "Voulez vous calculer un nouvel itinéraire à partir de votre position actuelle ?", NavigationActivity.this,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mPath.setSource(new Place("Votre positon",getUserLocation(),true));
+                            getGraph();
+
+                            entireGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(),
+                                    new OnSearchFinishListener() {
+                                        @Override
+                                        public void OnSearchFinish(Graph graph) {
+
+                                            mCustomMapView.getMapboxMap().removeAnnotations();
+                                            mPath.setGraph(graph);
+                                            initNavigationMap(true);
+                                            //instructionsText.setText("Vous etes trop loin de l'itinéraire calculé");
+                                            //instructionImage.setImageDrawable(getDrawable(R.drawable.ic_priority_high_black_24dp));
+                                        }
+                                    });
+                            instructionsText.setText("Vous etes trop loin de l'itinéraire calculé");
+                            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_priority_high_black_24dp));
+                            distanceText.setText("N/A");
+                            durationText.setText("N/A");
+                        }
+                    });
+            reCalculateDialog.show();
+        }
     }
+
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void getGraph() {
+        try {
+            String json = FileUtils.readFile(this.getAssets().open("GraphJson.txt"));
+            entireGraph = new Graph(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void trackUserLocation ()
     {
         mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
@@ -215,7 +264,6 @@ public class NavigationActivity extends AppCompatActivity {
         if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
         {
             mCustomMapView.getMapboxMap().setMyLocationEnabled(true);
-
             double latitude = mCustomMapView.getMapboxMap().getMyLocation().getLatitude();
             double longitude = mCustomMapView.getMapboxMap().getMyLocation().getLongitude();
             return new Coordinate(latitude,longitude);
@@ -332,9 +380,9 @@ public class NavigationActivity extends AppCompatActivity {
     {
         navigationInstructions = mPath.getGraph().getNavigationInstructions(mCustomMapView.getMapboxMap().getProjection());
         if (!animate)
-            mCustomMapView.moveCamera(mPath.getGraph(),150);
+            mCustomMapView.moveCamera(mPath.getGraph(),150,150,150,1000);
         else
-            mCustomMapView.animateCamera(mPath.getGraph(),150);
+            mCustomMapView.animateCamera(mPath.getGraph(),150,150,150,1000);
         mCustomMapView.drawPolyline(mPath.getGraph());
 
         mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);

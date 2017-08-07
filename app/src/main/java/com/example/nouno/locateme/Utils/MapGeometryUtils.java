@@ -104,6 +104,23 @@ public class MapGeometryUtils {
         return Haversine.distance(point,nearestPoint);
     }
 
+    public static Double findDistance(Graph graph,Coordinate coordinate)
+    {
+        long closestEdgeId = -1;
+        double minDistance = 10000;
+        for (Edge e:graph.getEdges())
+        {
+            ArrayList <Coordinate> polyline = e.getCoordinates();
+            double distance = calculatePointDistanceToPolyline(coordinate,polyline);
+            if (distance<minDistance)
+            {
+                minDistance = distance;
+                closestEdgeId = e.getId();
+            }
+        }
+        return minDistance;
+    }
+
     public static long findNearestEdgeId (Coordinate coordinate,Graph graph)
     {
         long closestEdgeId = -1;
