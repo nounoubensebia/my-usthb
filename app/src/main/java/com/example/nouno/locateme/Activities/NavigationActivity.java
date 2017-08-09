@@ -2,6 +2,7 @@ package com.example.nouno.locateme.Activities;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Build;
@@ -140,24 +141,12 @@ public class NavigationActivity extends AppCompatActivity {
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
                 if (isUserInsideCampus()) {
                     mCustomMapView.getMapboxMap().getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
-                    //mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
-                    //
-                    // if (mPath.getSource().isUserLocation())
-                    if (true)
-                        initNavigationMap(false);
-                    else
-                    {
-                        changeState(true,false);
-                        Toast.makeText(NavigationActivity.this,"Navigation impossible",Toast.LENGTH_LONG).show();
-                        intiMapPathInstructionsList(false);
-                    }
-
+                    initNavigationMap(false);
                 }
                 else
                 {
                     intiMapPathInstructionsList(false);
                     changeState(true,false);
-
                 }
                 myPositionText.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -176,7 +165,6 @@ public class NavigationActivity extends AppCompatActivity {
     private void startTrackingUser()
     {
         trackUser();
-
         mCustomMapView.getMapboxMap().setOnMyLocationChangeListener(new MapboxMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(@Nullable Location location) {
@@ -215,7 +203,8 @@ public class NavigationActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             mPath.setSource(new Place("Votre positon",getUserLocation(),true));
                             getGraph();
-
+                            final ProgressDialog progressDialog = (ProgressDialog)DialogUtils.buildProgressDialog("Calcul en cours...",NavigationActivity.this);
+                            progressDialog.show();
                             entireGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(),
                                     new OnSearchFinishListener() {
                                         @Override
@@ -224,8 +213,8 @@ public class NavigationActivity extends AppCompatActivity {
                                             mCustomMapView.getMapboxMap().removeAnnotations();
                                             mPath.setGraph(graph);
                                             initNavigationMap(true);
-                                            //instructionsText.setText("Vous etes trop loin de l'itinéraire calculé");
-                                            //instructionImage.setImageDrawable(getDrawable(R.drawable.ic_priority_high_black_24dp));
+                                            progressDialog.hide();
+
                                         }
                                     });
                             instructionsText.setText("Vous etes trop loin de l'itinéraire calculé");
