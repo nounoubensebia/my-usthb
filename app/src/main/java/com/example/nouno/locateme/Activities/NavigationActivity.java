@@ -54,19 +54,18 @@ public class NavigationActivity extends AppCompatActivity {
     private ArrayList<Polyline> selectedPolylines = null;
     private CustomMapView mCustomMapView;
     private View pathInstructionsLayout;
-    private View pathDuraitonDistanceLayout;
+
     private TextView pathTitleText;
-    private View directionLayout;
+    private Coordinate userLocation;
     private Path mPath;
     private Navigator mNavigator;
     private boolean followUser = true;
     private View showPathInstructionsListButton;
     private boolean showPathInstructionsList = false;
-    private TextView instructionsText;
-    private TextView distanceText;
-    private TextView durationText;
+
+
     private TextView myPositionText;
-    private ImageView instructionImage;
+
     private Graph entireGraph;
     private boolean calculateNewPath = false;
 
@@ -83,12 +82,8 @@ public class NavigationActivity extends AppCompatActivity {
         showPathInstructionsListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (true)
-                    //if (mPath.getSource().isUserLocation())
-                    {
-                        changeState(!showPathInstructionsList,true);
-                        showPathInstructionsList = !showPathInstructionsList;
-                    }
+                changeState(!showPathInstructionsList,true);
+                showPathInstructionsList = !showPathInstructionsList;
 
             }
         });
@@ -102,7 +97,7 @@ public class NavigationActivity extends AppCompatActivity {
 
     }
 
-    private void initNavigationMap (boolean animate)
+    /*private void initNavigationMap (boolean animate)
     {
 
         navigationInstructionItems = new ArrayList<NavigationInstructionItem>();
@@ -122,8 +117,8 @@ public class NavigationActivity extends AppCompatActivity {
             mCustomMapView.moveCamera(getUserLocation(),18,mCustomMapView.getMapboxMap().getMyLocation().getBearing());
         mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
         mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"Destination",R.drawable.ic_marker_red_24dp);
-        startTrackingUser();
-    }
+
+    }*/
     private void createMap(Bundle savedInstanceState) {
 
         final MapView mMapView = (MapView) findViewById(R.id.mapView);
@@ -139,20 +134,31 @@ public class NavigationActivity extends AppCompatActivity {
                 mMapboxMap.setLatLngBoundsForCameraTarget(builder.build());
                 mapboxMap.setMyLocationEnabled(true);
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
-                if (isUserInsideCampus()) {
-                    mCustomMapView.getMapboxMap().getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
-                    initNavigationMap(false);
-                }
-                else
-                {
-                    intiMapPathInstructionsList(false);
+
+                    showPathInstructionsList = true;
+                    intiMapPathInstructionsList(false,true);
                     changeState(true,false);
-                }
+                    intiMapPathInstructionsList(false,true);
                 myPositionText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
-                        mCustomMapView.getMapboxMap().getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
+                        if (isUserInsideCampus())
+                        {
+                            mCustomMapView.animateCamera(getUserLocation(),18,mCustomMapView.getMapboxMap().getMyLocation().getBearing());
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
+                                    mCustomMapView.getMapboxMap().getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
+                                }
+                            },1000);
+
+                        }
+                        else
+                        {
+                            Toast.makeText(NavigationActivity.this,"Vous etes en dehors du campus",Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
 
@@ -161,92 +167,10 @@ public class NavigationActivity extends AppCompatActivity {
         });
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void startTrackingUser()
-    {
-        trackUser();
-        mCustomMapView.getMapboxMap().setOnMyLocationChangeListener(new MapboxMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(@Nullable Location location) {
-               trackUser();
-            }
-        });
-    }
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public void trackUser ()
-    {
-        mNavigator.goTo(mNavigator.getItemByUserLocation(getUserLocation()));
-        distanceText.setText(mNavigator.getRemainingDistance()+"");
-        durationText.setText(mNavigator.getRemainingDuration()+"");
-        final NavigationInstructionItem navigationInstructionItem = mNavigator.getNavigationInstructionItem();
-        instructionsText.setText(navigationInstructionItem.getInstructionString());
-        if (navigationInstructionItem.getDirection()==NavigationInstruction.DIRECTION_RIGHT)
-            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_subdirectory_arrow_left_white_24dp));
-        if (navigationInstructionItem.getDirection()==NavigationInstruction.DIRECTION_LEFT)
-            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_subdirectory_arrow_right_white_24dp));
-        if (mNavigator.atLastInstruction())
-        {
-            instructionImage.setRotation(0);
-            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_location_white_24dp));
-        }
-        if (MapGeometryUtils.findDistance(mPath.getGraph(),getUserLocation())>0.020&&!calculateNewPath)
-        {
-            instructionsText.setText("Vous etes trop loin de l'itinéraire calculé");
-            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_priority_high_black_24dp));
-            distanceText.setText("N/A");
-            durationText.setText("N/A");
-            calculateNewPath = true;
-            Dialog reCalculateDialog = DialogUtils.buildClickableWarningDialog("Vous etes trop loin de l'itinéraire calculé.", "" +
-                            "Voulez vous calculer un nouvel itinéraire à partir de votre position actuelle ?", NavigationActivity.this,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mPath.setSource(new Place("Votre positon",getUserLocation(),true));
-                            getGraph();
-                            final ProgressDialog progressDialog = (ProgressDialog)DialogUtils.buildProgressDialog("Calcul en cours...",NavigationActivity.this);
-                            progressDialog.show();
-                            entireGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(),
-                                    new OnSearchFinishListener() {
-                                        @Override
-                                        public void OnSearchFinish(Graph graph) {
-
-                                            mCustomMapView.getMapboxMap().removeAnnotations();
-                                            mPath.setGraph(graph);
-                                            initNavigationMap(true);
-                                            progressDialog.hide();
-
-                                        }
-                                    });
-                            instructionsText.setText("Vous etes trop loin de l'itinéraire calculé");
-                            instructionImage.setImageDrawable(getDrawable(R.drawable.ic_priority_high_black_24dp));
-                            distanceText.setText("N/A");
-                            durationText.setText("N/A");
-                        }
-                    });
-            reCalculateDialog.show();
-        }
-    }
 
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void getGraph() {
-        try {
-            String json = FileUtils.readFile(this.getAssets().open("GraphJson.txt"));
-            entireGraph = new Graph(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void trackUserLocation ()
-    {
-        mCustomMapView.getMapboxMap().getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
-    }
-    public void stopTrackingUser ()
-    {
 
 
-    }
 
     private Coordinate getUserLocation ()
     {
@@ -276,15 +200,14 @@ public class NavigationActivity extends AppCompatActivity {
     {
         listView = (ListView)findViewById(R.id.list);
         pathInstructionsLayout = findViewById(R.id.layout_path_instructions);
-        pathDuraitonDistanceLayout = findViewById(R.id.layout_path_duration_distance);
+
         pathTitleText = (TextView) findViewById(R.id.text_path);
-        directionLayout = findViewById(R.id.layout_direction);
+
         showPathInstructionsListButton = findViewById(R.id.button_show_path_instructions_list);
-        distanceText = (TextView)findViewById(R.id.text_distance);
-        durationText = (TextView)findViewById(R.id.text_duration);
-        instructionsText = (TextView)findViewById(R.id.text_instruction);
+
+
         myPositionText = (TextView)findViewById(R.id.text_my_position);
-        instructionImage = (ImageView)findViewById(R.id.image_instruction);
+
     }
 
     private void changeInstructionsLayoutSettings (boolean showPathList)
@@ -307,8 +230,6 @@ public class NavigationActivity extends AppCompatActivity {
         Handler handler = new Handler();
         changeInstructionsLayoutSettings(showPathInstructionsList);
         showPathInstructionsListButton.clearAnimation();
-        pathDuraitonDistanceLayout.setVisibility(View.GONE);
-        directionLayout.setVisibility(View.GONE);
         Animation animation;
         if (showPathInstructionsList)
         {
@@ -318,46 +239,27 @@ public class NavigationActivity extends AppCompatActivity {
                 showPathInstructionsListButton.setVisibility(View.GONE);
             }
             animation = AnimationUtils.loadAnimation(NavigationActivity.this,R.anim.rotation_from_0_to_180);
-            mCustomMapView.animateCamera(mPath.getGraph(),150,150,150,1000);
-            pathTitleText.setVisibility(View.VISIBLE);
+            //mCustomMapView.animateCamera(mPath.getGraph(),150,150,150,1000);
+            listView.setVisibility(View.VISIBLE);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-
                     populateListView();
                 }
             },250);
-            if (!isUserInsideCampus())
-            {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(NavigationActivity.this,"Vous êtes dehors du campus navigation GPS impossible",Toast.LENGTH_LONG).show();
-                    }
-                },1000);
-            }
-            intiMapPathInstructionsList(animate);
+
+            intiMapPathInstructionsList(animate,false);
         }
         else
         {
+
             myPositionText.setVisibility(View.VISIBLE);
-            pathTitleText.setVisibility(View.GONE);
-            pathDuraitonDistanceLayout.setVisibility(View.VISIBLE);
             clearSelectedPolylines();
             animation = AnimationUtils.loadAnimation(NavigationActivity.this,R.anim.rotation_from_180_to_0);
             listView.setVisibility(View.GONE);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+            //initNavigationMap(animate);
 
-                    directionLayout.setVisibility(View.VISIBLE);
-
-                }
-            },250);
-            initNavigationMap(animate);
-            //startTrackingUser();
         }
-
         animation.setFillAfter(true);
         showPathInstructionsListButton.startAnimation(animation);
 
@@ -365,13 +267,16 @@ public class NavigationActivity extends AppCompatActivity {
 
 
 
-    private void intiMapPathInstructionsList(boolean animate)
+    private void intiMapPathInstructionsList(boolean animate,boolean initCamera)
     {
         navigationInstructions = mPath.getGraph().getNavigationInstructions(mCustomMapView.getMapboxMap().getProjection());
-        if (!animate)
-            mCustomMapView.moveCamera(mPath.getGraph(),150,150,150,1000);
-        else
-            mCustomMapView.animateCamera(mPath.getGraph(),150,150,150,1000);
+        if (initCamera)
+        {
+            if (!animate)
+                mCustomMapView.moveCamera(mPath.getGraph(),150,150,150,1000);
+            else
+                mCustomMapView.animateCamera(mPath.getGraph(),150,150,150,1000);
+        }
         mCustomMapView.drawPolyline(mPath.getGraph());
 
         mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Position de départ",R.drawable.ic_marker_blue_24dp);
