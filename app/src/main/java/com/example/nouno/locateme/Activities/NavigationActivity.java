@@ -236,7 +236,7 @@ public class NavigationActivity extends AppCompatActivity {
             myPositionText.setVisibility(View.INVISIBLE);
             if (!isUserInsideCampus())
             {
-                showPathInstructionsListButton.setVisibility(View.GONE);
+                //showPathInstructionsListButton.setVisibility(View.GONE);
             }
             animation = AnimationUtils.loadAnimation(NavigationActivity.this,R.anim.rotation_from_0_to_180);
             //mCustomMapView.animateCamera(mPath.getGraph(),150,150,150,1000);
