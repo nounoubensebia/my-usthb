@@ -396,7 +396,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                getGraph();
+                //getGraph();
                 mGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(), new OnSearchFinishListener() {
                     @Override
                     public void OnSearchFinish(Graph graph) {
@@ -430,6 +430,39 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         });
                     }
                 });
+                /*mGraph.getShortestPath(mGraph.getVertexes().get(5), mGraph.getVertexes().get(10), new OnSearchFinishListener() {
+                    @Override
+                    public void OnSearchFinish(Graph graph) {
+                        updateUiState(STATE_PATH_CALCULATED,false,true);
+                        state = STATE_PATH_CALCULATED;
+                        mPath.setDistance((float) graph.getWeight());
+                        distancedurationText.setText(mPath.getDurationString()+" "+mPath.getDistanceString());
+                        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
+                        Date currentLocalTime = cal.getTime();
+                        long time = currentLocalTime.getTime();
+                        time+=mPath.getDuration()*1000;
+                        mPath.setGraph(graph);
+                        currentLocalTime = new Time(time);
+                        DateFormat date = new SimpleDateFormat("HH:mm");
+                        date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
+                        String localTime = date.format(currentLocalTime);
+                        arrivalTimeText.setText("Arrivée à "+localTime);
+                        createMap();
+                        mCustomMapView.drawPolyline(graph);
+
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Gson gson = new Gson();
+                                String navigationInstructionsJson = gson.toJson(navigationInstructions);
+                                Intent i = new Intent(SearchQueryTwoActivity.this,NavigationActivity.class);
+
+                                i.putExtra("path",mPath.toJson());
+                                startActivity(i);
+                            }
+                        });
+                    }
+                });*/
 
             }
         },2000);

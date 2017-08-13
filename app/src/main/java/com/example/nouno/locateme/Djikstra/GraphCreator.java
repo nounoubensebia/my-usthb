@@ -35,15 +35,51 @@ public class GraphCreator {
 
                 if (isARoad(wayObj))
                 {
+                    wayNodes = getWayNodes(nodes,wayNodesJson);
+                    Noda firstnode = wayNodes.get(0);
+
+                    for (int j=0;j<wayNodes.size();j++)
+                    {
+                        Vertex source;
+                        Vertex destination;
+                        if (Vertex.getVertexById(vertices,firstnode.id)==null)
+                        {
+                            source= new Vertex(firstnode.id);
+                            vertices.add(source);
+                        }
+                        else
+                        {
+                            source = Vertex.getVertexById(vertices,firstnode.id);
+                        }
+                        if (Vertex.getVertexById(vertices,wayNodes.get(j).id)==null)
+                        {
+                            destination= new Vertex(wayNodes.get(j).id);
+                            vertices.add(destination);
+                        }
+                        else
+                        {
+                            destination = Vertex.getVertexById(vertices,wayNodes.get(j).id);
+                        }
+                        ArrayList<Coordinate> polyline = new ArrayList<>();
+                        polyline.add(firstnode.coordinate);
+                        polyline.add(wayNodes.get(j).coordinate);
+                        Edge edge = new Edge(i*10+j,source,destination,MapGeometryUtils.PolylineDistance(polyline),polyline);
+                        edges.add(edge);
+                        //vertices.add(source);
+                        //vertices.add(destination);
+                        firstnode = wayNodes.get(j);
+                    }
+
+
                     //ArrayList<Coordinate> coordinates = getWayNodes(nodes,wayNodes);
-                    ArrayList<Noda> nodes1 = getWayNodes(nodes,wayNodesJson);
+                    /*ArrayList<Noda> nodes1 = getWayNodes(nodes,wayNodesJson);
                     wayNodes.add(nodes1.get(0));
                     for (int j=1;j<nodes1.size();j++)
                     {
                         Vertex source = null;
                         Vertex destination = null;
                         Noda node = nodes1.get(j);
-                        if (node.counter<=1)
+                        if (true)
                         {
                             wayNodes.add(node);
                         }
@@ -78,12 +114,13 @@ public class GraphCreator {
                             vertices.add(source);
                             vertices.add(destination);
                             wayNodes = new ArrayList<>();
+                            wayNodes.add(node);
                         }
 
                     }
                     Vertex source = null;
                     Vertex destination = null;
-                    if (wayNodes.size()>0)
+                    if (wayNodes.size()>1)
                     {
                         Noda sourceNode = wayNodes.get(0);
                         Noda destinationNode = wayNodes.get(wayNodes.size()-1);
@@ -113,7 +150,7 @@ public class GraphCreator {
                         vertices.add(source);
                         vertices.add(destination);
                         wayNodes = new ArrayList<>();
-                    }
+                    }*/
                 }
 
 
@@ -137,7 +174,7 @@ public class GraphCreator {
                 JSONObject nodeJson = nodesJson.getJSONObject(i);
                 Coordinate coordinate = new Coordinate(nodeJson.getDouble("-lat"),nodeJson.getDouble("-lon"));
                 Noda node = new Noda(nodeJson.getLong("-id"),0,coordinate);
-                Noda sel = node.getNodeById(nodesJson.getJSONObject(i).getLong("-id"),nodes);
+                Noda sel = Noda.getNodeById(node.id,nodes);
                 if (sel!=null)
                 {
                     sel.incrementCounter();

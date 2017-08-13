@@ -249,6 +249,7 @@ public class Graph {
 
             @Override
             protected Graph doInBackground(Void... params) {
+                Graph.this.addReverse();
                 DijkstraAlgorithm dijkstraAlgorithm = new DijkstraAlgorithm(Graph.this);
                 dijkstraAlgorithm.execute(source);
                 return dijkstraAlgorithm.getPath(destination);

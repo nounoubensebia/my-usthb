@@ -82,8 +82,8 @@ public class MapActivity extends AppCompatActivity {
                 mapboxMap.setMyLocationEnabled(true);
                 try {
                     String graphJson = FileUtils.readFile(MapActivity.this.getAssets().open("testGraph.txt"));
-                    Graph graph = GraphCreator.createGraph(graphJson);
-                    mCustomMapView.drawFromGraph(graph);
+                    //Graph graph = GraphCreator.createGraph(graphJson);
+                    //mCustomMapView.drawFromGraph(graph);
                     //mCustomMapView.drawPolyline(graph);
                 } catch (IOException e) {
                     e.printStackTrace();
