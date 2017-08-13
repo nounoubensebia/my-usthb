@@ -214,16 +214,17 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         if (departureEditText.hasFocus())
                         {
                             setDeparture(new Place("Ma position",coordinate,true));
-                            hideKeyboard();
+                            //hideKeyboard();
                         }
                         else {
                             if (destinationEditText.hasFocus()) {
                                 setDestination(new Place("Ma position", coordinate,true));
-                                hideKeyboard();
+                                //hideKeyboard();
                             }
                         }
-                        updateUiState(state,false,true);
                         hideKeyboard();
+                        updateUiState(state,false,false);
+                        //hideKeyboard();
                     }
                     else
                     {
@@ -237,7 +238,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private Coordinate getUserLocation ()
     {
-        if (lastKnownUserLocation!=null)
+        /*if (lastKnownUserLocation!=null)
         {
             if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
             {
@@ -262,7 +263,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             {
                 return null;
             }
-        }
+        }*/
+        return new Coordinate(36.7113147,3.1817221999999674);
     }
 
     private void getViews ()
@@ -545,18 +547,28 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     if (!keyboardShown)
                     {
+
                         fab.setVisibility(View.GONE);
                         pathCalculProgress.setVisibility(View.GONE);
                         scrollView.setVisibility(View.GONE);
                         pathFoundLayout.setVisibility(View.GONE);
+                        pathNotFoundLayout.setVisibility(View.GONE);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 coordinateLayout.setVisibility(View.VISIBLE);
-                                pathNotFoundLayout.setVisibility(View.VISIBLE);
+                                //pathNotFoundLayout.setVisibility(View.VISIBLE);
+
                             }
                         },250);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pathNotFoundLayout.setVisibility(View.VISIBLE);
+                                //hideKeyboard();
+                            }
+                        },500);
 
                     }
                     else
