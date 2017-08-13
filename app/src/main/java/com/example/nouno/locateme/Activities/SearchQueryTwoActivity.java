@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -79,7 +80,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private boolean keyboardShown;
     private TextView useCurrentLocationText;
     private ArrayList<Bloc> blocs;
-
+    private Coordinate lastKnownUserLocation;
     private void testBlocks ()
     {
         blocs = new ArrayList<>();
@@ -202,22 +203,27 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         useCurrentLocationText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
+                mCustomMapView.getMapboxMap().setMyLocationEnabled(true);
+                Log.i("Click","clicked");
+                if (getUserLocation()!=null)
                     {
-                    Coordinate coordinate = new Coordinate(mCustomMapView.getMapboxMap().getMyLocation().getLatitude(),
-                            mCustomMapView.getMapboxMap().getMyLocation().getLongitude());
+
+                    Coordinate coordinate = getUserLocation ();
                     if (coordinate.isInsideCampus())
                     {
                         if (departureEditText.hasFocus())
                         {
                             setDeparture(new Place("Ma position",coordinate,true));
+                            hideKeyboard();
                         }
                         else {
                             if (destinationEditText.hasFocus()) {
                                 setDestination(new Place("Ma position", coordinate,true));
+                                hideKeyboard();
                             }
                         }
-                        updateUiState(state,true,true);
+                        updateUiState(state,false,true);
+                        hideKeyboard();
                     }
                     else
                     {
@@ -229,7 +235,35 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         });
     }
 
-
+    private Coordinate getUserLocation ()
+    {
+        if (lastKnownUserLocation!=null)
+        {
+            if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
+            {
+                Coordinate coordinate = new Coordinate(mCustomMapView.getMapboxMap().getMyLocation().getLatitude(),mCustomMapView.getMapboxMap().getMyLocation().getLongitude());
+                lastKnownUserLocation = coordinate;
+                return lastKnownUserLocation;
+            }
+            else
+            {
+                return lastKnownUserLocation;
+            }
+        }
+        else
+        {
+            if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
+            {
+                Coordinate coordinate = new Coordinate(mCustomMapView.getMapboxMap().getMyLocation().getLatitude(),mCustomMapView.getMapboxMap().getMyLocation().getLongitude());
+                lastKnownUserLocation = coordinate;
+                return lastKnownUserLocation;
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
 
     private void getViews ()
     {
@@ -275,6 +309,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private void setDeparture (Place departure)
     {
+        Log.i("DEPT",departure.getLabel());
         if (mPath.getDestination()!=null)
         {
             state = STATE_PATH_INITIALIZED;
@@ -313,6 +348,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private void setDestination (Place destination)
     {
+        Log.i("DEST",destination.getLabel());
         if (mPath.getSource()!=null)
         {
             state = STATE_PATH_INITIALIZED;
@@ -355,6 +391,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     public void showKeyboard (EditText editText,int x)
     {
+        Log.i("SHOW","true");
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -433,39 +470,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         });
                     }
                 });
-                /*mGraph.getShortestPath(mGraph.getVertexes().get(5), mGraph.getVertexes().get(10), new OnSearchFinishListener() {
-                    @Override
-                    public void OnSearchFinish(Graph graph) {
-                        updateUiState(STATE_PATH_CALCULATED,false,true);
-                        state = STATE_PATH_CALCULATED;
-                        mPath.setDistance((float) graph.getWeight());
-                        distancedurationText.setText(mPath.getDurationString()+" "+mPath.getDistanceString());
-                        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
-                        Date currentLocalTime = cal.getTime();
-                        long time = currentLocalTime.getTime();
-                        time+=mPath.getDuration()*1000;
-                        mPath.setGraph(graph);
-                        currentLocalTime = new Time(time);
-                        DateFormat date = new SimpleDateFormat("HH:mm");
-                        date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
-                        String localTime = date.format(currentLocalTime);
-                        arrivalTimeText.setText("Arrivée à "+localTime);
-                        createMap();
-                        mCustomMapView.drawPolyline(graph);
 
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Gson gson = new Gson();
-                                String navigationInstructionsJson = gson.toJson(navigationInstructions);
-                                Intent i = new Intent(SearchQueryTwoActivity.this,NavigationActivity.class);
-
-                                i.putExtra("path",mPath.toJson());
-                                startActivity(i);
-                            }
-                        });
-                    }
-                });*/
 
             }
         },0);
@@ -532,7 +537,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     {
                         coordinateLayout.setVisibility(View.GONE);
                         scrollView.setVisibility(View.VISIBLE);
-
+                        //pathNotFoundLayout.setVisibility(View.VISIBLE);
                     }
                     createMap();
                 }
@@ -549,6 +554,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 coordinateLayout.setVisibility(View.VISIBLE);
+                                pathNotFoundLayout.setVisibility(View.VISIBLE);
                             }
                         },250);
 
@@ -626,6 +632,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private void createMap ()
     {
+
             targetFixed = false;
             mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
             mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
@@ -642,6 +649,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     boundsCoordinates.add(mPath.getDestination().getCoordinate());
                     mCustomMapView.moveCamera(boundsCoordinates,350);
                 }
+
     }
 
     @Override
