@@ -28,11 +28,30 @@ import java.util.List;
 public class Graph {
     private List<Vertex> vertexes;
     private List<Edge> edges;
-    public static final double MAX_DISTANCE = 0.03;
+    public static final double MAX_DISTANCE = 0.001;
 
     public Graph(List<Vertex> vertexes, List<Edge> edges) {
         this.vertexes = vertexes;
         this.edges = edges;
+    }
+
+    public void createGraphV2 (String json)
+    {
+        vertexes = new ArrayList<>();
+        edges = new ArrayList<>();
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            JSONObject osm = jsonObject.getJSONObject("osm");
+            JSONArray way = osm.getJSONArray("way");
+            JSONArray node = osm.getJSONArray("Noda");
+            for (long i=0;i<way.length();i++)
+            {
+                JSONObject wayObj = way.getJSONObject((int)i);
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public Graph(String json) {

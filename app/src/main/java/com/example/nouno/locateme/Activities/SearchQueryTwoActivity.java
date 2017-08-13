@@ -25,6 +25,7 @@ import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Djikstra.Graph;
+import com.example.nouno.locateme.Djikstra.GraphCreator;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
@@ -444,8 +445,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void getGraph() {
         try {
-            String json = FileUtils.readFile(this.getAssets().open("GraphJson.txt"));
-            mGraph = new Graph(json);
+            //String json = FileUtils.readFile(this.getAssets().open("GraphJson.txt"));
+            //mGraph = new Graph(json);
+            String json = FileUtils.readFile(this.getAssets().open("testGraph.txt"));
+            mGraph = GraphCreator.createGraph(json);
         } catch (IOException e) {
             e.printStackTrace();
         }

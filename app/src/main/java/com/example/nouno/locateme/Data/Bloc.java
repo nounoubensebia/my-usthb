@@ -13,6 +13,7 @@ public class Bloc {
     private Coordinate coordinate;
     private String name;
     private ArrayList<Classroom> classrooms;
+    private ArrayList<String> tags;
 
     public Bloc(Coordinate coordinate, String name, ArrayList<Classroom> classrooms) {
         this.coordinate = coordinate;

@@ -67,7 +67,7 @@ public class CustomMapView  {
         for (Coordinate c : coordinates) {
             points.add(new LatLng(c.getLatitude(), c.getLongitude()));
         }
-        PolylineOptions polylineOptions = new PolylineOptions().addAll(points).color(Color.parseColor(color));
+        PolylineOptions polylineOptions = new PolylineOptions().addAll(points).color(Color.parseColor(color)).width(1);
 
         mapboxMap.addPolyline(polylineOptions);
         return polylineOptions.getPolyline();
@@ -90,6 +90,14 @@ public class CustomMapView  {
         }
         drawPolyline(coordinates,"#C6C6C6");
 
+    }
+
+    public void drawFromGraph (Graph graph)
+    {
+        for (Edge e: graph.getEdges())
+        {
+            drawPolyline(e.getCoordinates(),"#C6C6C6");
+        }
     }
 
     public void drawMarker(Coordinate coordinate, String title, int iconResource) {
