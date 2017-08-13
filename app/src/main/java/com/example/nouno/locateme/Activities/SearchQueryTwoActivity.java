@@ -465,7 +465,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 });*/
 
             }
-        },2000);
+        },0);
     }
 
     private void animateFab()

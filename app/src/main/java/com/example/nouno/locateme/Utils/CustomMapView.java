@@ -67,7 +67,7 @@ public class CustomMapView  {
         for (Coordinate c : coordinates) {
             points.add(new LatLng(c.getLatitude(), c.getLongitude()));
         }
-        PolylineOptions polylineOptions = new PolylineOptions().addAll(points).color(Color.parseColor(color)).width(1);
+        PolylineOptions polylineOptions = new PolylineOptions().addAll(points).color(Color.parseColor(color));
 
         mapboxMap.addPolyline(polylineOptions);
         return polylineOptions.getPolyline();
