@@ -26,7 +26,7 @@ public class GraphCreator {
             JSONArray way = osm.getJSONArray("way");
             JSONArray nodes = osm.getJSONArray("node");
             ArrayList<Noda> countedNodes = new ArrayList<>();
-            countedNodes = countNodes(nodes);
+            countedNodes = countNodes(way,nodes);
             for (long i=0;i<way.length();i++)
             {
                 JSONObject wayObj = way.getJSONObject((int)i);
@@ -35,7 +35,7 @@ public class GraphCreator {
 
                 if (isARoad(wayObj))
                 {
-                    wayNodes = getWayNodes(nodes,wayNodesJson);
+                    /*wayNodes = getWayNodes(nodes,wayNodesJson);
                     Noda firstnode = wayNodes.get(0);
 
                     for (int j=0;j<wayNodes.size();j++)
@@ -68,18 +68,19 @@ public class GraphCreator {
                         //vertices.add(source);
                         //vertices.add(destination);
                         firstnode = wayNodes.get(j);
-                    }
+                    }*/
 
 
                     //ArrayList<Coordinate> coordinates = getWayNodes(nodes,wayNodes);
-                    /*ArrayList<Noda> nodes1 = getWayNodes(nodes,wayNodesJson);
+                    ArrayList<Noda> nodes1 = getWayNodes(nodes,wayNodesJson);
+                    wayNodes = new ArrayList<>();
                     wayNodes.add(nodes1.get(0));
                     for (int j=1;j<nodes1.size();j++)
                     {
                         Vertex source = null;
                         Vertex destination = null;
                         Noda node = nodes1.get(j);
-                        if (true)
+                        if (Noda.getNodeById(node.id,countedNodes).counter<=1)
                         {
                             wayNodes.add(node);
                         }
@@ -91,6 +92,7 @@ public class GraphCreator {
                             if (Vertex.getVertexById(vertices,sourceNode.id)==null)
                             {
                                 source= new Vertex(sourceNode.id);
+                                vertices.add(source);
                             }
                             else
                             {
@@ -99,6 +101,7 @@ public class GraphCreator {
                             if (Vertex.getVertexById(vertices,destinationNode.id)==null)
                             {
                                 destination= new Vertex(destinationNode.id);
+                                vertices.add(destination);
                             }
                             else
                             {
@@ -111,8 +114,6 @@ public class GraphCreator {
                             }
                             Edge edge = new Edge(i*10+j,source,destination,MapGeometryUtils.PolylineDistance(polyline),polyline);
                             edges.add(edge);
-                            vertices.add(source);
-                            vertices.add(destination);
                             wayNodes = new ArrayList<>();
                             wayNodes.add(node);
                         }
@@ -127,6 +128,7 @@ public class GraphCreator {
                         if (Vertex.getVertexById(vertices,sourceNode.id)==null)
                         {
                             source= new Vertex(sourceNode.id);
+                            vertices.add(source);
                         }
                         else
                         {
@@ -135,6 +137,7 @@ public class GraphCreator {
                         if (Vertex.getVertexById(vertices,destinationNode.id)==null)
                         {
                             destination= new Vertex(destinationNode.id);
+                            vertices.add(destination);
                         }
                         else
                         {
@@ -145,12 +148,10 @@ public class GraphCreator {
                         {
                             polyline.add(node1.coordinate);
                         }
-                        Edge edge = new Edge((long) Calendar.getInstance().getTimeInMillis(),source,destination,MapGeometryUtils.PolylineDistance(polyline),polyline);
+                        Edge edge = new Edge(i*10+nodes1.size()+1,source,destination,MapGeometryUtils.PolylineDistance(polyline),polyline);
                         edges.add(edge);
-                        vertices.add(source);
-                        vertices.add(destination);
-                        wayNodes = new ArrayList<>();
-                    }*/
+
+                    }
                 }
 
 
@@ -165,24 +166,30 @@ public class GraphCreator {
 
 
 
-    private static ArrayList<Noda> countNodes(JSONArray nodesJson)
+    private static ArrayList<Noda> countNodes(JSONArray way,JSONArray nodesJson)
     {
         ArrayList<Noda> nodes = new ArrayList<>();
-        for (int i=0;i<nodesJson.length();i++)
+
+        for (int i=0;i<way.length();i++)
         {
             try {
-                JSONObject nodeJson = nodesJson.getJSONObject(i);
-                Coordinate coordinate = new Coordinate(nodeJson.getDouble("-lat"),nodeJson.getDouble("-lon"));
-                Noda node = new Noda(nodeJson.getLong("-id"),0,coordinate);
-                Noda sel = Noda.getNodeById(node.id,nodes);
-                if (sel!=null)
+                JSONObject wayJson = way.getJSONObject(i);
+                if (isARoad(wayJson))
                 {
-                    sel.incrementCounter();
-                }
-                else
-                {
-
-                    nodes.add(new Noda(nodesJson.getJSONObject(i).getLong("-id"),1,coordinate));
+                    JSONArray nd = wayJson.getJSONArray("nd");
+                    for (int j=0;j<nd.length();j++)
+                    {
+                        //Noda noda = getNode(nd.getJSONObject(j).getLong("-ref"),nodesJson);
+                        Noda other = Noda.getNodeById(nd.getJSONObject(j).getLong("-ref"),nodes);
+                        if (other==null)
+                        {
+                            nodes.add(getNode(nd.getJSONObject(j).getLong("-ref"),nodesJson));
+                        }
+                        else
+                        {
+                            other.setCounter(2);
+                        }
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
