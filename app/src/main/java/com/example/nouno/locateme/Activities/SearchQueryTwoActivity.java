@@ -93,7 +93,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         testBlocks();
-        getGraph();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_query_two);
         getSupportActionBar().setElevation(0);
@@ -395,7 +395,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                if (mGraph==null)
+                {
+                    getGraph();
+                }
                 //getGraph();
                 mGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(), new OnSearchFinishListener() {
                     @Override
@@ -478,10 +481,12 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void getGraph() {
         try {
-            //String json = FileUtils.readFile(this.getAssets().open("GraphJson.txt"));
-            //mGraph = new Graph(json);
-            String json = FileUtils.readFile(this.getAssets().open("testGraph.txt"));
-            mGraph = GraphCreator.createGraph(json);
+            String graphJson = FileUtils.readFile(SearchQueryTwoActivity.this.getAssets().open("GraphJson.txt"));
+            //Graph graph = GraphCreator.createGraph(graphJson);
+            mGraph = new Graph(graphJson);
+
+            //String json = FileUtils.readFile(this.getAssets().open("testGraph.txt"));
+            //mGraph = GraphCreator.createGraph(json);
         } catch (IOException e) {
             e.printStackTrace();
         }

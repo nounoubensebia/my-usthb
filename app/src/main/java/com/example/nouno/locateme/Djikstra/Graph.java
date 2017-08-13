@@ -28,7 +28,7 @@ import java.util.List;
 public class Graph {
     private List<Vertex> vertexes;
     private List<Edge> edges;
-    public static final double MAX_DISTANCE = 0.01;
+    public static final double MAX_DISTANCE = 0.03;
 
     public Graph(List<Vertex> vertexes, List<Edge> edges) {
         this.vertexes = vertexes;
@@ -60,7 +60,7 @@ public class Graph {
             JSONArray vertexesJson = jsonObject.getJSONArray("vertexes");
             for (int i = 0; i < vertexesJson.length(); i++) {
                 JSONObject vertexJson = vertexesJson.getJSONObject(i);
-                String name = vertexJson.getString("name");
+                //String name = vertexJson.getString("name");
                 long id = vertexJson.getLong("id");
                 Vertex v = new Vertex(id);
                 vertexes.add(v);
@@ -72,15 +72,15 @@ public class Graph {
                 ArrayList<Coordinate> coordinates = new ArrayList<>();
                 for (int j = 0; j < coordinatesJson.length(); j++) {
                     JSONObject coordinateJson = coordinatesJson.getJSONObject(j);
-                    double latitude = coordinateJson.getDouble("longitude");
-                    double longitude = coordinateJson.getDouble("latitude");
+                    double longitude = coordinateJson.getDouble("longitude");
+                    double latitude = coordinateJson.getDouble("latitude");
                     Coordinate coordinate = new Coordinate(latitude, longitude);
                     coordinates.add(coordinate);
                 }
                 JSONObject sourceJson = edgeJson.getJSONObject("source");
-                long sourceId = sourceJson.getInt("id");
+                long sourceId = sourceJson.getLong("id");
                 JSONObject destinationJson = edgeJson.getJSONObject("destination");
-                long destinationId = destinationJson.getInt("id");
+                long destinationId = destinationJson.getLong("id");
                 Vertex source = Vertex.getVertexById(vertexes, sourceId);
                 Vertex destination = Vertex.getVertexById(vertexes, destinationId);
                 long id = edgeJson.getLong("id");
