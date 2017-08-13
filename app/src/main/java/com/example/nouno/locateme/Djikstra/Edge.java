@@ -15,6 +15,7 @@ public class Edge  {
     private Vertex destination;
     private double weight;
     private ArrayList<Coordinate> coordinates;
+    private boolean exploaded;
 
     public Edge(long id, Vertex source, Vertex destination, double weight,ArrayList<Coordinate> coordinates) {
         this.id = id;
@@ -22,6 +23,15 @@ public class Edge  {
         this.destination = destination;
         this.weight = weight;
         this.coordinates = coordinates;
+        this.exploaded = false;
+    }
+
+    public boolean isExploaded() {
+        return exploaded;
+    }
+
+    public void setExploaded(boolean exploaded) {
+        this.exploaded = exploaded;
     }
 
     public long getId() {

@@ -28,15 +28,14 @@ import java.util.List;
 public class Graph {
     private List<Vertex> vertexes;
     private List<Edge> edges;
-    public static final double MAX_DISTANCE = 0.001;
+    public static final double MAX_DISTANCE = 0.01;
 
     public Graph(List<Vertex> vertexes, List<Edge> edges) {
         this.vertexes = vertexes;
         this.edges = edges;
     }
 
-    public void createGraphV2 (String json)
-    {
+    public void createGraphV2(String json) {
         vertexes = new ArrayList<>();
         edges = new ArrayList<>();
         try {
@@ -44,9 +43,8 @@ public class Graph {
             JSONObject osm = jsonObject.getJSONObject("osm");
             JSONArray way = osm.getJSONArray("way");
             JSONArray node = osm.getJSONArray("Noda");
-            for (long i=0;i<way.length();i++)
-            {
-                JSONObject wayObj = way.getJSONObject((int)i);
+            for (long i = 0; i < way.length(); i++) {
+                JSONObject wayObj = way.getJSONObject((int) i);
 
             }
         } catch (JSONException e) {
@@ -128,8 +126,7 @@ public class Graph {
         int i = 1;
         for (Edge e1 : edges) {
             ArrayList<Coordinate> coordinates2 = new ArrayList<>();
-            for (Coordinate coordinate : e1.getCoordinates())
-            {
+            for (Coordinate coordinate : e1.getCoordinates()) {
                 coordinates2.add(coordinate);
             }
             Collections.reverse(coordinates2);
@@ -142,26 +139,61 @@ public class Graph {
 
     }
 
-    private Vertex explodeEdgeAtCoordinate(Edge e, Coordinate polylineCoordinate, Coordinate explosionCoordinate, Projection projection) {
+
+    private Vertex explodeEdgeAtCoordinate(Edge e, Coordinate polylineCoordinate, Coordinate explosionCoordinate, Projection projection, boolean isSource) {
 
         if (polylineCoordinate.equals(e.getCoordinates().get(0))) {
-            Vertex userVertex = new Vertex(getLastVertexId() + 1);
+            Vertex userVertex;
+            if (isSource) {
+                if ((Vertex.getVertexById(vertexes,-5) == null)) {
+                    userVertex = new Vertex(-5);
+                    vertexes.add(userVertex);
+                } else {
+                    userVertex = Vertex.getVertexById(vertexes,-5);
+                }
+            } else {
+
+                if ((Vertex.getVertexById(vertexes,-4) == null)) {
+                    userVertex = new Vertex(-4);
+                    vertexes.add(userVertex);
+                } else {
+                    userVertex = Vertex.getVertexById(vertexes,-4);
+                }
+            }
+
             ArrayList<Coordinate> newPathCoordinates = new ArrayList<>();
             newPathCoordinates.add(explosionCoordinate);
             newPathCoordinates.add(e.getCoordinates().get(0));
             Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getSource(), MapGeometryUtils.PolylineDistance(newPathCoordinates), newPathCoordinates);
+            edge.setExploaded(true);
             edges.add(edge);
-            vertexes.add(userVertex);
             return userVertex;
         }
         if (polylineCoordinate.equals(e.getCoordinates().get(e.getCoordinates().size() - 1))) {
-            Vertex userVertex = new Vertex(getLastVertexId() + 1);
+            Vertex userVertex;
+            if (isSource) {
+                if ((Vertex.getVertexById(vertexes, -5) == null)) {
+                    userVertex = new Vertex(-5);
+                    vertexes.add(userVertex);
+                } else {
+                    userVertex = Vertex.getVertexById(vertexes, -5);
+                }
+            } else {
+
+                if ((Vertex.getVertexById(vertexes, -4) == null)) {
+                    userVertex = new Vertex(-4);
+                    vertexes.add(userVertex);
+                } else {
+                    userVertex = Vertex.getVertexById(vertexes, -4);
+                }
+            }
+
             ArrayList<Coordinate> newPathCoordinates = new ArrayList<>();
             newPathCoordinates.add(explosionCoordinate);
             newPathCoordinates.add(e.getCoordinates().get(e.getCoordinates().size() - 1));
             Edge edge = new Edge(getLastEdgeId() + 1, userVertex, e.getDestination(), MapGeometryUtils.PolylineDistance(newPathCoordinates), newPathCoordinates);
             edges.add(edge);
-            vertexes.add(userVertex);
+
             return userVertex;
         }
         int order1 = 0;
@@ -193,7 +225,25 @@ public class Graph {
         Vertex source = e.getSource();
         Vertex destination = e.getDestination();
         Vertex pointVertex = new Vertex(getLastVertexId() + 1);
-        Vertex userVertex = new Vertex(getLastVertexId() + 2);
+        Vertex userVertex;
+
+        if (isSource) {
+            if ((Vertex.getVertexById(vertexes, -5) == null)) {
+                userVertex = new Vertex(-5);
+                vertexes.add(userVertex);
+            } else {
+                userVertex = Vertex.getVertexById(vertexes, -5);
+            }
+        } else {
+
+            if ((Vertex.getVertexById(vertexes, -4) == null)) {
+                userVertex = new Vertex(-4);
+                vertexes.add(userVertex);
+            } else {
+                userVertex = Vertex.getVertexById(vertexes, -4);
+            }
+        }
+
         Edge sourceToPointEdge = new Edge(getLastEdgeId() + 1, source, pointVertex, MapGeometryUtils.PolylineDistance(sourceToPoint), sourceToPoint);
         Edge PointToDestinationEdge = new Edge(getLastEdgeId() + 2, pointVertex, destination, MapGeometryUtils.PolylineDistance(pointToDestinationPath), pointToDestinationPath);
         Edge userToPointEdge = new Edge(getLastEdgeId() + 3, userVertex, pointVertex, MapGeometryUtils.PolylineDistance(userToPointPath), userToPointPath);
@@ -208,7 +258,7 @@ public class Graph {
 
 
     public void getShortestPath(final Coordinate source, final Vertex target, final Projection projection, final OnSearchFinishListener onSearchFinishListener) {
-        AsyncTask<Void,Void,Graph> asyncTask = new AsyncTask<Void, Void, Graph>() {
+        AsyncTask<Void, Void, Graph> asyncTask = new AsyncTask<Void, Void, Graph>() {
             @Override
             protected void onPostExecute(Graph graph) {
                 onSearchFinishListener.OnSearchFinish(graph);
@@ -222,9 +272,8 @@ public class Graph {
 
     }
 
-    public void getShortestPath (final Vertex source, final Coordinate target, final Projection projection, final OnSearchFinishListener onSearchFinishListener)
-    {
-        AsyncTask<Void,Void,Graph> asyncTask = new AsyncTask<Void, Void, Graph>() {
+    public void getShortestPath(final Vertex source, final Coordinate target, final Projection projection, final OnSearchFinishListener onSearchFinishListener) {
+        AsyncTask<Void, Void, Graph> asyncTask = new AsyncTask<Void, Void, Graph>() {
             @Override
             protected void onPostExecute(Graph graph) {
                 onSearchFinishListener.OnSearchFinish(graph);
@@ -232,16 +281,15 @@ public class Graph {
 
             @Override
             protected Graph doInBackground(Void... params) {
-                return getShortestPath(target,source,projection,false);
+                return getShortestPath(target, source, projection, false);
             }
         };
         asyncTask.execute();
 
     }
 
-    public void getShortestPath(final Vertex source, final Vertex destination, final OnSearchFinishListener onSearchFinishListener)
-    {
-        AsyncTask<Void,Void,Graph> asyncTask = new AsyncTask<Void, Void, Graph>() {
+    public void getShortestPath(final Vertex source, final Vertex destination, final OnSearchFinishListener onSearchFinishListener) {
+        AsyncTask<Void, Void, Graph> asyncTask = new AsyncTask<Void, Void, Graph>() {
             @Override
             protected void onPostExecute(Graph graph) {
                 onSearchFinishListener.OnSearchFinish(graph);
@@ -273,10 +321,10 @@ public class Graph {
             Coordinate polylineCoordinate = MapGeometryUtils.findNearestPoint(marker, e.getCoordinates());
             Vertex source;
             if (isSource) {
-                source = graph.explodeEdgeAtCoordinate(e1, polylineCoordinate, marker, projection);
+                source = graph.explodeEdgeAtCoordinate(e1, polylineCoordinate, marker, projection,true);
             } else {
                 source = target;
-                target = graph.explodeEdgeAtCoordinate(e1, polylineCoordinate, marker, projection);
+                target = graph.explodeEdgeAtCoordinate(e1, polylineCoordinate, marker, projection,false);
             }
             graph.addReverse();
             DijkstraAlgorithm dijkstraAlgorithm = new DijkstraAlgorithm(graph);
@@ -291,10 +339,10 @@ public class Graph {
     }
 
     public void getShortestPath(final Coordinate source, final Coordinate destination, final Projection projection
-    , final OnSearchFinishListener onSearchFinishListener) {
+            , final OnSearchFinishListener onSearchFinishListener) {
 
 
-        AsyncTask<Void,Void,Graph> asyncTask = new AsyncTask<Void, Void, Graph>() {
+        AsyncTask<Void, Void, Graph> asyncTask = new AsyncTask<Void, Void, Graph>() {
             @Override
             protected void onPostExecute(Graph graph) {
                 onSearchFinishListener.OnSearchFinish(graph);
@@ -302,6 +350,7 @@ public class Graph {
 
             @Override
             protected Graph doInBackground(Void... params) {
+                /*
                 Graph graph1 = getShortestPath(source,destination,projection,true);
                 Graph graph2 = getShortestPath(destination,source,projection,false);
                 if (graph1.getWeight()<graph2.getWeight())
@@ -311,7 +360,8 @@ public class Graph {
                 else
                 {
                     return graph2;
-                }
+                }*/
+                return getShortestPath(source, destination, projection, true);
             }
         };
         asyncTask.execute();
@@ -319,15 +369,16 @@ public class Graph {
     }
 
 
-
     private Graph getShortestPath(Coordinate marker1, Coordinate marker2, Projection projection, Boolean marker1IsSource) {
         Gson gson = new Gson();
         String json = gson.toJson(this);
-        Vertex source=null, destination=null;
+        Vertex source = null, destination = null;
         Graph shortestGraph = null;
+        Graph graph = gson.fromJson(json, Graph.class);
         double minDistance = 1000000;
         ArrayList<Edge> edgesToExplodeMarker1 = edgesToExplode(marker1);
-        for (Edge edgeMarker1 : edgesToExplodeMarker1) {
+        ArrayList<Edge> edgesToExplodeMarker2 = edgesToExplode(marker2);
+        /*for (Edge edgeMarker1 : edgesToExplodeMarker1) {
             Graph graph = gson.fromJson(json, Graph.class);
             Edge e1 = Edge.getEdgeById(graph.edges, edgeMarker1.getId());
             Coordinate polylineCoordinate1 = MapGeometryUtils.findNearestPoint(marker1, edgeMarker1.getCoordinates());
@@ -359,10 +410,25 @@ public class Graph {
                 }
             }
 
+        }*/
+        for (Edge edge : edgesToExplodeMarker1) {
+            Edge e1 = Edge.getEdgeById(graph.edges, edge.getId());
+            Coordinate polylineCoordinate1 = MapGeometryUtils.findNearestPoint(marker1, edge.getCoordinates());
+            source = graph.explodeEdgeAtCoordinate(e1, polylineCoordinate1, marker1, projection,true);
         }
+        for (Edge edge : edgesToExplodeMarker2) {
+            Edge e1 = Edge.getEdgeById(graph.edges, edge.getId());
+            Coordinate polylineCoordinate1 = MapGeometryUtils.findNearestPoint(marker2, edge.getCoordinates());
+            destination = graph.explodeEdgeAtCoordinate(e1, polylineCoordinate1, marker2, projection,false);
+        }
+        graph.addReverse();
+        DijkstraAlgorithm dijkstraAlgorithm = new DijkstraAlgorithm(graph);
+        dijkstraAlgorithm.execute(source);
+        graph = dijkstraAlgorithm.getPath(destination);
 
-        return shortestGraph;
+        return graph;
     }
+
     private ArrayList<Edge> edgesToExplode(Coordinate userLocation) {
         ArrayList<Edge> edgesToExplode = new ArrayList<>();
         double maxDistance = MAX_DISTANCE;
@@ -385,11 +451,9 @@ public class Graph {
         return weight;
     }
 
-    public void getShortestPath (Path path,Projection projection, final OnSearchFinishListener onSearchFinishListener)
-    {
+    public void getShortestPath(Path path, Projection projection, final OnSearchFinishListener onSearchFinishListener) {
 
-        if (path.getSource().getClass().getName().equals("com.example.nouno.locateme.Data.Place")&&path.getDestination().getClass().getName().equals("com.example.nouno.locateme.Data.Place"))
-        {
+        if (path.getSource().getClass().getName().equals("com.example.nouno.locateme.Data.Place") && path.getDestination().getClass().getName().equals("com.example.nouno.locateme.Data.Place")) {
 
             this.getShortestPath(path.getSource().getCoordinate(), path.getDestination().getCoordinate(), projection,
                     new OnSearchFinishListener() {
@@ -402,77 +466,72 @@ public class Graph {
 
     }
 
-    public ArrayList<NavigationInstruction> getNavigationInstructions(Projection projection)
-    {
+    public ArrayList<NavigationInstruction> getNavigationInstructions(Projection projection) {
         ArrayList<Coordinate> lastPolyline = new ArrayList<>();
         ArrayList<Coordinate> savedPolyline = new ArrayList<>();
         ArrayList<NavigationInstruction> navigationInstructions = new ArrayList<>();
 
         int startOrder = 0;
         int endOrder = 0;
-        int i =0;
-        for (Edge e:edges)
-        {
+        int i = 0;
+        for (Edge e : edges) {
 
-            if (lastPolyline.size()>0)
-            {
+            if (lastPolyline.size() > 0) {
 
 
-                double angle = MapGeometryUtils.angleBetween2Lines(lastPolyline.get(0),lastPolyline.get(1),
-                        e.getCoordinates().get(0),e.getCoordinates().get(1),projection);
+                double angle = MapGeometryUtils.angleBetween2Lines(lastPolyline.get(0), lastPolyline.get(1),
+                        e.getCoordinates().get(0), e.getCoordinates().get(1), projection);
 
 
-                if(angle < 160 && angle >= 20){
-                    Log.e("TAGT",angle+"");
+                if (angle < 160 && angle >= 20) {
+                    Log.e("TAGT", angle + "");
                     double distance = 0;
-                    endOrder = i-1;
-                    ArrayList<Edge> edges = getEdges(startOrder,endOrder);
-                    for (Edge e1:edges)
-                    {
-                        distance+=MapGeometryUtils.PolylineDistance(e1.getCoordinates());
+                    endOrder = i - 1;
+                    ArrayList<Edge> edges = getEdges(startOrder, endOrder);
+                    for (Edge e1 : edges) {
+                        distance += MapGeometryUtils.PolylineDistance(e1.getCoordinates());
                     }
-                    navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_LEFT,distance,startOrder,endOrder));
+                    navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_LEFT, distance, startOrder, endOrder));
                     startOrder = i;
 
 
-                };
-                if(angle < 20 && angle >= -20){
+                }
+                ;
+                if (angle < 20 && angle >= -20) {
 
-                };
-                if(angle < -20 && angle >= -160){
-                    Log.e("TAGT",angle+"");
+                }
+                ;
+                if (angle < -20 && angle >= -160) {
+                    Log.e("TAGT", angle + "");
                     double distance = 0;
-                    endOrder = i-1;
-                    ArrayList<Edge> edges = getEdges(startOrder,endOrder);
-                    for (Edge e1:edges)
-                    {
-                        distance+=MapGeometryUtils.PolylineDistance(e1.getCoordinates());
+                    endOrder = i - 1;
+                    ArrayList<Edge> edges = getEdges(startOrder, endOrder);
+                    for (Edge e1 : edges) {
+                        distance += MapGeometryUtils.PolylineDistance(e1.getCoordinates());
                     }
-                    navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_RIGHT,distance,startOrder,endOrder));
+                    navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_RIGHT, distance, startOrder, endOrder));
                     startOrder = i;
 
-                };
+                }
+                ;
 
 
             }
             lastPolyline = e.getLastPolyline();
-            for (Coordinate c : e.getCoordinates())
-            {
+            for (Coordinate c : e.getCoordinates()) {
                 savedPolyline.add(c);
             }
             i++;
         }
-        ArrayList<Coordinate> polyline = edges.get(edges.size()-1).getCoordinates();
-        NavigationInstruction navigationInstruction = new NavigationInstruction(NavigationInstruction.DIRECTION_FRONT,MapGeometryUtils.PolylineDistance(polyline),edges.size()-1,edges.size()-1);
+        ArrayList<Coordinate> polyline = edges.get(edges.size() - 1).getCoordinates();
+        NavigationInstruction navigationInstruction = new NavigationInstruction(NavigationInstruction.DIRECTION_FRONT, MapGeometryUtils.PolylineDistance(polyline), edges.size() - 1, edges.size() - 1);
         navigationInstructions.add(navigationInstruction);
         return navigationInstructions;
     }
 
-    public ArrayList<Edge> getEdges(int startOrder, int endOrder)
-    {
+    public ArrayList<Edge> getEdges(int startOrder, int endOrder) {
         ArrayList<Edge> edges = new ArrayList<>();
-        for (int i = startOrder;i<=endOrder;i++)
-        {
+        for (int i = startOrder; i <= endOrder; i++) {
             edges.add(this.edges.get(i));
         }
         return edges;
