@@ -8,13 +8,18 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,8 +30,10 @@ import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
+import com.example.nouno.locateme.Data.SearchSuggestion;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.Djikstra.GraphCreator;
+import com.example.nouno.locateme.ListAdapters.SearchItemAdapter;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
@@ -81,6 +88,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private TextView useCurrentLocationText;
     private ArrayList<Bloc> blocs;
     private Coordinate lastKnownUserLocation;
+    private ListView mSuggestionsListView;
+    private ArrayList<SearchSuggestion> searchSuggestions;
+    private SearchItemAdapter searchItemAdapter;
+    View firstSuggestionsLayout;
     private void testBlocks ()
     {
         blocs = new ArrayList<>();
@@ -153,6 +164,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus)
                 {
+                    firstSuggestionsLayout.setVisibility(View.VISIBLE);
                     if (mPath.getSource()!=null)
                     departureEditText.setText(mPath.getSource().getLabel());
                     if (state>STATE_NO_PATH)
@@ -171,11 +183,40 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 }
             }
         });
+        departureEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length()>=2)
+                {
+                    /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
+                    searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
+                    mSuggestionsListView.setAdapter(searchItemAdapter);*/
+                    populateSuggestionsList("");
+                    firstSuggestionsLayout.setVisibility(View.GONE);
+                    //searchItemAdapter.notifyDataSetChanged();
+                    //populateSuggestionsList(s.toString());
+                    Log.i("LENGTH","56");
+                }
+                Log.i("LENGTH","56");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         destinationEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus)
                 {
+                    firstSuggestionsLayout.setVisibility(View.VISIBLE);
+
                     if (state > STATE_NO_PATH)
                     {
                         destinationEditText.setText(mPath.getDestination().getLabel());
@@ -190,6 +231,32 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     destinationEditText.setText("");
                 }
+            }
+        });
+        destinationEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length()>=2)
+                {
+                    /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
+                    searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
+                    mSuggestionsListView.setAdapter(searchItemAdapter);*/
+                    populateSuggestionsList("");
+                    firstSuggestionsLayout.setVisibility(View.GONE);
+                    //searchItemAdapter.notifyDataSetChanged();
+                    //populateSuggestionsList(s.toString());
+                    Log.i("LENGTH","56");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -224,7 +291,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         }
                         hideKeyboard();
                         updateUiState(state,false,false);
-                        //hideKeyboard();
+                        hideKeyboard();
                     }
                     else
                     {
@@ -234,6 +301,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 }
             }
         });
+        //populateSuggestionsList("");
     }
 
     private Coordinate getUserLocation ()
@@ -283,6 +351,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         distancedurationText = (TextView)findViewById(R.id.text_duration_distance);
         arrivalTimeText = (TextView)findViewById(R.id.text_arrival_time);
         useCurrentLocationText = (TextView)findViewById(R.id.text_use_current_location);
+        mSuggestionsListView = (ListView)findViewById(R.id.suggestions_list);
+        firstSuggestionsLayout = findViewById(R.id.layout_interests_suggestions);
     }
 
 
@@ -424,7 +494,39 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         //mCustomMapView.moveCamera(new Coordinate(36.712126,3.178768),18);
 
     }
+    private void populateSuggestionsList (String query)
+    {
+        searchSuggestions = new ArrayList<>();
+        searchSuggestions.add(new SearchSuggestion("Faculté de physique","Class"));
+        searchSuggestions.add(new SearchSuggestion("Faculté de génie","Class"));
+        searchItemAdapter = new SearchItemAdapter(this,searchSuggestions);
 
+        mSuggestionsListView.setAdapter(searchItemAdapter);
+        mSuggestionsListView.setDividerHeight(0);
+        justifyListViewHeightBasedOnChildren(mSuggestionsListView);
+
+    }
+
+    public void justifyListViewHeightBasedOnChildren (ListView listView) {
+
+        ListAdapter adapter = listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
+    }
 
 
     private void getPath()
