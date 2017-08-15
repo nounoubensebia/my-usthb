@@ -37,7 +37,7 @@
         <activity
             android:name=".Activities.SearchQueryTwoActivity"
             android:label="Où aller ?"
-            android:windowSoftInputMode="adjustResize"
+
             android:theme="@style/MainTheme" />
         <activity
             android:name=".Activities.SetMarkerActivity"

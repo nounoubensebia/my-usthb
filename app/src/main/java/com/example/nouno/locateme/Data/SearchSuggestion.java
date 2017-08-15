@@ -5,12 +5,24 @@ package com.example.nouno.locateme.Data;
  */
 
 public class SearchSuggestion {
+    private long id;
     private String blocName;
     private String classroomName;
+    private boolean isSpecial;
 
-    public SearchSuggestion(String blocName, String classroomName) {
+    public SearchSuggestion(long id, String blocName, String classroomName, boolean isSpecial) {
+        this.id = id;
         this.blocName = blocName;
         this.classroomName = classroomName;
+        this.isSpecial = isSpecial;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public SearchSuggestion(String blocName) {
@@ -31,5 +43,13 @@ public class SearchSuggestion {
 
     public void setClassroomName(String classroomName) {
         this.classroomName = classroomName;
+    }
+
+    public boolean isSpecial() {
+        return isSpecial;
+    }
+
+    public void setSpecial(boolean special) {
+        isSpecial = special;
     }
 }

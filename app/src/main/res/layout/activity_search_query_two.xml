@@ -93,7 +93,7 @@
         </LinearLayout>
 
     </LinearLayout>
-    <ScrollView
+    <LinearLayout
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:id="@+id/scrollView"
@@ -110,6 +110,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/layout_interests_suggestions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -160,15 +161,15 @@
 
                 android:background="#C6C6C6" />
         </LinearLayout>
-        <ListView
-            android:layout_marginTop="16dp"
+        <android.support.v7.widget.RecyclerView
+
             android:id="@+id/suggestions_list"
-            android:background="#FFF"
+
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ListView>
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinate_layout"

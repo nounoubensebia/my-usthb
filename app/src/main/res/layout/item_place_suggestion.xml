@@ -6,6 +6,35 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/layout_center_of_interest"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/text_center_of_interest_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:drawableLeft="@drawable/ic_near_me_black_24dp"
+            android:drawablePadding="8dp"
+            android:text="Utiliser la position actuelle"
+            android:textColor="#616161"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="16dp"
+
+            android:background="#C6C6C6" />
+    </LinearLayout>
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/layout_structure"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

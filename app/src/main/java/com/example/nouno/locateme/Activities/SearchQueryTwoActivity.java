@@ -8,12 +8,16 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -36,6 +40,7 @@ import com.example.nouno.locateme.Data.SearchSuggestion;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.Djikstra.GraphCreator;
 import com.example.nouno.locateme.ListAdapters.SearchItemAdapter;
+import com.example.nouno.locateme.ListAdapters.SearchSuggestionItemAdapter;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
@@ -90,7 +95,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private TextView useCurrentLocationText;
     private ArrayList<Bloc> blocs;
     private Coordinate lastKnownUserLocation;
-    private ListView mSuggestionsListView;
+    private RecyclerView mSuggestionsListView;
     private ArrayList<SearchSuggestion> searchSuggestions;
     private SearchItemAdapter searchItemAdapter;
     View firstSuggestionsLayout;
@@ -211,8 +216,18 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
                     searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
                     mSuggestionsListView.setAdapter(searchItemAdapter);*/
-                        populateSuggestionsList("");
+                        //populateSuggestionsList("");
                         firstSuggestionsLayout.setVisibility(View.GONE);
+                        ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<SearchSuggestion>();
+                        searchSuggestions.add(new SearchSuggestion(3,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(4,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(5,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(6,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(7,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(8,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(9,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(10,"Faculté de génie","Class",false));
+                        ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
                         //searchItemAdapter.notifyDataSetChanged();
                         //populateSuggestionsList(s.toString());
                         Log.i("LENGTH","56");
@@ -269,7 +284,16 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
                     searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
                     mSuggestionsListView.setAdapter(searchItemAdapter);*/
-                        populateSuggestionsList("");
+                        //populateSuggestionsList("");
+                        searchSuggestions.add(new SearchSuggestion(3,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(4,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(5,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(6,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(7,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(8,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(9,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(10,"Faculté de génie","Class",false));
+                        ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
                         firstSuggestionsLayout.setVisibility(View.GONE);
                         //searchItemAdapter.notifyDataSetChanged();
                         //populateSuggestionsList(s.toString());
@@ -341,11 +365,22 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 }
             }
         });*/
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                    if ((departureEditText.hasFocus() || destinationEditText.hasFocus())&&keyboardShown)
+                        hideKeyboard();
+                }
+            });
+        }*/
 
-        mSuggestionsListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+
+        mSuggestionsListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState !=0){
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState !=0){
                     InputMethodManager inputMethodManager = (InputMethodManager)
                             getSystemService(Activity.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(SearchQueryTwoActivity.this.getCurrentFocus().getWindowToken(), 0);
@@ -353,10 +388,11 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
             }
         });
+        populateSuggestionsList("",true);
         //populateSuggestionsList("");
     }
 
@@ -407,7 +443,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         distancedurationText = (TextView)findViewById(R.id.text_duration_distance);
         arrivalTimeText = (TextView)findViewById(R.id.text_arrival_time);
         useCurrentLocationText = (TextView)findViewById(R.id.text_use_current_location);
-        mSuggestionsListView = (ListView)findViewById(R.id.suggestions_list);
+        mSuggestionsListView = (RecyclerView) findViewById(R.id.suggestions_list);
         firstSuggestionsLayout = findViewById(R.id.layout_interests_suggestions);
     }
 
@@ -550,15 +586,29 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         //mCustomMapView.moveCamera(new Coordinate(36.712126,3.178768),18);
 
     }
-    private void populateSuggestionsList (String query)
+    private void populateSuggestionsList (String query,boolean first)
     {
-        searchSuggestions = new ArrayList<>();
-        searchSuggestions.add(new SearchSuggestion("Faculté de physique","Class"));
-        searchSuggestions.add(new SearchSuggestion("Faculté de génie","Class"));
-        searchItemAdapter = new SearchItemAdapter(this,searchSuggestions);
 
-        mSuggestionsListView.setAdapter(searchItemAdapter);
-        mSuggestionsListView.setDividerHeight(0);
+        searchSuggestions = new ArrayList<>();
+        if (!first)
+        {
+            searchSuggestions.add(new SearchSuggestion(3,"Faculté de physique","Class",false));
+            searchSuggestions.add(new SearchSuggestion(4,"Faculté de génie","Class",false));
+            searchSuggestions.add(new SearchSuggestion(5,"Faculté de physique","Class",false));
+            searchSuggestions.add(new SearchSuggestion(6,"Faculté de génie","Class",false));
+            searchSuggestions.add(new SearchSuggestion(7,"Faculté de physique","Class",false));
+            searchSuggestions.add(new SearchSuggestion(8,"Faculté de génie","Class",false));
+            searchSuggestions.add(new SearchSuggestion(9,"Faculté de physique","Class",false));
+            searchSuggestions.add(new SearchSuggestion(10,"Faculté de génie","Class",false));
+        }
+        searchItemAdapter = new SearchItemAdapter(this,searchSuggestions);
+        SearchSuggestionItemAdapter searchSuggestionItemAdapter = new SearchSuggestionItemAdapter(this,searchSuggestions,R.layout.item_place_suggestion);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mSuggestionsListView.setLayoutManager(mLayoutManager);
+        mSuggestionsListView.setItemAnimator(new DefaultItemAnimator());
+        mSuggestionsListView.setAdapter(searchSuggestionItemAdapter);
+        //mSuggestionsListView.setAdapter(searchItemAdapter);
+        //mSuggestionsListView.setDividerHeight(0);
         //justifyListViewHeightBasedOnChildren(mSuggestionsListView);
 
     }
