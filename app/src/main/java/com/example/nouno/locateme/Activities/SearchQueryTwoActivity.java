@@ -41,6 +41,7 @@ import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.Djikstra.GraphCreator;
 import com.example.nouno.locateme.ListAdapters.SearchItemAdapter;
 import com.example.nouno.locateme.ListAdapters.SearchSuggestionItemAdapter;
+import com.example.nouno.locateme.OnButtonClickListner;
 import com.example.nouno.locateme.OnSearchFinishListener;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
@@ -96,9 +97,9 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private ArrayList<Bloc> blocs;
     private Coordinate lastKnownUserLocation;
     private RecyclerView mSuggestionsListView;
-    private ArrayList<SearchSuggestion> searchSuggestions;
-    private SearchItemAdapter searchItemAdapter;
-    View firstSuggestionsLayout;
+
+
+
     private void testBlocks ()
     {
         blocs = new ArrayList<>();
@@ -117,61 +118,23 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_query_two);
         getSupportActionBar().setElevation(0);
         getViews();
+        populateSuggestionsList("",false);
         KeyboardVisibilityEvent.setEventListener(
                 this,
                 new KeyboardVisibilityEventListener() {
                     @Override
                     public void onVisibilityChanged(boolean isOpen) {
-                       if (!isOpen)
-                       {
-                           //updateUiState(state,true,true);
-                           keyboardShown = false;
-                           //if (state > STATE_NO_PATH)
-                               //updateUiState(state,false,true);
-                       }
-                       else
-                       {
-                           keyboardShown = true;
-                           //updateUiState(state,false,false);
-                           //if (state>STATE_NO_PATH)
-                           //updateUiState(state,true,true);
-                       }
+                       keyboardShown = isOpen;
                     }
                 });
         createMap(savedInstanceState);
-        mSetPositionOnMapTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideKeyboard();
-                Intent i = new Intent(SearchQueryTwoActivity.this,SetMarkerActivity.class);
 
-                if (departureEditText.hasFocus())
-                {
-
-                    if (mPath.getDestination()!=null)
-                    {
-                        i.putExtra("destination",mPath.getDestination().toJson());
-                    }
-                    i.putExtra("requestCode",REQUEST_DEPARTURE_CODE);
-                    startActivityForResult(i,REQUEST_DEPARTURE_CODE);
-                }
-                else {
-
-                    if (mPath.getSource()!=null)
-                    {
-                        i.putExtra("departure",mPath.getSource().toJson());
-                    }
-                    i.putExtra("requestCode",REQUEST_DESTINATION_CODE);
-                    startActivityForResult(i, REQUEST_DESTINATION_CODE);
-                }
-            }
-        });
         departureEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus)
                 {
-                    firstSuggestionsLayout.setVisibility(View.VISIBLE);
+                    reinitSearchSuggestionsList();
                     if (mPath.getSource()!=null)
                     departureEditText.setText(mPath.getSource().getLabel());
                     if (state>STATE_NO_PATH)
@@ -195,6 +158,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 }
             }
         });
+
         departureEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -213,24 +177,22 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     if (s.toString().length()>=2)
                     {
-                    /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
-                    searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
-                    mSuggestionsListView.setAdapter(searchItemAdapter);*/
-                        //populateSuggestionsList("");
-                        firstSuggestionsLayout.setVisibility(View.GONE);
+
                         ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<SearchSuggestion>();
-                        searchSuggestions.add(new SearchSuggestion(3,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(4,"Faculté de génie","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(5,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(6,"Faculté de génie","Class",false));
                         searchSuggestions.add(new SearchSuggestion(7,"Faculté de physique","Class",false));
                         searchSuggestions.add(new SearchSuggestion(8,"Faculté de génie","Class",false));
                         searchSuggestions.add(new SearchSuggestion(9,"Faculté de physique","Class",false));
                         searchSuggestions.add(new SearchSuggestion(10,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(11,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(12,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(13,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(14,"Faculté de génie","Class",false));
                         ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
-                        //searchItemAdapter.notifyDataSetChanged();
-                        //populateSuggestionsList(s.toString());
-                        Log.i("LENGTH","56");
+
+                    }
+                    else
+                    {
+                        reinitSearchSuggestionsList();
                     }
                 }
 
@@ -241,7 +203,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus)
                 {
-                    firstSuggestionsLayout.setVisibility(View.VISIBLE);
+
 
                     if (state > STATE_NO_PATH)
                     {
@@ -281,23 +243,22 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     if (s.toString().length()>=2)
                     {
-                    /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
-                    searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
-                    mSuggestionsListView.setAdapter(searchItemAdapter);*/
-                        //populateSuggestionsList("");
-                        searchSuggestions.add(new SearchSuggestion(3,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(4,"Faculté de génie","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(5,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(6,"Faculté de génie","Class",false));
+                        ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<SearchSuggestion>();
                         searchSuggestions.add(new SearchSuggestion(7,"Faculté de physique","Class",false));
                         searchSuggestions.add(new SearchSuggestion(8,"Faculté de génie","Class",false));
                         searchSuggestions.add(new SearchSuggestion(9,"Faculté de physique","Class",false));
                         searchSuggestions.add(new SearchSuggestion(10,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(11,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(12,"Faculté de génie","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(13,"Faculté de physique","Class",false));
+                        searchSuggestions.add(new SearchSuggestion(14,"Faculté de génie","Class",false));
                         ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
-                        firstSuggestionsLayout.setVisibility(View.GONE);
-                        //searchItemAdapter.notifyDataSetChanged();
-                        //populateSuggestionsList(s.toString());
+
                         Log.i("LENGTH","56");
+                    }
+                    else
+                    {
+                        reinitSearchSuggestionsList();
                     }
                 }
             }
@@ -310,70 +271,6 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             }
         });
         departureEditText.requestFocus();
-        useCurrentLocationText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCustomMapView.getMapboxMap().setMyLocationEnabled(true);
-                Log.i("Click","clicked");
-                if (getUserLocation()!=null)
-                    {
-
-                    Coordinate coordinate = getUserLocation ();
-                    if (coordinate.isInsideCampus())
-                    {
-                        if (departureEditText.hasFocus())
-                        {
-                            setDeparture(new Place("Ma position",coordinate,true));
-                            //hideKeyboard();
-                        }
-                        else {
-                            if (destinationEditText.hasFocus()) {
-                                setDestination(new Place("Ma position", coordinate,true));
-                                //hideKeyboard();
-                            }
-                        }
-                        hideKeyboard();
-                        updateUiState(state,false,false);
-                        hideKeyboard();
-                    }
-                    else
-                    {
-                        Toast.makeText(SearchQueryTwoActivity.this,"Vous ne pouvez pas utiliser votre position" +
-                                "vous etes en dehors du campus",Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-        });
-
-        /*scrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //if (keyboardShown)
-                //if (event.getActionMasked()==MotionEvent.ACTION_SCROLL)
-                //if ((departureEditText.hasFocus() || destinationEditText.hasFocus())&&keyboardShown)
-                //hideKeyboard();
-                //return true;
-                return false;
-            }
-        });*/
-        /*scrollView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-                    if ((departureEditText.hasFocus() || destinationEditText.hasFocus())&&keyboardShown)
-                    hideKeyboard();
-                }
-            }
-        });*/
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    if ((departureEditText.hasFocus() || destinationEditText.hasFocus())&&keyboardShown)
-                        hideKeyboard();
-                }
-            });
-        }*/
 
 
 
@@ -392,8 +289,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        populateSuggestionsList("",true);
-        //populateSuggestionsList("");
+
+
     }
 
     private Coordinate getUserLocation ()
@@ -444,10 +341,21 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         arrivalTimeText = (TextView)findViewById(R.id.text_arrival_time);
         useCurrentLocationText = (TextView)findViewById(R.id.text_use_current_location);
         mSuggestionsListView = (RecyclerView) findViewById(R.id.suggestions_list);
-        firstSuggestionsLayout = findViewById(R.id.layout_interests_suggestions);
+
     }
 
-
+    private void reinitSearchSuggestionsList ()
+    {
+        ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<>();
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE,null,null,true));
+        ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -588,28 +496,85 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     }
     private void populateSuggestionsList (String query,boolean first)
     {
+        ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<>();
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE,null,null,true));
 
-        searchSuggestions = new ArrayList<>();
-        if (!first)
-        {
-            searchSuggestions.add(new SearchSuggestion(3,"Faculté de physique","Class",false));
-            searchSuggestions.add(new SearchSuggestion(4,"Faculté de génie","Class",false));
-            searchSuggestions.add(new SearchSuggestion(5,"Faculté de physique","Class",false));
-            searchSuggestions.add(new SearchSuggestion(6,"Faculté de génie","Class",false));
-            searchSuggestions.add(new SearchSuggestion(7,"Faculté de physique","Class",false));
-            searchSuggestions.add(new SearchSuggestion(8,"Faculté de génie","Class",false));
-            searchSuggestions.add(new SearchSuggestion(9,"Faculté de physique","Class",false));
-            searchSuggestions.add(new SearchSuggestion(10,"Faculté de génie","Class",false));
-        }
-        searchItemAdapter = new SearchItemAdapter(this,searchSuggestions);
+
+
         SearchSuggestionItemAdapter searchSuggestionItemAdapter = new SearchSuggestionItemAdapter(this,searchSuggestions,R.layout.item_place_suggestion);
+        searchSuggestionItemAdapter.setOnMyPositionClickListner(new OnButtonClickListner.OnButtonClickListener() {
+            @Override
+            public void OnClick(Object o) {
+                mCustomMapView.getMapboxMap().setMyLocationEnabled(true);
+                Log.i("Click","clicked");
+                if (getUserLocation()!=null)
+                {
+
+                    Coordinate coordinate = getUserLocation ();
+                    if (coordinate.isInsideCampus())
+                    {
+                        if (departureEditText.hasFocus())
+                        {
+                            setDeparture(new Place("Ma position",coordinate,true));
+                            //hideKeyboard();
+                        }
+                        else {
+                            if (destinationEditText.hasFocus()) {
+                                setDestination(new Place("Ma position", coordinate,true));
+                                //hideKeyboard();
+                            }
+                        }
+                        hideKeyboard();
+                        updateUiState(state,false,false);
+                        hideKeyboard();
+                    }
+                    else
+                    {
+                        Toast.makeText(SearchQueryTwoActivity.this,"Vous ne pouvez pas utiliser votre position" +
+                                "vous etes en dehors du campus",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+        searchSuggestionItemAdapter.setOnSetLocationOnMapClickListner(new OnButtonClickListner.OnButtonClickListener() {
+            @Override
+            public void OnClick(Object o) {
+                hideKeyboard();
+                Intent i = new Intent(SearchQueryTwoActivity.this,SetMarkerActivity.class);
+
+                if (departureEditText.hasFocus())
+                {
+
+                    if (mPath.getDestination()!=null)
+                    {
+                        i.putExtra("destination",mPath.getDestination().toJson());
+                    }
+                    i.putExtra("requestCode",REQUEST_DEPARTURE_CODE);
+                    startActivityForResult(i,REQUEST_DEPARTURE_CODE);
+                }
+                else {
+
+                    if (mPath.getSource()!=null)
+                    {
+                        i.putExtra("departure",mPath.getSource().toJson());
+                    }
+                    i.putExtra("requestCode",REQUEST_DESTINATION_CODE);
+                    startActivityForResult(i, REQUEST_DESTINATION_CODE);
+                }
+            }
+        });
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mSuggestionsListView.setLayoutManager(mLayoutManager);
         mSuggestionsListView.setItemAnimator(new DefaultItemAnimator());
         mSuggestionsListView.setAdapter(searchSuggestionItemAdapter);
-        //mSuggestionsListView.setAdapter(searchItemAdapter);
-        //mSuggestionsListView.setDividerHeight(0);
-        //justifyListViewHeightBasedOnChildren(mSuggestionsListView);
+
 
     }
 

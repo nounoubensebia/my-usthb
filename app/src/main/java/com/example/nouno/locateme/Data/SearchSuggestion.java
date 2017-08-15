@@ -10,6 +10,14 @@ public class SearchSuggestion {
     private String classroomName;
     private boolean isSpecial;
 
+    public static final long ID_MY_POSITION = 0;
+    public static final long ID_SET_ON_MAP = 1;
+    public static final long ID_BUVETTE = 2;
+    public static final long ID_SORTIE = 3;
+    public static final long ID_SANNITAIRE = 4;
+    public static final long ID_KIOSQUE = 5;
+    public static final long ID_MOSQUE = 6;
+
     public SearchSuggestion(long id, String blocName, String classroomName, boolean isSpecial) {
         this.id = id;
         this.blocName = blocName;

@@ -36,7 +36,16 @@ public final class LocalsContract {
         public static final String COLUMN_NAME_TAGS = "tags";
         public static final String COLUMN_NAME_LAT = "lat";
         public static final String COLUMN_NAME_LON = "lon";
+        public static final String COLUMN_NAME_TYPE = "type";
+
 
         public static final long NO_STRUCTURE = -1;
+        public static final int TYPE_MOSQUE = 0;
+        public static final int TYPE_TOILETTE = 1;
+        public static final int TYPE_CLUB = 2;
+        public static final int TYPE_INFIRMERIE = 3;
+        public static final int TYPE_BUVETTE = 4;
+        public static final int TYPE_KIOSQUE = 5;
+        public static final int TYPE_SORTIE = 6;
     }
 }

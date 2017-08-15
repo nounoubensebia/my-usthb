@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#FFF"
+
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <LinearLayout
+        android:background="#FFF"
+        android:visibility="gone"
         android:id="@+id/layout_center_of_interest"
-        android:layout_marginTop="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="match_parent">
@@ -16,10 +20,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"
-            android:paddingTop="16dp"
+
             android:paddingBottom="16dp"
             android:drawableLeft="@drawable/ic_near_me_black_24dp"
-            android:drawablePadding="8dp"
+            android:drawablePadding="16dp"
             android:text="Utiliser la position actuelle"
             android:textColor="#616161"
             android:textSize="16sp" />
@@ -33,6 +37,21 @@
             android:background="#C6C6C6" />
     </LinearLayout>
     <LinearLayout
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:id="@+id/layout_suggestions_text"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:text="Suggestions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:background="#FFF"
         android:visibility="gone"
         android:id="@+id/layout_structure"
         android:orientation="vertical"
