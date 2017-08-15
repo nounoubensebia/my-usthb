@@ -11,11 +11,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -174,6 +176,11 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         {
                             destinationEditText.setFocusableInTouchMode(false);
                         }
+
+                    }
+                    if (mPath.getSource() == null)
+                    {
+                        departureEditText.setText("");
                     }
                 }
                 if (hasFocus)
@@ -191,22 +198,26 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()>=2)
-                {
-                    /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
-                    searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
-                    mSuggestionsListView.setAdapter(searchItemAdapter);*/
-                    populateSuggestionsList("");
-                    firstSuggestionsLayout.setVisibility(View.GONE);
-                    //searchItemAdapter.notifyDataSetChanged();
-                    //populateSuggestionsList(s.toString());
-                    Log.i("LENGTH","56");
-                }
+
                 Log.i("LENGTH","56");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (departureEditText.hasFocus())
+                {
+                    if (s.toString().length()>=2)
+                    {
+                    /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
+                    searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
+                    mSuggestionsListView.setAdapter(searchItemAdapter);*/
+                        populateSuggestionsList("");
+                        firstSuggestionsLayout.setVisibility(View.GONE);
+                        //searchItemAdapter.notifyDataSetChanged();
+                        //populateSuggestionsList(s.toString());
+                        Log.i("LENGTH","56");
+                    }
+                }
 
             }
         });
@@ -225,6 +236,11 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                             departureEditText.setFocusableInTouchMode(false);
 
                         }
+
+                    }
+                    if (mPath.getDestination()==null)
+                    {
+                        destinationEditText.setText("");
                     }
                 }
                 if (hasFocus)
@@ -241,22 +257,25 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()>=2)
-                {
-                    /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
-                    searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
-                    mSuggestionsListView.setAdapter(searchItemAdapter);*/
-                    populateSuggestionsList("");
-                    firstSuggestionsLayout.setVisibility(View.GONE);
-                    //searchItemAdapter.notifyDataSetChanged();
-                    //populateSuggestionsList(s.toString());
-                    Log.i("LENGTH","56");
-                }
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if (destinationEditText.hasFocus())
+                {
+                    if (s.toString().length()>=2)
+                    {
+                    /*searchSuggestions.add(new SearchSuggestion("Fac","Class"));
+                    searchItemAdapter = new SearchItemAdapter(SearchQueryTwoActivity.this,searchSuggestions);
+                    mSuggestionsListView.setAdapter(searchItemAdapter);*/
+                        populateSuggestionsList("");
+                        firstSuggestionsLayout.setVisibility(View.GONE);
+                        //searchItemAdapter.notifyDataSetChanged();
+                        //populateSuggestionsList(s.toString());
+                        Log.i("LENGTH","56");
+                    }
+                }
             }
         });
 
@@ -299,6 +318,43 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                                 "vous etes en dehors du campus",Toast.LENGTH_LONG).show();
                     }
                 }
+            }
+        });
+
+        /*scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //if (keyboardShown)
+                //if (event.getActionMasked()==MotionEvent.ACTION_SCROLL)
+                //if ((departureEditText.hasFocus() || destinationEditText.hasFocus())&&keyboardShown)
+                //hideKeyboard();
+                //return true;
+                return false;
+            }
+        });*/
+        /*scrollView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) {
+                    if ((departureEditText.hasFocus() || destinationEditText.hasFocus())&&keyboardShown)
+                    hideKeyboard();
+                }
+            }
+        });*/
+
+        mSuggestionsListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState !=0){
+                    InputMethodManager inputMethodManager = (InputMethodManager)
+                            getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(SearchQueryTwoActivity.this.getCurrentFocus().getWindowToken(), 0);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
             }
         });
         //populateSuggestionsList("");
@@ -503,7 +559,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
         mSuggestionsListView.setAdapter(searchItemAdapter);
         mSuggestionsListView.setDividerHeight(0);
-        justifyListViewHeightBasedOnChildren(mSuggestionsListView);
+        //justifyListViewHeightBasedOnChildren(mSuggestionsListView);
 
     }
 
@@ -654,7 +710,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         pathCalculProgress.setVisibility(View.GONE);
                         scrollView.setVisibility(View.GONE);
                         pathFoundLayout.setVisibility(View.GONE);
-                        pathNotFoundLayout.setVisibility(View.GONE);
+                        pathNotFoundLayout.setVisibility(View.VISIBLE);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -664,13 +720,13 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
                             }
                         },250);
-                        handler.postDelayed(new Runnable() {
+                        /*handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 pathNotFoundLayout.setVisibility(View.VISIBLE);
                                 //hideKeyboard();
                             }
-                        },500);
+                        },500);*/
 
                     }
                     else
