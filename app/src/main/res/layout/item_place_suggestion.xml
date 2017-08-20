@@ -96,10 +96,7 @@
                 android:layout_height="wrap_content"
                 android:text="Faculté de physique" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Salle de cours" />
+
 
 
         </LinearLayout>

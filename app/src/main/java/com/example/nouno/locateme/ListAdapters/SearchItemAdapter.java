@@ -2,12 +2,9 @@ package com.example.nouno.locateme.ListAdapters;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,16 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.module.AppGlideModule;
 import com.example.nouno.locateme.Activities.GlideApp;
-import com.example.nouno.locateme.Activities.MyAppGlideModule;
 import com.example.nouno.locateme.Data.SearchSuggestion;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.FileUtils;
-import com.google.android.gms.wearable.Asset;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,8 +45,8 @@ public class SearchItemAdapter extends ArrayAdapter<SearchSuggestion> {
         TextView bigLabel = (TextView) item.findViewById(R.id.biglabel);
         TextView smallLabel = (TextView)item.findViewById(R.id.smallLabel);
         ImageView imageView = (ImageView)item.findViewById(R.id.image_view);
-        bigLabel.setText(searchSuggestion.getBlocName());
-        smallLabel.setText(searchSuggestion.getClassroomName());
+        bigLabel.setText(searchSuggestion.getStructure().getLabel());
+        smallLabel.setText("");
 
             //Resources resources = item.getResources();
 

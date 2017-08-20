@@ -13,7 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.nouno.locateme.Activities.GlideApp;
+import com.example.nouno.locateme.Data.CenterOfInterest;
+import com.example.nouno.locateme.Data.Classroom;
 import com.example.nouno.locateme.Data.SearchSuggestion;
+import com.example.nouno.locateme.Data.StructureList;
 import com.example.nouno.locateme.OnButtonClickListner;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.FileUtils;
@@ -30,16 +33,23 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
     private ArrayList<SearchSuggestion> searchSuggestions;
     int itemLayout;
     private Context context;
+    private StructureList structureList;
     private OnButtonClickListner.OnButtonClickListener onMyPositionClickListner;
     private OnButtonClickListner.OnButtonClickListener onSetLocationOnMapClickListner;
-    public SearchSuggestionItemAdapter (Context context,ArrayList<SearchSuggestion> searchSuggestions, int itemLayout)
+
+    private OnButtonClickListner.OnButtonClickListener<SearchSuggestion> onStructureClickListner;
+    public SearchSuggestionItemAdapter (Context context,ArrayList<SearchSuggestion> searchSuggestions,StructureList structureList, int itemLayout)
     {
         this.searchSuggestions = searchSuggestions;
         this.itemLayout = itemLayout;
         this.context = context;
+        this.structureList = structureList;
         setHasStableIds(true);
     }
 
+    public void setOnStructureClickListner(OnButtonClickListner.OnButtonClickListener<SearchSuggestion> onStructureClickListner) {
+        this.onStructureClickListner = onStructureClickListner;
+    }
 
     public OnButtonClickListner.OnButtonClickListener getOnMyPositionClickListner() {
         return onMyPositionClickListner;
@@ -77,7 +87,7 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        SearchSuggestion searchSuggestion = searchSuggestions.get(position);
+        final SearchSuggestion searchSuggestion = searchSuggestions.get(position);
         if (searchSuggestion.isSpecial())
         {
             holder.suggestionTextLayout.setVisibility(View.GONE);
@@ -159,11 +169,27 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
         }
         else
         {
+            holder.structureLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onStructureClickListner.OnClick(searchSuggestion);
+                }
+            });
             holder.suggestionTextLayout.setVisibility(View.GONE);
             holder.centerOfInterestLayout.setVisibility(View.GONE);
             holder.structureLayout.setVisibility(View.VISIBLE);
-            holder.bigLabel.setText(searchSuggestion.getBlocName());
-            holder.smallLabel.setText(searchSuggestion.getClassroomName());
+            holder.bigLabel.setText(searchSuggestion.getStructure().getLabel());
+            if (searchSuggestion.getStructure() instanceof  Classroom)
+            {
+                holder.bigLabel.setText("Salle "+ searchSuggestion.getStructure().getLabel());
+            }
+            if (searchSuggestion.getStructure() instanceof Classroom || searchSuggestion.getStructure() instanceof CenterOfInterest)
+            {
+                holder.smallLabel.setText (structureList.getBlocLabel(searchSuggestion.getStructure()));
+            }
+            else {
+                holder.smallLabel.setText("");
+            }
             if (position == 0)
             {
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)holder.structureLayout.getLayoutParams();

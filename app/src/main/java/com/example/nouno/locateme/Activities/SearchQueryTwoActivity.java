@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -14,32 +15,26 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nouno.locateme.Data.Bloc;
+import com.example.nouno.locateme.Data.CenterOfInterest;
 import com.example.nouno.locateme.Data.Classroom;
 import com.example.nouno.locateme.Data.Coordinate;
+import com.example.nouno.locateme.Data.LocalsDbHelper;
 import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Data.SearchSuggestion;
+import com.example.nouno.locateme.Data.StructureList;
 import com.example.nouno.locateme.Djikstra.Graph;
-import com.example.nouno.locateme.Djikstra.GraphCreator;
-import com.example.nouno.locateme.ListAdapters.SearchItemAdapter;
 import com.example.nouno.locateme.ListAdapters.SearchSuggestionItemAdapter;
 import com.example.nouno.locateme.OnButtonClickListner;
 import com.example.nouno.locateme.OnSearchFinishListener;
@@ -57,6 +52,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -94,26 +90,31 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private ArrayList<NavigationInstruction> navigationInstructions;
     private boolean keyboardShown;
     private TextView useCurrentLocationText;
-    private ArrayList<Bloc> blocs;
+    private StructureList structureList;
     private Coordinate lastKnownUserLocation;
     private RecyclerView mSuggestionsListView;
 
 
 
-    private void testBlocks ()
+    private void getStructureList ()
     {
-        blocs = new ArrayList<>();
-        ArrayList<Classroom> classrooms = new ArrayList<>();
-        classrooms.add(new Classroom("Salle 228","Desc"));
-        blocs.add(new Bloc(null,"Faculté d'informatique",classrooms));
-        blocs.add(new Bloc(null,"Faculté d'életronique",classrooms));
-        blocs.add(new Bloc(null,"Faculté de biologie",classrooms));
+        InputStream inputStream = null;
+        try {
+            inputStream = this.getResources().getAssets().open("LocalsJson.txt");
+
+        String localsJson = FileUtils.readFile(inputStream);
+        structureList = new Gson().fromJson(localsJson,StructureList.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        testBlocks();
-
+        getStructureList();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_query_two);
         getSupportActionBar().setElevation(0);
@@ -178,15 +179,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     if (s.toString().length()>=2)
                     {
 
-                        ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<SearchSuggestion>();
-                        searchSuggestions.add(new SearchSuggestion(7,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(8,"Faculté de génie","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(9,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(10,"Faculté de génie","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(11,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(12,"Faculté de génie","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(13,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(14,"Faculté de génie","Class",false));
+                        ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
                         ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
 
                     }
@@ -243,15 +236,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     if (s.toString().length()>=2)
                     {
-                        ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<SearchSuggestion>();
-                        searchSuggestions.add(new SearchSuggestion(7,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(8,"Faculté de génie","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(9,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(10,"Faculté de génie","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(11,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(12,"Faculté de génie","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(13,"Faculté de physique","Class",false));
-                        searchSuggestions.add(new SearchSuggestion(14,"Faculté de génie","Class",false));
+                        ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
+
                         ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
 
                         Log.i("LENGTH","56");
@@ -347,13 +333,13 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private void reinitSearchSuggestionsList ()
     {
         ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<>();
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE,null,true));
         ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
     }
 
@@ -497,17 +483,17 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private void populateSuggestionsList (String query,boolean first)
     {
         ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<>();
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE,null,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE,null,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE,null,true));
 
 
 
-        SearchSuggestionItemAdapter searchSuggestionItemAdapter = new SearchSuggestionItemAdapter(this,searchSuggestions,R.layout.item_place_suggestion);
+        SearchSuggestionItemAdapter searchSuggestionItemAdapter = new SearchSuggestionItemAdapter(this,searchSuggestions,structureList,R.layout.item_place_suggestion);
         searchSuggestionItemAdapter.setOnMyPositionClickListner(new OnButtonClickListner.OnButtonClickListener() {
             @Override
             public void OnClick(Object o) {
@@ -567,9 +553,37 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     i.putExtra("requestCode",REQUEST_DESTINATION_CODE);
                     startActivityForResult(i, REQUEST_DESTINATION_CODE);
                 }
+
             }
         });
-
+        searchSuggestionItemAdapter.setOnStructureClickListner(new OnButtonClickListner.OnButtonClickListener<SearchSuggestion>() {
+            @Override
+            public void OnClick(SearchSuggestion searchSuggestion) {
+                String s = "";
+                String d = "";
+                if (searchSuggestion.getStructure()instanceof Classroom)
+                {
+                    s="Salle ";
+                    d=" "+structureList.getBlocLabel(searchSuggestion.getStructure());
+                }
+                if (searchSuggestion.getStructure()instanceof CenterOfInterest)
+                {
+                    d= " "+structureList.getBlocLabel(searchSuggestion.getStructure());
+                }
+                if (departureEditText.hasFocus())
+                {
+                    setDeparture(new Place(s+searchSuggestion.getStructure().getLabel()+d,searchSuggestion.getStructure().getCoordinate(),false));
+                }
+                else
+                if (destinationEditText.hasFocus())
+                {
+                    setDestination(new Place(s+searchSuggestion.getStructure().getLabel()+d,searchSuggestion.getStructure().getCoordinate(),false));
+                }
+                hideKeyboard();
+                updateUiState(state,false,false);
+                hideKeyboard();
+            }
+        });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mSuggestionsListView.setLayoutManager(mLayoutManager);
         mSuggestionsListView.setItemAnimator(new DefaultItemAnimator());
@@ -578,26 +592,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     }
 
-    public void justifyListViewHeightBasedOnChildren (ListView listView) {
 
-        ListAdapter adapter = listView.getAdapter();
-
-        if (adapter == null) {
-            return;
-        }
-        ViewGroup vg = listView;
-        int totalHeight = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View listItem = adapter.getView(i, null, vg);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
-        listView.setLayoutParams(par);
-        listView.requestLayout();
-    }
 
 
     private void getPath()

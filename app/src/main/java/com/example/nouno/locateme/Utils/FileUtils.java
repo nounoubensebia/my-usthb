@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 public class FileUtils {
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
     public static String readFile (InputStream inputStream) throws IOException {
 
         InputStreamReader isr = new InputStreamReader(inputStream);
@@ -28,9 +28,9 @@ public class FileUtils {
 
         while (line != null) {
             sb.append(line);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                sb.append(System.lineSeparator());
-            }
+
+                //sb.append();
+
             line = br.readLine();
         }
         return sb.toString();
