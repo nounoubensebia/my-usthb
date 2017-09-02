@@ -21,7 +21,7 @@ public class Place {
     }
 
     public String getLabel() {
-        return label;
+        return label.toLowerCase();
     }
 
     public void setLabel(String label) {

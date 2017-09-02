@@ -30,4 +30,17 @@ public class CenterOfInterest extends Structure {
     public static final int TYPE_SORTIE = 6;
     public static final int TYPE_BIBLIOTEQUE = 7;
     public static final int TYPE_NOT_KNOWN = 8;
+
+    public static String getTypeString (int type)
+    {
+        switch (type)
+        {
+            case TYPE_MOSQUE : return "Mosquée";
+            case TYPE_BUVETTE : return "Buvette";
+            case TYPE_SORTIE : return "Sortie";
+            case TYPE_BIBLIOTEQUE : return "Bibliothèque";
+            case TYPE_TOILETTE : return "Sanitaire";
+        }
+        return null;
+    }
 }

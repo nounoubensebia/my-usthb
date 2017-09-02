@@ -36,7 +36,7 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
     private StructureList structureList;
     private OnButtonClickListner.OnButtonClickListener onMyPositionClickListner;
     private OnButtonClickListner.OnButtonClickListener onSetLocationOnMapClickListner;
-
+    private OnButtonClickListner.OnButtonClickListener<SearchSuggestion> onCenterOfInterestClickListner;
     private OnButtonClickListner.OnButtonClickListener<SearchSuggestion> onStructureClickListner;
     public SearchSuggestionItemAdapter (Context context,ArrayList<SearchSuggestion> searchSuggestions,StructureList structureList, int itemLayout)
     {
@@ -53,6 +53,10 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
 
     public OnButtonClickListner.OnButtonClickListener getOnMyPositionClickListner() {
         return onMyPositionClickListner;
+    }
+
+    public void setOnCenterOfInterestClickListner(OnButtonClickListner.OnButtonClickListener<SearchSuggestion> onCenterOfInterestClickListner) {
+        this.onCenterOfInterestClickListner = onCenterOfInterestClickListner;
     }
 
     public void setOnMyPositionClickListner(OnButtonClickListner.OnButtonClickListener onMyPositionClickListner) {
@@ -163,6 +167,16 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
                 layoutParams.setMargins(layoutParams.leftMargin,0,layoutParams.rightMargin,layoutParams.bottomMargin);
                 textDrawable = ContextCompat.getDrawable(context,R.drawable.ic_mosque);
                 holder.centerOfInterestsTextView.setText("Lieu de prière");
+            }
+
+            if (searchSuggestion.getId()<=6&&searchSuggestion.getId()>=2)
+            {
+                holder.centerOfInterestLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onCenterOfInterestClickListner.OnClick(searchSuggestion);
+                    }
+                });
             }
 
             holder.centerOfInterestsTextView.setCompoundDrawablesWithIntrinsicBounds(textDrawable,null,null,null);

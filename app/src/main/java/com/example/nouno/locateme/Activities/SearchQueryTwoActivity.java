@@ -137,7 +137,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     reinitSearchSuggestionsList();
                     if (mPath.getSource()!=null)
-                    departureEditText.setText(mPath.getSource().getLabel());
+                    departureEditText.setText("Depuis "+mPath.getSource().getLabel());
                     if (state>STATE_NO_PATH)
                     {
                         departureEditText.setText(mPath.getSource().getLabel());
@@ -176,16 +176,19 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (departureEditText.hasFocus())
                 {
-                    if (s.toString().length()>=2)
+                    if (departureEditText.getTag()==null)
                     {
+                        if (s.toString().length()>=2)
+                        {
 
-                        ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
-                        ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
+                            ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
+                            ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
 
-                    }
-                    else
-                    {
-                        reinitSearchSuggestionsList();
+                        }
+                        else
+                        {
+                            reinitSearchSuggestionsList();
+                        }
                     }
                 }
 
@@ -200,7 +203,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
                     if (state > STATE_NO_PATH)
                     {
-                        destinationEditText.setText(mPath.getDestination().getLabel());
+                        destinationEditText.setText("Vers "+mPath.getDestination().getLabel());
                         if (mPath.getSource()!=null)
                         {
                             departureEditText.setFocusableInTouchMode(false);
@@ -234,17 +237,20 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (destinationEditText.hasFocus())
                 {
-                    if (s.toString().length()>=2)
+                    if (destinationEditText.getTag()==null)
                     {
-                        ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
+                        if (s.toString().length()>=2)
+                        {
+                            ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
 
-                        ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
+                            ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
 
-                        Log.i("LENGTH","56");
-                    }
-                    else
-                    {
-                        reinitSearchSuggestionsList();
+                            Log.i("LENGTH","56");
+                        }
+                        else
+                        {
+                            reinitSearchSuggestionsList();
+                        }
                     }
                 }
             }
@@ -367,6 +373,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private void setDeparture (Place departure)
     {
+        departureEditText.setTag("tag");
         Log.i("DEPT",departure.getLabel());
         if (mPath.getDestination()!=null)
         {
@@ -374,7 +381,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         }
         //departure.setLabel("Prés de la faculté de chimie");
         mPath.setSource(departure);
-        departureEditText.setText(departure.getLabel());
+        departureEditText.setText("Depuis "+departure.getLabel());
         departureEditText.clearFocus();
         departureEditText.setFocusableInTouchMode(false);
         departureEditText.setOnClickListener(new View.OnClickListener() {
@@ -402,10 +409,12 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             appBarLayout.clearFocus();
             state = STATE_PATH_INITIALIZED;
         }
+        departureEditText.setTag(null);
     }
 
     private void setDestination (Place destination)
     {
+        destinationEditText.setTag("tag");
         Log.i("DEST",destination.getLabel());
         if (mPath.getSource()!=null)
         {
@@ -415,7 +424,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         mPath.setDestination(destination);
         destinationEditText.clearFocus();
         destinationEditText.setFocusableInTouchMode(false);
-        destinationEditText.setText(destination.getLabel());
+        destinationEditText.setText("Vers "+destination.getLabel());
 
         destinationEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -441,6 +450,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             hideKeyboard();
             state = STATE_PATH_INITIALIZED;
         }
+        destinationEditText.setTag(null);
     }
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -454,6 +464,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
+
 
     private void createMap(Bundle savedInstanceState) {
 
@@ -493,7 +504,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
 
 
-        SearchSuggestionItemAdapter searchSuggestionItemAdapter = new SearchSuggestionItemAdapter(this,searchSuggestions,structureList,R.layout.item_place_suggestion);
+        final SearchSuggestionItemAdapter searchSuggestionItemAdapter = new SearchSuggestionItemAdapter(this,searchSuggestions,structureList,R.layout.item_place_suggestion);
         searchSuggestionItemAdapter.setOnMyPositionClickListner(new OnButtonClickListner.OnButtonClickListener() {
             @Override
             public void OnClick(Object o) {
@@ -584,12 +595,52 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 hideKeyboard();
             }
         });
+        searchSuggestionItemAdapter.setOnCenterOfInterestClickListner(new OnButtonClickListner.OnButtonClickListener<SearchSuggestion>() {
+            @Override
+            public void OnClick(SearchSuggestion searchSuggestion) {
+                ArrayList<SearchSuggestion> searchSuggestions1 = structureList.getSearchSuggestions(getUserLocation(),getTypeFromId((int)searchSuggestion.getId()));
+                if (departureEditText.hasFocus())
+                {
+                    departureEditText.setTag("tag");
+                    departureEditText.setText(CenterOfInterest.getTypeString(getTypeFromId((int)searchSuggestion.getId())));
+                    departureEditText.setTag(null);
+                }
+                if (destinationEditText.hasFocus())
+                {
+                    destinationEditText.setTag("tag");
+                    destinationEditText.setText(CenterOfInterest.getTypeString(getTypeFromId((int)searchSuggestion.getId())));
+                    destinationEditText.setTag(null);
+                }
+                searchSuggestionItemAdapter.updateItems(searchSuggestions1);
+            }
+        });
+
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mSuggestionsListView.setLayoutManager(mLayoutManager);
         mSuggestionsListView.setItemAnimator(new DefaultItemAnimator());
         mSuggestionsListView.setAdapter(searchSuggestionItemAdapter);
 
 
+    }
+
+    private int getTypeFromId (int id)
+    {
+        switch (id)
+        {
+            case (int)SearchSuggestion.ID_BUVETTE:return CenterOfInterest.TYPE_BUVETTE;
+
+            case (int)SearchSuggestion.ID_KIOSQUE:return CenterOfInterest.TYPE_KIOSQUE;
+
+            case (int)SearchSuggestion.ID_MOSQUE:return CenterOfInterest.TYPE_MOSQUE;
+
+            case (int)SearchSuggestion.ID_SANNITAIRE:return CenterOfInterest.TYPE_TOILETTE;
+
+            case (int)SearchSuggestion.ID_SORTIE:return CenterOfInterest.TYPE_SORTIE;
+
+
+        }
+        return -1;
     }
 
 
@@ -844,7 +895,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 if (departureEditText.hasFocus())
                 {
 
-                    departureEditText.setText(mPath.getSource().getLabel());
+                    departureEditText.setText("Depuis "+mPath.getSource().getLabel());
                     departureEditText.setFocusableInTouchMode(false);
                     departureEditText.clearFocus();
 
@@ -852,7 +903,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 if (destinationEditText.hasFocus())
                 {
 
-                    destinationEditText.setText(mPath.getDestination().getLabel());
+                    destinationEditText.setText("Vers "+mPath.getDestination().getLabel());
                     destinationEditText.setFocusableInTouchMode(false);
                     destinationEditText.clearFocus();
 
