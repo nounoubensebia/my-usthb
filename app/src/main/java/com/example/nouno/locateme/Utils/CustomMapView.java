@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.view.View;
 
 import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Djikstra.Edge;
@@ -40,6 +41,7 @@ import java.util.List;
 public class CustomMapView  {
     private MapView mapView;
     private MapboxMap mapboxMap;
+    private ArrayList<UiMarkerUtils> markers = new ArrayList<>();
     public CustomMapView (MapboxMap mapboxMap,MapView mapView)
     {
         this.mapboxMap = mapboxMap;
@@ -89,6 +91,21 @@ public class CustomMapView  {
             endCoord = coordinates.get(coordinates.size()-1);
         }
         drawPolyline(coordinates,"#C6C6C6");
+
+    }
+
+    public UiMarkerUtils addMarker(Coordinate coordinate, int markerDrawableResource) {
+
+        IconFactory iconFactory = IconFactory.getInstance(mapView.getContext());
+        Icon icon = iconFactory.fromBitmap(getBitmapFromVectorDrawable(markerDrawableResource));
+        com.mapbox.mapboxsdk.annotations.Marker marker = mapboxMap.addMarker(new com.mapbox.mapboxsdk.annotations.MarkerViewOptions()
+                .position(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()))
+
+                .icon(icon)
+        );
+        UiMarkerUtils uiMarkerUtils = new UiMarkerUtils(marker);
+        markers.add(uiMarkerUtils);
+        return uiMarkerUtils;
 
     }
 
@@ -341,5 +358,36 @@ public class CustomMapView  {
                 coordinate.getLatitude()>=visibleRegion.latLngBounds.getSouthEast().getLatitude()&&
                 coordinate.getLongitude()>=visibleRegion.latLngBounds.getNorthWest().getLongitude()&&
                 coordinate.getLongitude()<=visibleRegion.latLngBounds.getSouthEast().getLongitude());
+    }
+
+    public void setOnMarkerClickListener (final OnMarkerClickListener onMarkerClickListener)
+    {
+        mapboxMap.getMarkerViewManager().setOnMarkerViewClickListener(new MapboxMap.OnMarkerViewClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker, @NonNull View view, @NonNull MapboxMap.MarkerViewAdapter adapter) {
+                for (UiMarkerUtils uiMarkerUtils:markers)
+                {
+                    if (uiMarkerUtils.getMarker()==marker)
+                    {
+                        onMarkerClickListener.onClick(uiMarkerUtils);
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+        });
+    }
+
+
+
+    public interface OnMarkerClickListener {
+        void onClick (UiMarkerUtils uiMarkerUtils);
+    }
+
+    public void removeMarker(UiMarkerUtils uiMarkerUtils) {
+        mapboxMap.removeAnnotation(uiMarkerUtils.getMarker());
+        markers.remove(uiMarkerUtils);
+
     }
 }

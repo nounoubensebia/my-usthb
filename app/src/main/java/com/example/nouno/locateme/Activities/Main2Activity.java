@@ -29,11 +29,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nouno.locateme.Data.CenterOfInterest;
+import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Data.StructureList;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
 import com.example.nouno.locateme.Utils.FileUtils;
+import com.example.nouno.locateme.Utils.UiMarkerUtils;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -60,12 +62,19 @@ public class Main2Activity extends AppCompatActivity
     TextView exitText;
     TextView kiosqueText;
     StructureList structureList;
-
+    TextView bigLabel;
+    TextView smallLabel;
+    TextView typeText;
+    View pathLayout;
+    View centerOfInterestLayout;
+    View searchLayout;
+    boolean markerSelected = false;
     boolean mosqueSelected;
     boolean buvetteSelected;
     boolean sannitaireSelected;
     boolean exitSelected;
     boolean kiosqueSelected;
+    CenterOfInterest selectedCenterOfInterest = null;
 
     private TextView whereToGoText;
 
@@ -129,6 +138,7 @@ public class Main2Activity extends AppCompatActivity
         fabClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                markerSelected = false;
                 mMapboxMap.removeAnnotations();
                 exit(fabClear);
                 enter(fabList);
@@ -138,6 +148,7 @@ public class Main2Activity extends AppCompatActivity
         fabList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                markerSelected = false;
                 updateMap();
                 enter(fabClear);
                 exit(fabList);
@@ -232,7 +243,22 @@ public class Main2Activity extends AppCompatActivity
                 updateMap();
             }
         });
+        typeText = (TextView)findViewById(R.id.typeText);
+        centerOfInterestLayout = findViewById(R.id.layout_structure);
+        pathLayout = findViewById(R.id.layout_path);
+        searchLayout = findViewById(R.id.search_layout);
+        bigLabel = (TextView) findViewById(R.id.biglabel);
+        smallLabel = (TextView) findViewById(R.id.smallLabel);
+        typeText = (TextView) findViewById(R.id.typeText);
 
+        pathLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Main2Activity.this,SearchQueryTwoActivity.class);
+                i.putExtra("centerOfInterest",new Gson().toJson(selectedCenterOfInterest));
+                startActivity(i);
+            }
+        });
     }
 
 
@@ -273,6 +299,36 @@ public class Main2Activity extends AppCompatActivity
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                mCustomMapView.setOnMarkerClickListener(new CustomMapView.OnMarkerClickListener() {
+                    @Override
+                    public void onClick(UiMarkerUtils uiMarkerUtils) {
+                        markerSelected = true;
+                        centerOfInterestLayout.setVisibility(View.VISIBLE);
+                        searchLayout.setVisibility(View.GONE);
+                        pathLayout.setVisibility(View.VISIBLE);
+                        bottomChoice.setVisibility(View.GONE);
+                        exit(fabClear);
+                        mCustomMapView.animateCamera(new Coordinate(uiMarkerUtils.getMarker().getPosition()),16);
+                        bindStructureLayout((CenterOfInterest)uiMarkerUtils.getTag());
+                        selectedCenterOfInterest = ((CenterOfInterest)uiMarkerUtils.getTag());
+                    }
+                });
+                mCustomMapView.getMapboxMap().setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(@NonNull LatLng point) {
+                        if (markerSelected)
+                        {
+
+                            markerSelected = false;
+                            centerOfInterestLayout.setVisibility(View.GONE);
+                            searchLayout.setVisibility(View.VISIBLE);
+                            pathLayout.setVisibility(View.GONE);
+                            bottomChoice.setVisibility(View.VISIBLE);
+                            enter(fabClear);
+                        }
+                    }
+                });
             }
         });
     }
@@ -286,7 +342,12 @@ public class Main2Activity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
+    public void bindStructureLayout (CenterOfInterest centerOfInterest)
+    {
+        bigLabel.setText(centerOfInterest.getLabel()+"");
+        smallLabel.setText(structureList.getBlocLabel(centerOfInterest));
+        typeText.setText(CenterOfInterest.getTypeString(centerOfInterest.getType()));
+    }
 
 
 
@@ -377,7 +438,8 @@ public class Main2Activity extends AppCompatActivity
             {
                 if (centerOfInterest.getType()==CenterOfInterest.TYPE_BUVETTE)
                 {
-                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_food);
+                    UiMarkerUtils uiMarkerUtils = mCustomMapView.addMarker(centerOfInterest.getCoordinate(),R.drawable.ic_food);
+                    uiMarkerUtils.setTag(centerOfInterest);
                 }
             }
         }
@@ -387,7 +449,8 @@ public class Main2Activity extends AppCompatActivity
             {
                 if (centerOfInterest.getType()==CenterOfInterest.TYPE_KIOSQUE)
                 {
-                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_kiosk);
+                    UiMarkerUtils uiMarkerUtils =mCustomMapView.addMarker(centerOfInterest.getCoordinate(),R.drawable.ic_kiosk);
+                    uiMarkerUtils.setTag(centerOfInterest);
                 }
             }
         }
@@ -397,7 +460,8 @@ public class Main2Activity extends AppCompatActivity
             {
                 if (centerOfInterest.getType()==CenterOfInterest.TYPE_TOILETTE)
                 {
-                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_toilet);
+                    UiMarkerUtils uiMarkerUtils =mCustomMapView.addMarker(centerOfInterest.getCoordinate(),R.drawable.ic_toilet);
+                    uiMarkerUtils.setTag(centerOfInterest);
                 }
             }
         }
@@ -407,7 +471,8 @@ public class Main2Activity extends AppCompatActivity
             {
                 if (centerOfInterest.getType()==CenterOfInterest.TYPE_MOSQUE)
                 {
-                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_mosque);
+                    UiMarkerUtils uiMarkerUtils = mCustomMapView.addMarker(centerOfInterest.getCoordinate(),R.drawable.ic_mosque);
+                    uiMarkerUtils.setTag(centerOfInterest);
                 }
             }
         }
@@ -417,7 +482,8 @@ public class Main2Activity extends AppCompatActivity
             {
                 if (centerOfInterest.getType()==CenterOfInterest.TYPE_SORTIE)
                 {
-                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_sortie);
+                    UiMarkerUtils uiMarkerUtils = mCustomMapView.addMarker(centerOfInterest.getCoordinate(),R.drawable.ic_sortie);
+                    uiMarkerUtils.setTag(centerOfInterest);
                 }
             }
         }

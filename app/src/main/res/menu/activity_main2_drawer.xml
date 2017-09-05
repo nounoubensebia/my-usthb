@@ -14,7 +14,7 @@
         <item
             android:id="@+id/settings"
             android:icon="@drawable/ic_settings_24dp"
-            android:title="Parametres" />
+            android:title="@string/param_tres" />
     </group>
 
 

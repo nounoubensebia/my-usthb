@@ -318,6 +318,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             }
         });
 
+        if (getIntent().getExtras()!=null)
+        {
+            if (getIntent().getExtras().containsKey("centerOfInterest"));
+            CenterOfInterest centerOfInterest = new Gson().fromJson(getIntent().getExtras().getString("centerOfInterest"),CenterOfInterest.class);
+            Place place = new Place(centerOfInterest.getLabel(),centerOfInterest.getCoordinate(),false);
+            setDestination(place);
+        }
+
 
     }
 
