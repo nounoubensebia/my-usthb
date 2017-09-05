@@ -137,6 +137,16 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 if (departureEditText.getTag()==null)
                 if (!hasFocus)
                 {
+                    if (fromCenterOfInterest)
+                    {
+                        fromCenterOfInterest = false;
+
+                        if (mPath.getSource()==null)
+                        {
+                            departureEditText.setText("");
+                        }
+
+                    }
                     reinitSearchSuggestionsList();
                     if (mPath.getSource()!=null)
                     departureEditText.setText("Depuis "+mPath.getSource().getLabel());
@@ -152,12 +162,20 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     if (mPath.getSource() == null)
                     {
                         departureEditText.setText("");
+
                     }
                 }
                 if (hasFocus)
                 {
                     departureEditText.setText("");
-
+                    if (fromCenterOfInterest)
+                    {
+                        fromCenterOfInterest = false;
+                        if (mPath.getDestination() == null)
+                        {
+                            destinationEditText.setText("");
+                        }
+                    }
                 }
             }
         });
@@ -203,7 +221,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 if (!hasFocus)
                 {
 
-
+                    if (fromCenterOfInterest)
+                    {
+                        fromCenterOfInterest = false;
+                        if (mPath.getDestination() == null)
+                        {
+                            departureEditText.setText("");
+                        }
+                    }
                     if (state > STATE_NO_PATH)
                     {
                         destinationEditText.setText("Vers "+mPath.getDestination().getLabel());
@@ -222,6 +247,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 if (hasFocus)
                 {
                     destinationEditText.setText("");
+                    if (fromCenterOfInterest)
+                    {
+                        fromCenterOfInterest = false;
+                        if (mPath.getSource() == null)
+                        {
+                            departureEditText.setText("");
+                        }
+                    }
                 }
             }
         });
@@ -290,7 +323,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private Coordinate getUserLocation ()
     {
-        /*if (lastKnownUserLocation!=null)
+        if (lastKnownUserLocation!=null)
         {
             if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
             {
@@ -315,8 +348,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             {
                 return null;
             }
-        }*/
-        return new Coordinate(36.7113147,3.1817221999999674);
+        }
+        //return new Coordinate(36.7113147,3.1817221999999674);
     }
 
     private void getViews ()

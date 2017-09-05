@@ -2,13 +2,16 @@ package com.example.nouno.locateme.Activities;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,14 +21,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.nouno.locateme.Data.CenterOfInterest;
 import com.example.nouno.locateme.Data.Place;
+import com.example.nouno.locateme.Data.StructureList;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
 import com.example.nouno.locateme.Utils.FileUtils;
+import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
@@ -34,6 +43,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,9 +51,44 @@ public class Main2Activity extends AppCompatActivity
     MapboxMap mMapboxMap;
     CustomMapView mCustomMapView;
     ImageView button;
+    View fabList;
+    View fabClear;
+    View bottomChoice;
+    TextView mosqueText;
+    TextView buvetteText;
+    TextView sanitaireText;
+    TextView exitText;
+    TextView kiosqueText;
+    StructureList structureList;
+
+    boolean mosqueSelected;
+    boolean buvetteSelected;
+    boolean sannitaireSelected;
+    boolean exitSelected;
+    boolean kiosqueSelected;
+
     private TextView whereToGoText;
+
+
+
+
+    private void getStructureList ()
+    {
+        InputStream inputStream = null;
+        try {
+            inputStream = this.getResources().getAssets().open("LocalsJson.txt");
+
+            String localsJson = FileUtils.readFile(inputStream);
+            structureList = new Gson().fromJson(localsJson,StructureList.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getStructureList();
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this, "pk.eyJ1Ijoibm91bm91OTYiLCJhIjoiY2o0Z29mMXNsMDVoazMzbzI1NTJ1MmRqbCJ9.CXczOhM2eznwR0Mv6h2Pgg");
         setContentView(R.layout.activity_main2);
@@ -78,12 +123,119 @@ public class Main2Activity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        fabList = findViewById(R.id.fab_list);
+        fabClear = findViewById(R.id.fab_clear);
+        bottomChoice = findViewById(R.id.bottom_choice);
+        fabClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMapboxMap.removeAnnotations();
+                exit(fabClear);
+                enter(fabList);
+                bottomChoice.setVisibility(View.GONE);
+            }
+        });
+        fabList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateMap();
+                enter(fabClear);
+                exit(fabList);
+                bottomChoice.setVisibility(View.VISIBLE);
+            }
+        });
 
+        mosqueText = (TextView) findViewById(R.id.text_mosque);
+        buvetteText = (TextView) findViewById(R.id.text_buvette);
+        sanitaireText = (TextView) findViewById(R.id.text_sannitaire);
+        exitText = (TextView) findViewById(R.id.text_exit);
+        kiosqueText = (TextView) findViewById(R.id.text_kiosque);
+        mosqueText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mosqueSelected)
+                {
+                    changeTextViewState(mosqueText,R.drawable.ic_mosque_disabled);
+                    mosqueSelected = false;
 
+                }
+                else
+                {
+                    changeTextViewState(mosqueText,R.drawable.ic_mosque);
+                    mosqueSelected = true;
+                }
+                updateMap();
+            }
+        });
 
-
+        kiosqueText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (kiosqueSelected)
+                {
+                    changeTextViewState(kiosqueText,R.drawable.ic_kiosk_disabled);
+                    kiosqueSelected = false;
+                }
+                else
+                {
+                    changeTextViewState(kiosqueText,R.drawable.ic_kiosk);
+                    kiosqueSelected = true;
+                }
+                updateMap();
+            }
+        });
+        buvetteText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (buvetteSelected)
+                {
+                    buvetteSelected = false;
+                    changeTextViewState(buvetteText,R.drawable.ic_food_disabled);
+                }
+                else
+                {
+                    buvetteSelected = true;
+                    changeTextViewState(buvetteText,R.drawable.ic_food);
+                }
+                updateMap();
+            }
+        });
+        exitText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (exitSelected)
+                {
+                    changeTextViewState(exitText,R.drawable.ic_sortie_disabled);
+                    exitSelected = false;
+                }
+                else
+                {
+                    exitSelected = true;
+                    changeTextViewState(exitText,R.drawable.ic_sortie);
+                }
+                updateMap();
+            }
+        });
+        sanitaireText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sannitaireSelected)
+                {
+                    sannitaireSelected= false;
+                    changeTextViewState(sanitaireText,R.drawable.ic_toilet_disabled);
+                }
+                else
+                {
+                    sannitaireSelected= true;
+                    changeTextViewState(sanitaireText,R.drawable.ic_toilet);
+                }
+                updateMap();
+            }
+        });
 
     }
+
+
 
     private void createMap(Bundle savedInstanceState) {
 
@@ -157,5 +309,117 @@ public class Main2Activity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void enter(final View view) {
+
+        view.setVisibility(View.VISIBLE);
+        final Animation fabEnter = AnimationUtils.loadAnimation(view.getContext(), R.anim.fab_enter);
+        fabEnter.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.VISIBLE);
+                view.clearAnimation();
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(fabEnter);
+
+    }
+
+
+    public void exit(final View view) {
+        final Animation fabExit = AnimationUtils.loadAnimation(view.getContext(), R.anim.fab_exit);
+
+        fabExit.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.GONE);
+                view.clearAnimation();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(fabExit);
+
+    }
+    public void changeTextViewState (TextView textView, int drawableResource)
+    {
+        //textView.setTextColor(ContextCompat.getColor(context,textColorId));
+        Drawable drawable = ContextCompat.getDrawable(this,drawableResource);
+        textView.setCompoundDrawablesWithIntrinsicBounds(null,drawable,null,null);
+    }
+
+    private void updateMap ()
+    {
+        mMapboxMap.removeAnnotations();
+        if (buvetteSelected)
+        {
+            for (CenterOfInterest centerOfInterest:structureList.getCenterOfInterests())
+            {
+                if (centerOfInterest.getType()==CenterOfInterest.TYPE_BUVETTE)
+                {
+                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_food);
+                }
+            }
+        }
+        if (kiosqueSelected)
+        {
+            for (CenterOfInterest centerOfInterest:structureList.getCenterOfInterests())
+            {
+                if (centerOfInterest.getType()==CenterOfInterest.TYPE_KIOSQUE)
+                {
+                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_kiosk);
+                }
+            }
+        }
+        if (sannitaireSelected)
+        {
+            for (CenterOfInterest centerOfInterest:structureList.getCenterOfInterests())
+            {
+                if (centerOfInterest.getType()==CenterOfInterest.TYPE_TOILETTE)
+                {
+                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_toilet);
+                }
+            }
+        }
+        if (mosqueSelected)
+        {
+            for (CenterOfInterest centerOfInterest:structureList.getCenterOfInterests())
+            {
+                if (centerOfInterest.getType()==CenterOfInterest.TYPE_MOSQUE)
+                {
+                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_mosque);
+                }
+            }
+        }
+        if (exitSelected)
+        {
+            for (CenterOfInterest centerOfInterest:structureList.getCenterOfInterests())
+            {
+                if (centerOfInterest.getType()==CenterOfInterest.TYPE_SORTIE)
+                {
+                    mCustomMapView.drawMarker(centerOfInterest.getCoordinate(),centerOfInterest.getLabel(),R.drawable.ic_sortie);
+                }
+            }
+        }
     }
 }
