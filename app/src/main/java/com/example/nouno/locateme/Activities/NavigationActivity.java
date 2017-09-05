@@ -322,7 +322,7 @@ public class NavigationActivity extends AppCompatActivity {
                     ArrayList<Edge> currentEdges = mPath.getGraph().getEdges(navigationInstructionItem.getStartOrder(),navigationInstructionItem.getEndOrder());
                     ArrayList<Coordinate> previousPolyline = Edge.getPolyline(previousEdges);
                     final ArrayList<Coordinate> currentPolyline = Edge.getPolyline(currentEdges);
-                    selectedPolylines.add(mCustomMapView.drawPolyline(currentPolyline,"#37AB30"));
+                    selectedPolylines.add(mCustomMapView.drawPolyline(currentPolyline,"#0078d7"));
                     mCustomMapView.animateCamera(currentPolyline,150,150,150,1000);
 
                 }

@@ -93,7 +93,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private StructureList structureList;
     private Coordinate lastKnownUserLocation;
     private RecyclerView mSuggestionsListView;
-
+    private boolean fromCenterOfInterest = false;
+    private boolean fromCenterOfInterestdeparture = false;
 
 
     private void getStructureList ()
@@ -133,6 +134,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         departureEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                if (departureEditText.getTag()==null)
                 if (!hasFocus)
                 {
                     reinitSearchSuggestionsList();
@@ -174,10 +176,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (departureEditText.getTag()==null)
                 if (departureEditText.hasFocus())
                 {
-                    if (departureEditText.getTag()==null)
-                    {
+
                         if (s.toString().length()>=2)
                         {
 
@@ -189,7 +191,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         {
                             reinitSearchSuggestionsList();
                         }
-                    }
+
                 }
 
             }
@@ -197,6 +199,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         destinationEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                if (destinationEditText.getTag()==null)
                 if (!hasFocus)
                 {
 
@@ -235,10 +238,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (destinationEditText.getTag()==null)
                 if (destinationEditText.hasFocus())
                 {
-                    if (destinationEditText.getTag()==null)
-                    {
+
                         if (s.toString().length()>=2)
                         {
                             ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
@@ -251,7 +254,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         {
                             reinitSearchSuggestionsList();
                         }
-                    }
+
                 }
             }
         });
@@ -581,18 +584,25 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     d= " "+structureList.getBlocLabel(searchSuggestion.getStructure());
                 }
-                if (departureEditText.hasFocus())
+
+                if (departureEditText.hasFocus()||(fromCenterOfInterest && fromCenterOfInterestdeparture))
                 {
                     setDeparture(new Place(s+searchSuggestion.getStructure().getLabel()+d,searchSuggestion.getStructure().getCoordinate(),false));
                 }
                 else
-                if (destinationEditText.hasFocus())
+                if (destinationEditText.hasFocus()||(fromCenterOfInterest||!fromCenterOfInterestdeparture))
                 {
                     setDestination(new Place(s+searchSuggestion.getStructure().getLabel()+d,searchSuggestion.getStructure().getCoordinate(),false));
+                }
+                if (fromCenterOfInterest)
+                {
+
+                    fromCenterOfInterest = false;
                 }
                 hideKeyboard();
                 updateUiState(state,false,false);
                 hideKeyboard();
+
             }
         });
         searchSuggestionItemAdapter.setOnCenterOfInterestClickListner(new OnButtonClickListner.OnButtonClickListener<SearchSuggestion>() {
@@ -603,13 +613,48 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     departureEditText.setTag("tag");
                     departureEditText.setText(CenterOfInterest.getTypeString(getTypeFromId((int)searchSuggestion.getId())));
+                    departureEditText.clearFocus();
+                    departureEditText.setFocusableInTouchMode(false);
+                    departureEditText.setFocusable(false);
                     departureEditText.setTag(null);
+
+                    departureEditText.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            departureEditText.setText("");
+                            departureEditText.setFocusableInTouchMode(true);
+                            departureEditText.requestFocus();
+                            departureEditText.requestFocusFromTouch();
+                            showKeyboard(departureEditText,0);
+                            fromCenterOfInterest = false;
+
+                        }
+                    });
+                    fromCenterOfInterest = true;
+                    fromCenterOfInterestdeparture=true;
                 }
                 if (destinationEditText.hasFocus())
                 {
                     destinationEditText.setTag("tag");
                     destinationEditText.setText(CenterOfInterest.getTypeString(getTypeFromId((int)searchSuggestion.getId())));
+                    destinationEditText.clearFocus();
+                    destinationEditText.setFocusableInTouchMode(false);
+                    destinationEditText.setFocusable(false);
                     destinationEditText.setTag(null);
+                    fromCenterOfInterest = true;
+                    fromCenterOfInterestdeparture=false;
+                    destinationEditText.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            destinationEditText.setText("");
+                            destinationEditText.setFocusableInTouchMode(true);
+                            destinationEditText.requestFocus();
+                            destinationEditText.requestFocusFromTouch();
+                            showKeyboard(destinationEditText,0);
+                            fromCenterOfInterest = false;
+                        }
+                    });
                 }
                 searchSuggestionItemAdapter.updateItems(searchSuggestions1);
             }

@@ -16,6 +16,7 @@ import com.example.nouno.locateme.Activities.GlideApp;
 import com.example.nouno.locateme.Data.CenterOfInterest;
 import com.example.nouno.locateme.Data.Classroom;
 import com.example.nouno.locateme.Data.SearchSuggestion;
+import com.example.nouno.locateme.Data.Structure;
 import com.example.nouno.locateme.Data.StructureList;
 import com.example.nouno.locateme.OnButtonClickListner;
 import com.example.nouno.locateme.R;
@@ -193,14 +194,35 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
             holder.centerOfInterestLayout.setVisibility(View.GONE);
             holder.structureLayout.setVisibility(View.VISIBLE);
             holder.bigLabel.setText(searchSuggestion.getStructure().getLabel());
+
             if (searchSuggestion.getStructure() instanceof  Classroom)
             {
                 holder.bigLabel.setText("Salle "+ searchSuggestion.getStructure().getLabel());
+
+            }
+
+            if (searchSuggestion.getStructure() instanceof Classroom)
+            {
+                holder.typeText.setText("Salle");
+
+            }
+            else
+            {
+                if (searchSuggestion.getStructure() instanceof CenterOfInterest)
+                {
+                    holder.typeText.setText(CenterOfInterest.getTypeString(((CenterOfInterest) searchSuggestion.getStructure()).getType()));
+                }
+                else
+                {
+                    holder.typeText.setText("Structure");
+                }
             }
             if (searchSuggestion.getStructure() instanceof Classroom || searchSuggestion.getStructure() instanceof CenterOfInterest)
             {
                 holder.smallLabel.setText (structureList.getBlocLabel(searchSuggestion.getStructure()));
+
             }
+
             else {
                 holder.smallLabel.setText("");
             }
@@ -214,6 +236,8 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)holder.structureLayout.getLayoutParams();
                 layoutParams.setMargins(layoutParams.leftMargin,0,layoutParams.rightMargin,layoutParams.bottomMargin);
             }
+
+
             //Resources resources = item.getResources();
 
             try {
@@ -245,6 +269,7 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
         private View centerOfInterestLayout;
         private View structureLayout;
         private TextView centerOfInterestsTextView;
+        private TextView typeText;
         private View suggestionTextLayout;
         public ViewHolder(View itemView) {
             super(itemView);
@@ -255,6 +280,7 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
             structureLayout = itemView.findViewById(R.id.layout_structure);
             centerOfInterestsTextView = (TextView)itemView.findViewById(R.id.text_center_of_interest_label);
             suggestionTextLayout = itemView.findViewById(R.id.layout_suggestions_text);
+            typeText = (TextView)itemView.findViewById(R.id.typeText);
         }
     }
 

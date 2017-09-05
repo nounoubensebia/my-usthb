@@ -47,6 +47,7 @@
 
 
                     <EditText
+                        android:inputType="text"
                         android:textSize="16sp"
                         android:maxLines="1"
                         android:id="@+id/departure_text"
@@ -71,6 +72,7 @@
 
 
                     <EditText
+                        android:inputType="text"
                         android:maxLines="1"
                         android:textSize="16sp"
                         android:id="@+id/destination_text"
@@ -267,7 +269,7 @@
             android:elevation="10dp"
             app:layout_anchor="@id/path_info_layout"
             app:layout_anchorGravity="right"
-            app:srcCompat="@drawable/fab_directions_arrow" />
+            app:srcCompat="@mipmap/ic_fab_dir" />
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
