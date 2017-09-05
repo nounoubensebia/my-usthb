@@ -6,17 +6,26 @@
     android:layout_height="match_parent"
     tools:context="com.example.nouno.locateme.Activities.MapActivity">
     <LinearLayout
-        android:layout_marginTop="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="64dp"
         android:layout_gravity="center|top"
-
+        android:background="@drawable/rounded_button"
         android:elevation="24dp"
-        android:padding="32dp"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/btn"
+            app:srcCompat="@drawable/ic_list_black_24dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="16dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
         <TextView
             android:id="@+id/where_to_go"
-            android:padding="8dp"
-            android:background="@drawable/rounded_button"
+
+
             android:textSize="24sp"
             android:text="Où aller vous ?"
             android:drawableRight="@drawable/ic_search_black_24dp"
@@ -34,12 +43,5 @@
         app:mapbox_cameraTargetLng="3.178768"
         app:mapbox_cameraZoom="15"
         app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10" />
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?android:attr/windowBackground"
-        app:layout_behavior=".BottomNavigationBehavior"
-        app:menu="@menu/navigation" />
+
 </android.support.design.widget.CoordinatorLayout>

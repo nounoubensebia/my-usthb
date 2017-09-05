@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/time_table"
+            android:icon="@drawable/ic_date_range_24dp"
+            android:title="Emploi du temps" />
+        <item
+            android:id="@+id/card"
+            android:icon="@drawable/ic_map_24dp"
+            android:title="Carte" />
+
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_24dp"
+            android:title="Parametres" />
+    </group>
+
+
+
+</menu>

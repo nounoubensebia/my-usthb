@@ -7,11 +7,13 @@
         <item name="colorPrimaryDark">#000</item>#21671C
         <item name="colorAccent">@color/backgroundColor</item>
     </style>
+
     <style name="MainTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">#000</item>
         <item name="colorAccent">@color/backgroundColor</item>
     </style>
+
     <style name="SignupTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
@@ -36,5 +38,9 @@
         <item name="contentInsetStart">0dp</item>
         <item name="android:contentInsetStart" tools:targetApi="lollipop">0dp</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
 
