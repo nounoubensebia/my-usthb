@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:background="#37AB2F"
+        android:background="@color/colorBlue"
         android:elevation="4dp"
         android:orientation="vertical"
         android:paddingTop="8dp">
@@ -241,7 +241,7 @@
                     android:layout_gravity="center"
                     android:fontFamily="sans-serif-condensed"
                     android:text="Calculer itinéraire"
-                    android:textColor="#37AB30"
+                    android:textColor="@color/backgroundColor"
                     android:textSize="20sp"
                     android:visibility="visible" />
 

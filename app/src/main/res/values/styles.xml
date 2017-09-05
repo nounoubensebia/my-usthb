@@ -3,13 +3,13 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#37AB2F</item>
+        <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">#000</item>#21671C
         <item name="colorAccent">@color/backgroundColor</item>
     </style>
     <style name="MainTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#37AB2F</item>
-        <item name="colorPrimaryDark">#21671C</item>
+        <item name="colorPrimary">@color/colorBlue</item>
+        <item name="colorPrimaryDark">#000</item>
         <item name="colorAccent">@color/backgroundColor</item>
     </style>
     <style name="SignupTheme" parent="Theme.AppCompat.Light.NoActionBar">
