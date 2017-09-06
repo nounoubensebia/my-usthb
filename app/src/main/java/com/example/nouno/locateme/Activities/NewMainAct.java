@@ -58,7 +58,7 @@ public class NewMainAct extends AppCompatActivity {
                 public void onClick(View v) {
                     ConnexionNet cn= new ConnexionNet(NewMainAct.this);
                     if(cn.isConnected()) {
-                        Intent i = new Intent(NewMainAct.this,AnneeLicense.class);
+                        Intent i = new Intent(NewMainAct.this,AnneMasterActivity.class);
                         startActivity(i);
                     }
                     else
