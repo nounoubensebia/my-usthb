@@ -165,6 +165,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
                     }
                 }
+                if (departureEditText.getTag()==null||fromCenterOfInterest)
                 if (hasFocus)
                 {
                     departureEditText.setText("");
@@ -244,6 +245,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         destinationEditText.setText("");
                     }
                 }
+                if (destinationEditText.getTag()==null||fromCenterOfInterest)
                 if (hasFocus)
                 {
                     destinationEditText.setText("");
