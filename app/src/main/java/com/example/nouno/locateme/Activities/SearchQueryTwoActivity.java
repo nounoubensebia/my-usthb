@@ -236,7 +236,6 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         if (mPath.getSource()!=null)
                         {
                             departureEditText.setFocusableInTouchMode(false);
-
                         }
 
                     }
@@ -359,7 +358,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 return null;
             }
         }
-        //return new Coordinate(36.7113147,3.1817221999999674);
+
     }
 
     private void getViews ()
@@ -379,7 +378,6 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         arrivalTimeText = (TextView)findViewById(R.id.text_arrival_time);
         useCurrentLocationText = (TextView)findViewById(R.id.text_use_current_location);
         mSuggestionsListView = (RecyclerView) findViewById(R.id.suggestions_list);
-
     }
 
     private void reinitSearchSuggestionsList ()

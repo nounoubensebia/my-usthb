@@ -15,4 +15,6 @@
     <color name="refresh_progress_2">@color/colorBlue</color>
     <color name="refresh_progress_3">@color/colorBlue</color>
     <color name="green">@color/colorBlue</color>
+    <color name="psts_background_tab_pressed">#1AFFFFFF</color>
+    <color name="psts_background_tab_pressed_ripple">#AAFFFFFF</color>
 </resources>
