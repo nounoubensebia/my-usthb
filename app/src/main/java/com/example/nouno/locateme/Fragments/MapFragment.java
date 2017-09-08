@@ -1,33 +1,30 @@
-package com.example.nouno.locateme.Activities;
+package com.example.nouno.locateme.Fragments;
+
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.nouno.locateme.Activities.Main2Activity;
+import com.example.nouno.locateme.Activities.SearchQueryTwoActivity;
+import com.example.nouno.locateme.Activities.StartActivity;
 import com.example.nouno.locateme.Data.CenterOfInterest;
 import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.Place;
@@ -47,8 +44,10 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Main2Activity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class MapFragment extends Fragment {
     MapView mMapView;
     MapboxMap mMapboxMap;
     CustomMapView mCustomMapView;
@@ -68,7 +67,7 @@ public class Main2Activity extends AppCompatActivity
     View pathLayout;
     View centerOfInterestLayout;
     View searchLayout;
-    View navigationView2;
+
     boolean markerSelected = false;
     boolean mosqueSelected;
     boolean buvetteSelected;
@@ -76,11 +75,11 @@ public class Main2Activity extends AppCompatActivity
     boolean exitSelected;
     boolean kiosqueSelected;
     CenterOfInterest selectedCenterOfInterest = null;
-
     private TextView whereToGoText;
 
-
-
+    public MapFragment() {
+        // Required empty public constructor
+    }
 
     private void getStructureList ()
     {
@@ -96,29 +95,35 @@ public class Main2Activity extends AppCompatActivity
 
     }
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        Mapbox.getInstance(this.getActivity(), "pk.eyJ1Ijoibm91bm91OTYiLCJhIjoiY2o0Z29mMXNsMDVoazMzbzI1NTJ1MmRqbCJ9.CXczOhM2eznwR0Mv6h2Pgg");
+        View view= inflater.inflate(R.layout.fragment_map, container, false);
+
         getStructureList();
-        super.onCreate(savedInstanceState);
-        Mapbox.getInstance(this, "pk.eyJ1Ijoibm91bm91OTYiLCJhIjoiY2o0Z29mMXNsMDVoazMzbzI1NTJ1MmRqbCJ9.CXczOhM2eznwR0Mv6h2Pgg");
-        setContentView(R.layout.activity_main2);
-        button = (ImageView) findViewById(R.id.btn);
-        whereToGoText = (TextView)findViewById(R.id.where_to_go);
+
+
+
+        button = (ImageView) view.findViewById(R.id.btn);
+        whereToGoText = (TextView)view.findViewById(R.id.where_to_go);
         whereToGoText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Main2Activity.this,SearchQueryTwoActivity.class);
+                Intent i = new Intent(getActivity(),SearchQueryTwoActivity.class);
                 startActivity(i);
             }
         });
-        createMap(savedInstanceState);
-        ActivityCompat.requestPermissions(this,
+        createMap(savedInstanceState,view);
+        ActivityCompat.requestPermissions(getActivity(),
                 new String[]{Manifest.permission. ACCESS_FINE_LOCATION},
                 3);
 
-        navigationView2 = findViewById(R.id.navigation);
 
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        final DrawerLayout drawer = (DrawerLayout) view.findViewById(R.id.drawer_layout);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,11 +136,10 @@ public class Main2Activity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();*/
 
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        fabList = findViewById(R.id.fab_list);
-        fabClear = findViewById(R.id.fab_clear);
-        bottomChoice = findViewById(R.id.bottom_choice);
+
+        fabList = view.findViewById(R.id.fab_list);
+        fabClear = view.findViewById(R.id.fab_clear);
+        bottomChoice = view.findViewById(R.id.bottom_choice);
         fabClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,7 +148,7 @@ public class Main2Activity extends AppCompatActivity
                 exit(fabClear);
                 enter(fabList);
                 bottomChoice.setVisibility(View.GONE);
-                navigationView2.setVisibility(View.VISIBLE);
+                ((StartActivity)getActivity()).showBottomBar();
             }
         });
         fabList.setOnClickListener(new View.OnClickListener() {
@@ -155,15 +159,16 @@ public class Main2Activity extends AppCompatActivity
                 enter(fabClear);
                 exit(fabList);
                 bottomChoice.setVisibility(View.VISIBLE);
-                navigationView2.setVisibility(View.GONE);
+                ((StartActivity)getActivity()).hideBottomBar();
+
             }
         });
 
-        mosqueText = (TextView) findViewById(R.id.text_mosque);
-        buvetteText = (TextView) findViewById(R.id.text_buvette);
-        sanitaireText = (TextView) findViewById(R.id.text_sannitaire);
-        exitText = (TextView) findViewById(R.id.text_exit);
-        kiosqueText = (TextView) findViewById(R.id.text_kiosque);
+        mosqueText = (TextView) view.findViewById(R.id.text_mosque);
+        buvetteText = (TextView) view.findViewById(R.id.text_buvette);
+        sanitaireText = (TextView) view.findViewById(R.id.text_sannitaire);
+        exitText = (TextView) view.findViewById(R.id.text_exit);
+        kiosqueText = (TextView) view.findViewById(R.id.text_kiosque);
         mosqueText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,29 +251,28 @@ public class Main2Activity extends AppCompatActivity
                 updateMap();
             }
         });
-        typeText = (TextView)findViewById(R.id.typeText);
-        centerOfInterestLayout = findViewById(R.id.layout_structure);
-        pathLayout = findViewById(R.id.layout_path);
-        searchLayout = findViewById(R.id.search_layout);
-        bigLabel = (TextView) findViewById(R.id.biglabel);
-        smallLabel = (TextView) findViewById(R.id.smallLabel);
-        typeText = (TextView) findViewById(R.id.typeText);
+        typeText = (TextView)view.findViewById(R.id.typeText);
+        centerOfInterestLayout = view.findViewById(R.id.layout_structure);
+        pathLayout = view.findViewById(R.id.layout_path);
+        searchLayout = view.findViewById(R.id.search_layout);
+        bigLabel = (TextView) view.findViewById(R.id.biglabel);
+        smallLabel = (TextView) view.findViewById(R.id.smallLabel);
+        typeText = (TextView) view.findViewById(R.id.typeText);
 
         pathLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Main2Activity.this,SearchQueryTwoActivity.class);
+                Intent i = new Intent(getActivity(),SearchQueryTwoActivity.class);
                 i.putExtra("centerOfInterest",new Gson().toJson(selectedCenterOfInterest));
                 startActivity(i);
             }
         });
+        return view;
     }
 
+    private void createMap(Bundle savedInstanceState,View view) {
 
-
-    private void createMap(Bundle savedInstanceState) {
-
-        mMapView = (MapView) findViewById(R.id.mapView);
+        mMapView = (MapView) view.findViewById(R.id.mapView);
 
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(new OnMapReadyCallback() {
@@ -294,7 +298,7 @@ public class Main2Activity extends AppCompatActivity
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
                 mapboxMap.setMyLocationEnabled(true);
                 try {
-                    String graphJson = FileUtils.readFile(Main2Activity.this.getAssets().open("GraphJson.txt"));
+                    String graphJson = FileUtils.readFile(getActivity().getAssets().open("GraphJson.txt"));
                     //Graph graph = GraphCreator.createGraph(graphJson);
                     //Graph graph = new Graph(graphJson);
                     //mCustomMapView.drawFromGraph(graph);
@@ -315,6 +319,7 @@ public class Main2Activity extends AppCompatActivity
                         mCustomMapView.animateCamera(new Coordinate(uiMarkerUtils.getMarker().getPosition()),16);
                         bindStructureLayout((CenterOfInterest)uiMarkerUtils.getTag());
                         selectedCenterOfInterest = ((CenterOfInterest)uiMarkerUtils.getTag());
+                        ((StartActivity)getActivity()).showBottomBar();
                     }
                 });
                 mCustomMapView.getMapboxMap().setOnMapClickListener(new MapboxMap.OnMapClickListener() {
@@ -329,6 +334,7 @@ public class Main2Activity extends AppCompatActivity
                             pathLayout.setVisibility(View.GONE);
                             bottomChoice.setVisibility(View.VISIBLE);
                             enter(fabClear);
+                            ((StartActivity)getActivity()).hideBottomBar();
                         }
                     }
                 });
@@ -336,43 +342,11 @@ public class Main2Activity extends AppCompatActivity
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
     public void bindStructureLayout (CenterOfInterest centerOfInterest)
     {
         bigLabel.setText(centerOfInterest.getLabel()+"");
         smallLabel.setText(structureList.getBlocLabel(centerOfInterest));
         typeText.setText(CenterOfInterest.getTypeString(centerOfInterest.getType()));
-    }
-
-
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.card) {
-            // Handle the camera action
-        } else if (id == R.id.time_table) {
-            Intent i = new Intent(Main2Activity.this,SearchQueryTwoActivity.class);
-            startActivity(i);
-
-        } else if (id == R.id.settings) {
-
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     public void enter(final View view) {
@@ -428,7 +402,7 @@ public class Main2Activity extends AppCompatActivity
     public void changeTextViewState (TextView textView, int drawableResource)
     {
         //textView.setTextColor(ContextCompat.getColor(context,textColorId));
-        Drawable drawable = ContextCompat.getDrawable(this,drawableResource);
+        Drawable drawable = ContextCompat.getDrawable(getActivity(),drawableResource);
         textView.setCompoundDrawablesWithIntrinsicBounds(null,drawable,null,null);
     }
 
@@ -491,4 +465,5 @@ public class Main2Activity extends AppCompatActivity
             }
         }
     }
+
 }

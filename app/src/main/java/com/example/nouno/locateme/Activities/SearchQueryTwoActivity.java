@@ -165,9 +165,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
                     }
                 }
-                if (departureEditText.getTag()==null||fromCenterOfInterest)
+                if (departureEditText.getTag()==null)
                 if (hasFocus)
                 {
+
                     departureEditText.setText("");
                     if (fromCenterOfInterest)
                     {
@@ -175,6 +176,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         if (mPath.getDestination() == null)
                         {
                             destinationEditText.setText("");
+                        }
+                        else
+                        {
+                            destinationEditText.setText("Vers "+mPath.getDestination().getLabel());
                         }
                     }
                 }
@@ -244,7 +249,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         destinationEditText.setText("");
                     }
                 }
-                if (destinationEditText.getTag()==null||fromCenterOfInterest)
+                if (destinationEditText.getTag()==null)
                 if (hasFocus)
                 {
                     destinationEditText.setText("");
@@ -254,6 +259,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         if (mPath.getSource() == null)
                         {
                             departureEditText.setText("");
+                        }
+                        else
+                        {
+                            departureEditText.setText("Depuis "+mPath.getSource().getLabel());
                         }
                     }
                 }
@@ -454,6 +463,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             state = STATE_PATH_INITIALIZED;
         }
         departureEditText.setTag(null);
+        //fromCenterOfInterest = false;
     }
 
     private void setDestination (Place destination)
@@ -495,6 +505,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             state = STATE_PATH_INITIALIZED;
         }
         destinationEditText.setTag(null);
+        //fromCenterOfInterest = false;
     }
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
