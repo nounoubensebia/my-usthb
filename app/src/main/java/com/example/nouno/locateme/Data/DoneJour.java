@@ -22,4 +22,15 @@ public class DoneJour {
     public String getName() {
         return name;
     }
+
+    public boolean isEmptyDay ()
+    {
+        for (DoneCreneau creneau:creneaux)
+        {
+            if (creneau.getDoneSeances().size()>0)
+                return false;
+
+        }
+        return true;
+    }
 }

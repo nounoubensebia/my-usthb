@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
 public class SuperAwesomeCardFragment extends Fragment {
     private static final String ARG_POSITION = "position";
     static ArrayList<DoneJour> doneJours;
-
+    private TextView emptyDayText;
 
     private int position;
 
@@ -65,12 +65,22 @@ public class SuperAwesomeCardFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_card,container,false);
         ButterKnife.bind(this, rootView);
         ViewCompat.setElevation(rootView, 50);
+        emptyDayText = (TextView) rootView.findViewById(R.id.text_empty_day);
         if (AgendaFragment.wait == 1&&AgendaFragment.doneJours.size()>0)
-        {
-            ListView listView = (ListView)rootView.findViewById(R.id.list);
-            CreneauAdapter creneauAdapter = new CreneauAdapter(getContext(),AgendaFragment.doneJours.get(position).getCreneaux());
-            listView.setAdapter(creneauAdapter);
-            listView.setDividerHeight(0);
+        {   ListView listView = (ListView)rootView.findViewById(R.id.list);
+            if (!AgendaFragment.doneJours.get(position).isEmptyDay())
+            {
+                listView.setVisibility(View.VISIBLE);
+                CreneauAdapter creneauAdapter = new CreneauAdapter(getContext(),AgendaFragment.doneJours.get(position).getCreneaux());
+                listView.setAdapter(creneauAdapter);
+                listView.setDividerHeight(0);
+                emptyDayText.setVisibility(View.GONE);
+            }
+            else
+            {
+                listView.setVisibility(View.GONE);
+                emptyDayText.setVisibility(View.VISIBLE);
+            }
         }
 
 
