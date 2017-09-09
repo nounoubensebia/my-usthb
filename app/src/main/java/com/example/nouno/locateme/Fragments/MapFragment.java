@@ -319,7 +319,7 @@ public class MapFragment extends Fragment {
                         mCustomMapView.animateCamera(new Coordinate(uiMarkerUtils.getMarker().getPosition()),16);
                         bindStructureLayout((CenterOfInterest)uiMarkerUtils.getTag());
                         selectedCenterOfInterest = ((CenterOfInterest)uiMarkerUtils.getTag());
-                        ((StartActivity)getActivity()).showBottomBar();
+
                     }
                 });
                 mCustomMapView.getMapboxMap().setOnMapClickListener(new MapboxMap.OnMapClickListener() {
@@ -334,7 +334,7 @@ public class MapFragment extends Fragment {
                             pathLayout.setVisibility(View.GONE);
                             bottomChoice.setVisibility(View.VISIBLE);
                             enter(fabClear);
-                            ((StartActivity)getActivity()).hideBottomBar();
+
                         }
                     }
                 });

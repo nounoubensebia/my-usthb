@@ -131,6 +131,7 @@ public class EmploiDuTempsActivity extends AppCompatActivity {
                         //Remplissage du fichier
                         String filename = "timing";
                         FileOutputStream outputStream;
+
                         try {
                             outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
                             outputStream.write(resultString.getBytes());

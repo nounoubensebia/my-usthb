@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.nouno.locateme.Fragments.AgendaFragment;
 import com.example.nouno.locateme.Fragments.MapFragment;
 import com.example.nouno.locateme.Fragments.SettingsFragment;
 import com.example.nouno.locateme.Fragments.TimeTableFragment;
@@ -17,7 +18,7 @@ public class StartActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
     MapFragment mapFragment;
-    TimeTableFragment timeTableFragment;
+    AgendaFragment timeTableFragment;
     SettingsFragment settingsFragment;
     BottomNavigationView navigation;
 
@@ -73,7 +74,7 @@ public class StartActivity extends AppCompatActivity {
     {
         if (timeTableFragment == null)
         {
-            timeTableFragment = new TimeTableFragment();
+            timeTableFragment = new AgendaFragment();
 
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.content, timeTableFragment).commit();

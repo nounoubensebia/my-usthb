@@ -16,6 +16,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.nouno.locateme.Activities.EmploiDuTempsActivity;
+import com.example.nouno.locateme.Fragments.AgendaFragment;
 import com.example.nouno.locateme.Utils.Parseur;
 
 import butterknife.BindView;
@@ -59,7 +60,7 @@ public class SuperAwesomeCardFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         ViewCompat.setElevation(rootView, 50);
 
-        if(EmploiDuTempsActivity.wait==1) {
+        if(AgendaFragment.wait==1) {
 			/*String ContenuJour="";
 			for(int i=0;i<Parseur.jours.get(position).creneaux.size();i++)
 			{
