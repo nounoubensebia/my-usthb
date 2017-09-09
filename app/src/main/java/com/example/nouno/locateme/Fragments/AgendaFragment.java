@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 
 import com.example.nouno.locateme.ConnexionNet;
+import com.example.nouno.locateme.Data.DoneJour;
 import com.example.nouno.locateme.Data.WebResponse;
 import com.example.nouno.locateme.PagerSlidingTabStrip;
 import com.example.nouno.locateme.QueryUtils;
@@ -40,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -68,6 +70,7 @@ public class AgendaFragment extends Fragment {
     public static int wait = 0 ;
     public static String url;
     public static String sum;
+    public static ArrayList<DoneJour> doneJours;
 
     private class ConnexionTask extends AsyncTask<Map<String,String>,Void,String> {
 
@@ -117,7 +120,8 @@ public class AgendaFragment extends Fragment {
                 String resultString = sb.toString();
 
                 try {
-                    Parseur.parseXml(resultString);
+
+                    doneJours = Parseur.getJours(resultString);
                     //Toast.makeText(EmploiDuTemps.this,EmploiDuTemps.sum,Toast.LENGTH_LONG).show();
 
                     if(!sum.equals(SharedPreference.loadString("SUM",getActivity())))
@@ -228,7 +232,10 @@ public class AgendaFragment extends Fragment {
         mTintManager = new SystemBarTintManager(this.getActivity());
         // enable status bar tint
         mTintManager.setStatusBarTintEnabled(true);
-        adapter = new MyPagerAdapter(getChildFragmentManager());
+        //doneJours = new ArrayList<>();
+        if (doneJours == null)
+            doneJours = new ArrayList<>();
+        adapter = new MyPagerAdapter(getChildFragmentManager(),doneJours);
         pager.setAdapter(adapter);
         tabs.setViewPager(pager);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
@@ -298,11 +305,12 @@ public class AgendaFragment extends Fragment {
     }
 
     public class MyPagerAdapter extends FragmentPagerAdapter {
-
+        ArrayList<DoneJour> doneJours;
         private final String[] TITLES = {"Samedi", "Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi"};
 
-        MyPagerAdapter(FragmentManager fm) {
+        MyPagerAdapter(FragmentManager fm,ArrayList<DoneJour> doneJours) {
             super(fm);
+            this.doneJours = doneJours;
         }
 
         @Override
@@ -317,7 +325,7 @@ public class AgendaFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return SuperAwesomeCardFragment.newInstance(position);
+            return SuperAwesomeCardFragment.newInstance(position,doneJours);
         }
     }
 

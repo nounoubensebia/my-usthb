@@ -2,6 +2,8 @@ package com.example.nouno.locateme.Utils;
 
 import com.example.nouno.locateme.Activities.EmploiDuTempsActivity;
 import com.example.nouno.locateme.Data.Creneau;
+import com.example.nouno.locateme.Data.DoneCreneau;
+import com.example.nouno.locateme.Data.DoneJour;
 import com.example.nouno.locateme.Data.Jour;
 import com.example.nouno.locateme.Data.Seance;
 
@@ -75,8 +77,7 @@ public class Parseur{
                     {
 
                         creneau.horaire=creneaux.item(j).getChildNodes().item(x).getFirstChild().getNodeValue();
-                        //System.out.println(creneaux.item(j).getChildNodes().item(x).getFirstChild().getNodeValue());
-                        //System.out.println("COUCOU");
+
                     }
                 }
 
@@ -146,5 +147,97 @@ public class Parseur{
             }
 
         }
+    }
+
+    public static ArrayList<DoneJour> getJours (String is) throws Exception {
+        ArrayList<DoneJour> doneJours = new ArrayList<>();
+
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource in = new InputSource(new StringReader(is));
+
+
+        Document document = builder.parse(in);
+
+        Element liste = document.getDocumentElement();
+
+        NodeList lignes = liste.getElementsByTagName("ligne");
+        NodeList sums = liste.getElementsByTagName("sum");
+        EmploiDuTempsActivity.sum = sums.item(0).getFirstChild().getNodeValue();
+
+
+        for (int i = 0; i < lignes.getLength(); i++) {
+
+
+
+            //jour.setNom(lignes.item(i).getChildNodes().item(0).getFirstChild().getNodeValue());
+            String name = lignes.item(i).getChildNodes().item(0).getFirstChild().getNodeValue();
+
+            Element cren = (Element) lignes.item(i);
+            ArrayList<DoneCreneau> creneaus = new ArrayList<>();
+
+            NodeList creneaux = cren.getElementsByTagName("creneau");
+
+            String horaire = null;
+            for (int j = 0; j < creneaux.getLength(); j++) {
+
+                for (int x = 0; x < creneaux.item(j).getChildNodes().getLength(); x++) {
+                    if (creneaux.item(j).getChildNodes().item(x).getNodeName().equals("horaire")) {
+
+                        horaire = creneaux.item(j).getChildNodes().item(x).getFirstChild().getNodeValue();
+
+                    }
+                }
+
+
+                Element sea = (Element) creneaux.item(j);
+                // tableau des seances
+                NodeList seances = sea.getElementsByTagName("seance");
+                //    System.out.println("Le nombre de séances de ce créneau est = "+seances.getLength());
+                ArrayList<Seance> seances1 = new ArrayList<>();
+                for (int k = 0; k < seances.getLength(); k++) {
+                    Node n = seances.item(k);
+
+                    //pour chaque séance on fait le traitement suivant
+                    Seance seance = new Seance();
+                    for (int l = 0; l < n.getChildNodes().getLength(); l++) {
+
+                        Node e = n.getChildNodes().item(l);
+
+                        if (e.hasChildNodes()) {
+
+                            if (e.getNodeName().equals("type")) {
+                                seance.setType(e.getFirstChild().getNodeValue());
+                            }
+                            if (e.getNodeName().equals("module")) {
+                                seance.setModule(e.getFirstChild().getNodeValue());
+                            }
+                            if (e.getNodeName().equals("local")) {
+                                seance.setLocal(e.getFirstChild().getNodeValue());
+                            }
+                            if (e.getNodeName().equals("groupe")) {
+                                seance.setGroupe(e.getFirstChild().getNodeValue());
+
+                            }
+                            if (e.getNodeName().equals("enseignant")) {
+                                seance.setEnseignant(e.getFirstChild().getNodeValue());
+                            }
+
+                        }
+
+                    }
+                    seances1.add(seance);
+
+                }
+                DoneCreneau doneCreneau = new DoneCreneau(horaire,seances1);
+                creneaus.add(doneCreneau);
+
+
+            }
+            doneJours.add(new DoneJour(creneaus,name));
+
+        }
+        return doneJours;
     }
 }
