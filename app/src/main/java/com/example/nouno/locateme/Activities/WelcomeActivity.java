@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.R;
+import com.example.nouno.locateme.SharedPreference;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
@@ -26,6 +27,8 @@ import com.mapbox.mapboxsdk.offline.OfflineTilePyramidRegionDefinition;
 
 import org.json.JSONObject;
 
+import java.io.File;
+
 public class WelcomeActivity extends AppCompatActivity {
     private View downloadingLayout;
     private Button startDownloadingButton;
@@ -33,9 +36,20 @@ public class WelcomeActivity extends AppCompatActivity {
     private View welcomeLayout;
     private ProgressBar progressBar;
 
-
+    public boolean fileExistance(String fname){
+        File file = getBaseContext().getFileStreamPath(fname);
+        return file.exists();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(fileExistance("timing")) {
+            //Toast.makeText(MainActivity.this, "Le fichier timing existe déjà", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(WelcomeActivity.this, StartActivity.class);
+            startActivity(i);
+            finish();
+        }
+
+
         Mapbox.getInstance(this, "pk.eyJ1Ijoibm91bm91OTYiLCJhIjoiY2o0Z29mMXNsMDVoazMzbzI1NTJ1MmRqbCJ9.CXczOhM2eznwR0Mv6h2Pgg");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
@@ -115,6 +129,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     downloadCompleteTextView.setVisibility(View.VISIBLE);
+                                    SharedPreference.saveString("map_downloaded","true",WelcomeActivity.this);
                                 }
                             },250);
                         }
@@ -140,7 +155,7 @@ public class WelcomeActivity extends AppCompatActivity {
         downloadCompleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(WelcomeActivity.this,MapActivity.class);
+                Intent i = new Intent(WelcomeActivity.this,NewMainAct.class);
                 startActivity(i);
             }
         });

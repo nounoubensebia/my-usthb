@@ -1,81 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/image1">
+    android:background="@color/backgroundColor">
 
-    <Button
-        android:id="@+id/buttonLicence"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="87dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="90dp"
-        android:background="#FFF"
-        android:textColor="#000"
-        android:text="Licence"
-        app:layout_constraintBottom_toBottomOf="@+id/buttonMaster"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.318"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
 
-    <Button
-        android:id="@+id/buttonMaster"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#FFF"
-        android:text="Master"
-        android:textColor="#000"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="114dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="B i e n v e n u e"
-        android:textSize="40sp"
-        android:textColor="#FFF"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="159dp"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Veuillez choisir votre cycle"
-        android:textSize="20sp"
-        android:textColor="#FFF"
-        tools:layout_constraintTop_creator="1"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="31dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/textView"
-        android:layout_marginLeft="15dp" />
-</android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+
+            android:id="@+id/toolbar1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ToolbarTheme"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
+        <ImageView
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_usthb_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Veuillez choisir votre cycle"
+            android:textSize="20sp"
+            android:textColor="#FFF"
+            android:layout_marginTop="32dp"
+            android:layout_gravity="center"/>
+
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:elevation="0dp"
+            android:id="@+id/buttonLicence"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/button_rect_empty"
+            android:textColor="#FFF"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:text="Licence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:elevation="0dp"
+            android:id="@+id/buttonMaster"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/button_rect_empty"
+            android:textColor="#FFF"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:text="Master"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+
+
+
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

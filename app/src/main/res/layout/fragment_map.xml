@@ -46,7 +46,7 @@
         app:mapbox_cameraTargetLat="36.712126"
         app:mapbox_cameraTargetLng="3.178768"
         app:mapbox_cameraZoom="15"
-        app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10" />
+        app:mapbox_styleUrl="mapbox://styles/mapbox/streets-v9" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_clear"

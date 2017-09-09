@@ -85,7 +85,7 @@ public class SectionActivity extends AppCompatActivity {
             {
                 String text="https://ent.usthb.dz/index.php?/Emp/xml/"+Temp.code+"/"+Temp.annee+"/"+section+"/1";
                 Toast.makeText(SectionActivity.this,text, Toast.LENGTH_LONG).show();
-                Intent i = new Intent(SectionActivity.this,MenuActivity.class);
+                Intent i = new Intent(SectionActivity.this,StartActivity.class);
                 URL info = null;
                 try {
                     info = new URL(text);

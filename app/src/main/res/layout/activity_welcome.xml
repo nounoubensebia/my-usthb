@@ -34,6 +34,11 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ToolbarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
+        <ImageView
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_usthb_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <LinearLayout
             android:animateLayoutChanges="true"
             android:id="@+id/layout_welcome"
@@ -56,50 +61,71 @@
         android:layout_marginRight="32dp"
         android:gravity="center"
         android:textSize="16sp"
-        android:text="Pour pouvoir fonctionner correctement l'application a besoin de télécharger des données supplémentaires vous pouvez lancer le téléchargement a tout moment en appuyant sur le bouton lancer le téléchargement."
+        android:text="Pour pouvoir utiliser l'application en mode hors ligne il est nécessaire de télécharger des données supplémentaires vous pouvez lancer le téléchargement dés maintenant en appuyant sur le bouton lancer le téléchargement. Il est aussi possible de lancer le téléchargement ultérieurement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:animateLayoutChanges="true"
         android:layout_height="match_parent">
-
-        <Button
-            android:id="@+id/button_download"
-            android:backgroundTint="#FFF"
-            android:textColor="@color/backgroundColor"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="32dp"
-            android:text="lancer le téléchargement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
         <LinearLayout
-
-            android:visibility="gone"
-            android:id="@+id/layout_progress"
-            android:orientation="vertical"
-            android:layout_gravity="bottom|center"
             android:layout_marginBottom="32dp"
             android:layout_width="match_parent"
+            android:layout_gravity="bottom|center"
+            android:orientation="vertical"
             android:layout_height="wrap_content">
-            <TextView
-                android:layout_marginBottom="16dp"
-                android:layout_gravity="center"
-                android:textColor="#FFF"
-                android:textSize="16sp"
-                android:text="Téléchargement en cours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_marginLeft="32dp"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:indeterminate="false"
-                android:layout_marginRight="32dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <LinearLayout
 
+                android:visibility="gone"
+                android:id="@+id/layout_progress"
+                android:orientation="vertical"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_marginBottom="16dp"
+                    android:layout_gravity="center"
+                    android:textColor="#FFF"
+                    android:textSize="16sp"
+                    android:text="Téléchargement en cours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_marginLeft="32dp"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:indeterminate="false"
+                    android:layout_marginRight="32dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:elevation="0dp"
+            android:id="@+id/button_download"
+            android:backgroundTint="#FFF"
+            android:background="@drawable/button_rect_full"
+            android:textColor="@color/backgroundColor"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:text="lancer le téléchargement"
+            android:layout_width="256dp"
+            android:layout_height="wrap_content" />
+            <Button
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/button_later"
+                android:elevation="0dp"
+                android:background="@drawable/button_rect_empty"
+                android:textColor="#FFF"
+                android:layout_gravity="center"
+                android:layout_marginBottom="32dp"
+                android:text="laisser pour plus tard"
+                android:layout_width="256dp"
+                android:layout_height="wrap_content" />
         </LinearLayout>
+
 
     </android.support.design.widget.CoordinatorLayout>
         </LinearLayout>
