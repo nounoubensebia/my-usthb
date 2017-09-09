@@ -8,6 +8,13 @@
         <item name="colorAccent">@color/backgroundColor</item>
     </style>
 
+    <style name="WelcomeTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorBlue</item>
+        <item name="colorPrimaryDark">@color/backgroundColor</item>#21671C
+        <item name="colorAccent">#FFF</item>
+    </style>
+
     <style name="MainTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">#000</item>

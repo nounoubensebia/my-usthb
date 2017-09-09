@@ -28,8 +28,9 @@ public class NewMainAct extends AppCompatActivity {
 
         if(fileExistance("timing")) {
             //Toast.makeText(MainActivity.this, "Le fichier timing existe déjà", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(NewMainAct.this, MenuActivity.class);
+            Intent i = new Intent(NewMainAct.this, StartActivity.class);
             startActivity(i);
+            finish();
         }
         else {
 

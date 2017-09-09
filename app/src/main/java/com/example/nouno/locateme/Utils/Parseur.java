@@ -6,6 +6,7 @@ import com.example.nouno.locateme.Data.DoneCreneau;
 import com.example.nouno.locateme.Data.DoneJour;
 import com.example.nouno.locateme.Data.Jour;
 import com.example.nouno.locateme.Data.Seance;
+import com.example.nouno.locateme.Fragments.AgendaFragment;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -54,7 +55,7 @@ public class Parseur{
         //récupération des éléments "eleve"
         NodeList lignes = liste.getElementsByTagName("ligne");
         NodeList sums=liste.getElementsByTagName("sum");
-        EmploiDuTempsActivity.sum=sums.item(0).getFirstChild().getNodeValue();
+        AgendaFragment.sum=sums.item(0).getFirstChild().getNodeValue();
         //System.out.println(lignes.getLength());1
 
         for (int i = 0;i<lignes.getLength();i++){
@@ -164,7 +165,7 @@ public class Parseur{
 
         NodeList lignes = liste.getElementsByTagName("ligne");
         NodeList sums = liste.getElementsByTagName("sum");
-        EmploiDuTempsActivity.sum = sums.item(0).getFirstChild().getNodeValue();
+        AgendaFragment.sum = sums.item(0).getFirstChild().getNodeValue();
 
 
         for (int i = 0; i < lignes.getLength(); i++) {

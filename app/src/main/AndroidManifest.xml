@@ -42,7 +42,7 @@
         <activity
             android:name=".Activities.Main2Activity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity android:name=".Activities.AnneeLicense" />
         <activity android:name=".Activities.FiliereActivity" />
         <activity android:name=".Activities.FaculteActivity" />
@@ -50,16 +50,19 @@
         <activity android:name=".Activities.MenuActivity" />
         <activity android:name=".Activities.EmploiDuTempsActivity" />
         <activity android:name=".Activities.NewMainAct">
+
+        </activity>
+        <activity android:name=".Activities.AnneMasterActivity" />
+        <activity
+            android:name=".Activities.StartActivity"
+            android:label="@string/title_activity_start" />
+        <activity android:name=".Activities.WelcomeActivity" android:theme="@style/WelcomeTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.AnneMasterActivity" />
-        <activity
-            android:name=".Activities.StartActivity"
-            android:label="@string/title_activity_start"></activity>
     </application>
 
 </manifest>

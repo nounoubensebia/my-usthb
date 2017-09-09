@@ -7,8 +7,9 @@ import com.google.gson.Gson;
  */
 
 public class Place {
-    public static final Coordinate NORTH_WEST_CAMPUS_BOUND = new Coordinate(36.720299237046454,3.1706714630126953);
-    public static final Coordinate SOUTH_EAST_CAMPUS_BOUND = new Coordinate(36.70378575550546,3.190455436706543);
+
+    public static final Coordinate NORTH_EAST_BOUND = new Coordinate(36.718693915273185,3.191249370574951);
+    public static final Coordinate SOUTH_WEST_BOUND = new Coordinate(36.7054788373048,3.1696924567222595);
 
 
     private String label;

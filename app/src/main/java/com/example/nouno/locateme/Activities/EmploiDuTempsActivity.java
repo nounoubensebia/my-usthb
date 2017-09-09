@@ -64,7 +64,7 @@ public class EmploiDuTempsActivity extends AppCompatActivity {
     public static String affiche;
     public static int wait = 0 ;
     public static String url;
-    public static String sum;
+
 
     private class ConnexionTask extends AsyncTask<Map<String,String>,Void,String> {
 
@@ -81,7 +81,7 @@ public class EmploiDuTempsActivity extends AppCompatActivity {
 
         protected void onPostExecute(String s) {
 
-            if (!fileExistance("timing")) {
+            /*if (!fileExistance("timing")) {
                 try {
                     affiche = s;
                     StringBuilder sb = new StringBuilder(s);
@@ -119,7 +119,7 @@ public class EmploiDuTempsActivity extends AppCompatActivity {
                     else
                     {
                         Toast.makeText(EmploiDuTemps.this,"Pas de Synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
-                    } */
+                    } *
                 try {
                     Parseur.parseXml(resultString);
                     //Toast.makeText(EmploiDuTemps.this,EmploiDuTemps.sum,Toast.LENGTH_LONG).show();
@@ -149,7 +149,7 @@ public class EmploiDuTempsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 wait = 1;
-            }
+            }*/
         }
     }
 
@@ -208,7 +208,7 @@ public class EmploiDuTempsActivity extends AppCompatActivity {
                 try {
 
                     Parseur.parseXml(resultString);
-                    SharedPreference.saveString("SUM",EmploiDuTempsActivity.sum,EmploiDuTempsActivity.this);
+                    //SharedPreference.saveString("SUM",EmploiDuTempsActivity.sum,EmploiDuTempsActivity.this);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.offline.OfflineManager;
+import com.mapbox.mapboxsdk.offline.OfflineRegion;
 
 import java.io.IOException;
 
@@ -63,9 +66,10 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                builder.include(Place.NORTH_WEST_CAMPUS_BOUND.getMapBoxLatLng());
-                builder.include(Place.SOUTH_EAST_CAMPUS_BOUND.getMapBoxLatLng());
-
+                builder.include(Place.NORTH_EAST_BOUND.getMapBoxLatLng());
+                builder.include(Place.SOUTH_WEST_BOUND.getMapBoxLatLng());
+                mapboxMap.setMaxZoomPreference(20);
+                mapboxMap.setMinZoomPreference(15);
                 mMapboxMap = mapboxMap;
                 mMapboxMap.setMyLocationEnabled(true);
                 mMapboxMap.setLatLngBoundsForCameraTarget(builder.build());
@@ -89,6 +93,21 @@ public class MapActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                OfflineManager offlineManager = OfflineManager.getInstance(MapActivity.this);
+                offlineManager.listOfflineRegions(new OfflineManager.ListOfflineRegionsCallback() {
+                    @Override
+                    public void onList(OfflineRegion[] offlineRegions) {
+                        for (OfflineRegion offlineRegion:offlineRegions)
+                        {
+                            Log.e("ERR",offlineRegion.getDefinition().getBounds().getLatNorth()+"");
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
             }
         });
     }

@@ -5,8 +5,6 @@ import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
-import static com.example.nouno.locateme.Data.Place.NORTH_WEST_CAMPUS_BOUND;
-import static com.example.nouno.locateme.Data.Place.SOUTH_EAST_CAMPUS_BOUND;
 
 /**
  * Created by nouno on 26/06/2017.
@@ -84,10 +82,10 @@ public class Coordinate {
     {
         //TODO handle too far from road
 
-        return  (this.getLatitude()<=NORTH_WEST_CAMPUS_BOUND.getLatitude()&&
-                this.getLatitude()>=SOUTH_EAST_CAMPUS_BOUND.getLatitude()&&
-                this.getLongitude()>=NORTH_WEST_CAMPUS_BOUND.getLongitude()&&
-                this.getLongitude()<=SOUTH_EAST_CAMPUS_BOUND.getLongitude());
+        return  (this.getLatitude()<=Place.NORTH_EAST_BOUND.getLatitude()&&
+                this.getLatitude()>=Place.SOUTH_WEST_BOUND.getLatitude()&&
+                this.getLongitude()>=Place.SOUTH_WEST_BOUND.getLongitude()&&
+                this.getLongitude()<=Place.NORTH_EAST_BOUND.getLongitude());
     }
 
     public float bearingTo(Coordinate coordinate)

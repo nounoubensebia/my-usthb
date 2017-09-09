@@ -66,8 +66,8 @@ public class SetMarkerActivity extends AppCompatActivity {
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                builder.include(Place.NORTH_WEST_CAMPUS_BOUND.getMapBoxLatLng());
-                builder.include(Place.SOUTH_EAST_CAMPUS_BOUND.getMapBoxLatLng());
+                builder.include(Place.NORTH_EAST_BOUND.getMapBoxLatLng());
+                builder.include(Place.SOUTH_WEST_BOUND.getMapBoxLatLng());
                 MapboxMap mMapboxMap = mapboxMap;
                 mMapboxMap.setMyLocationEnabled(true);
                 mMapboxMap.setLatLngBoundsForCameraTarget(builder.build());

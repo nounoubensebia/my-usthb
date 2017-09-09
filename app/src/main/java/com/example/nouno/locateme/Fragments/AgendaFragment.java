@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.nouno.locateme.ConnexionNet;
 import com.example.nouno.locateme.Data.DoneJour;
+import com.example.nouno.locateme.Data.Info;
 import com.example.nouno.locateme.Data.WebResponse;
 import com.example.nouno.locateme.PagerSlidingTabStrip;
 import com.example.nouno.locateme.QueryUtils;
@@ -141,7 +142,8 @@ public class AgendaFragment extends Fragment {
                     }
                     else
                     {
-                        Toast.makeText(getActivity(),"Pas de synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
+
+                        //Toast.makeText(getActivity(),"Pas de synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
                     }
 
                 } catch (Exception e) {
@@ -172,9 +174,10 @@ public class AgendaFragment extends Fragment {
 
         if(!fileExistance("timing"))
         {
-            String json = getActivity().getIntent().getExtras().getString("INFO");
-            URL info = new Gson().fromJson(json,URL.class);
-            url=info.toString();
+            //String json = getActivity().getIntent().getExtras().getString("INFO");
+            //URL info = new Gson().fromJson(json,URL.class);
+            //url=info.toString();
+            url = SharedPreference.loadString("INFO",getActivity());
             SharedPreference.saveString("URL",url,getActivity());
             ConnexionTask connexionTask = new ConnexionTask();
             connexionTask.execute(new LinkedHashMap<String, String>());
@@ -185,7 +188,7 @@ public class AgendaFragment extends Fragment {
             ConnexionNet cn=new ConnexionNet(getActivity());
             if(cn.isConnected())
             {
-                Toast.makeText(getActivity(),"Connexion établie", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(),"Connexion établie", Toast.LENGTH_SHORT).show();
                 //effectuer la synchronisation dans le cas où l'emploi du temps est modifié
                 ConnexionTask connexionTask = new ConnexionTask();
                 connexionTask.execute(new LinkedHashMap<String, String>());
