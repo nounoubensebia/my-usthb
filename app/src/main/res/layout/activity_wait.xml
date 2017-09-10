@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
     tools:context="com.example.nouno.locateme.Activities.AuthorizationActivity">
+
     <android.support.v7.widget.Toolbar
 
         android:id="@+id/toolbar1"
@@ -17,15 +18,17 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ToolbarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:orientation="vertical"
+        android:animateLayoutChanges="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <ImageView
         android:layout_gravity="center"
         app:srcCompat="@drawable/ic_usthb_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:id="@+id/error_layout"
-        android:layout_height="wrap_content"></LinearLayout>
+
     <TextView
         android:id="@+id/text_main"
         android:gravity="center"
@@ -45,16 +48,18 @@
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+
     <TextView
         android:visibility="gone"
         android:id="@+id/text_error"
         android:gravity="center"
         android:layout_gravity="center"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_marginTop="32dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:text="Erreur vous n'êtes pas connecté à internet. Une connexion internet est nécessaire pour configurer l'application"
+        android:text="Erreur connexion au serveur impossible veuillez vérifier votre connexion internet"
         android:textColor="#FFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -64,16 +69,62 @@
         android:paddingLeft="8dp"
         style="?android:attr/borderlessButtonStyle"
         android:elevation="0dp"
+        android:backgroundTint="#FFF"
         android:id="@+id/button_retry"
         android:layout_marginTop="64dp"
-        android:background="@drawable/button_rect_empty"
-        android:textColor="#FFF"
+        android:background="@drawable/button_rect_full"
+        android:textColor="@color/backgroundColor"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"
         android:text="Réessayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+        <Button
+            android:visibility="gone"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:elevation="0dp"
+            android:id="@+id/button_cancel"
 
+            android:background="@drawable/button_rect_empty"
+            android:textColor="#FFF"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:text="Annuler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/layout_sync_completed"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+
+            android:textColor="#FFF"
+            android:layout_marginTop="32dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:text="Synchronisation terminée."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/button_download_finished"
+            android:elevation="0dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/button_rect_full"
+            android:textColor="@color/backgroundColor"
+            android:backgroundTint="#FFF"
+            android:layout_gravity="center"
+            android:layout_marginBottom="32dp"
+            android:text="OK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    </LinearLayout>
 
 
 

@@ -91,7 +91,7 @@ public class PreparationActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             if (s==null)
             {
-                errorText.setText("Une erreur s'est produite veuillez réessayer");
+
                 mainText.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
                 Handler handler = new Handler();

@@ -99,6 +99,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), WaitActivity.class);
+                intent.putExtra("fromSettingsActivity","true");
                 startActivity(intent);
             }
         });

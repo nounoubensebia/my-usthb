@@ -76,6 +76,7 @@ public class WelcomeActivity extends AppCompatActivity {
         else
         {
             Intent i = new Intent(WelcomeActivity.this, WaitActivity.class);
+            i.putExtra("fromWelcomeActivity","true");
             startActivity(i);
             finish();
         }

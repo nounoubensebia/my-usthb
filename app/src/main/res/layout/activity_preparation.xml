@@ -43,7 +43,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:text="Erreur vous n'êtes pas connecté à internet. Une connexion internet est nécessaire pour configurer l'application"
+        android:text="Erreur connexion au serveur impossible veuillez vérifier votre connexion internet."
         android:textColor="#FFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

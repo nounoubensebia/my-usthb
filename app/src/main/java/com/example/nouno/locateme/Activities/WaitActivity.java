@@ -3,6 +3,7 @@ package com.example.nouno.locateme.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,8 +30,11 @@ import java.util.Map;
 public class WaitActivity extends AppCompatActivity {
     Button retryButton;
     TextView errorText;
+    Button cancelButton;
     ProgressBar progressBar;
     TextView mainText;
+    View syncCompletedLayout;
+    Button syncCompletedButton;
     public  String affiche;
     public  int wait = 0;
 
@@ -45,20 +49,43 @@ public class WaitActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ConnexionNet connexionNet = new ConnexionNet(this);
+        if (getIntent().getExtras()!=null&&getIntent().getExtras().containsKey("fromWelcomeActivity")&&!connexionNet.isConnected())
+        {
+
+                Intent intent = new Intent(WaitActivity.this, StartActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+
+
+        }
+        else
+        {
+
+
+
         setContentView(R.layout.activity_wait);
         retryButton = (Button) findViewById(R.id.button_retry);
         errorText = (TextView) findViewById(R.id.text_error);
         mainText = (TextView) findViewById(R.id.text_main);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        final ConnexionNet connexionNet = new ConnexionNet(this);
-        if (!connexionNet.isConnected()) {
-            mainText.setVisibility(View.GONE);
-            progressBar.setVisibility(View.GONE);
-            errorText.setVisibility(View.VISIBLE);
-            retryButton.setVisibility(View.VISIBLE);
-        }
+        cancelButton = (Button) findViewById(R.id.button_cancel);
+        syncCompletedLayout = findViewById(R.id.layout_sync_completed);
+        syncCompletedButton = (Button) findViewById(R.id.button_download_finished);
+
+
         ConnexionTask connexionTask = new ConnexionTask();
         connexionTask.execute(new LinkedHashMap<String, String>());
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ConnexionTask connexionTask = new ConnexionTask();
+                connexionTask.execute(new LinkedHashMap<String, String>());
+            }
+        });
+
+    }
     }
 
     private class ConnexionTask extends AsyncTask<Map<String, String>, Void, String> {
@@ -134,14 +161,64 @@ public class WaitActivity extends AppCompatActivity {
                     }
                     wait = 1;
                 }
-                Intent intent = new Intent(WaitActivity.this, StartActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                if (getIntent().getExtras()!=null&&getIntent().getExtras().containsKey("fromSettingsActivity"))
+                {
+                    mainText.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            syncCompletedLayout.setVisibility(View.VISIBLE);
+                            syncCompletedButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(WaitActivity.this, StartActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                        }
+                    },250);
+                }
+                else
+                {
+                    Intent intent = new Intent(WaitActivity.this, StartActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                }
             }
             else
             {
-
+                mainText.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        errorText.setVisibility(View.VISIBLE);
+                        retryButton.setVisibility(View.VISIBLE);
+                        if (getIntent().getExtras()!=null&&getIntent().getExtras().containsKey("fromSettingsActivity"))
+                        {
+                            cancelButton.setVisibility(View.VISIBLE);
+                            cancelButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    onBackPressed();
+                                }
+                            });
+                        }
+                    }
+                },250);
+                if (getIntent().getExtras()!=null&&getIntent().getExtras().containsKey("fromWelcomeActivity"))
+                {
+                    Intent intent = new Intent(WaitActivity.this, StartActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                }
             }
 
         }
