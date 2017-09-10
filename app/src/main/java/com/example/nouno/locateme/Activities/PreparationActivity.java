@@ -91,10 +91,6 @@ public class PreparationActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             if (s==null)
             {
-
-            }
-            else
-            {
                 errorText.setText("Une erreur s'est produite veuillez réessayer");
                 mainText.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
@@ -107,6 +103,9 @@ public class PreparationActivity extends AppCompatActivity {
                     }
                 },250);
 
+            }
+            else
+            {
                 try {
                     StringBuilder sb = new StringBuilder(s);
                     sb.deleteCharAt(0);
@@ -115,6 +114,11 @@ public class PreparationActivity extends AppCompatActivity {
                     Intent i = new Intent(PreparationActivity.this,NewMainAct.class);
                     Info info = new Info(filieres,annee,null,null,"M",null);
                     String json = new Gson().toJson(info);
+                    if (getIntent().getExtras()!=null)
+                    if (getIntent().getExtras().containsKey("reinit"))
+                    {
+                        i.putExtra("reinit","true");
+                    }
                     i.putExtra("INFO",json);
                     startActivity(i);
                     finish();

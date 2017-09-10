@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-        app:mapbox_styleUrl="mapbox://styles/mapbox/streets-v9">
+        app:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v10">
     </com.mapbox.mapboxsdk.maps.MapView>
 
 

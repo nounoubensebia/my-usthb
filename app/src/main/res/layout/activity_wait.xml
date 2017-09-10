@@ -22,6 +22,10 @@
         app:srcCompat="@drawable/ic_usthb_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/error_layout"
+        android:layout_height="wrap_content"></LinearLayout>
     <TextView
         android:id="@+id/text_main"
         android:gravity="center"
@@ -32,6 +36,13 @@
         android:layout_marginLeft="16dp"
         android:text="Veuillez patienter s'il vous plait."
         android:textColor="#FFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_marginTop="32dp"
+        android:layout_gravity="center"
+        style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
@@ -62,13 +73,7 @@
         android:text="Réessayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_marginTop="32dp"
-        android:layout_gravity="center"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
 
 
 

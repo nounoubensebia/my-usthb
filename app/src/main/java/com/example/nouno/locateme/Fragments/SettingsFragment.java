@@ -1,6 +1,7 @@
 package com.example.nouno.locateme.Fragments;
 
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.nouno.locateme.Activities.DownloadActivity;
+import com.example.nouno.locateme.Activities.PreparationActivity;
+import com.example.nouno.locateme.Activities.WaitActivity;
 import com.example.nouno.locateme.Data.Info;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.SharedPreference;
@@ -26,7 +30,10 @@ public class SettingsFragment extends Fragment {
     private TextView filiere;
     private TextView formation;
     private Info info;
+    private View downloadMapLayout;
     private Toolbar toolbar;
+    private View syncLayout;
+    private View resetLayout;
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -49,7 +56,8 @@ public class SettingsFragment extends Fragment {
         section = (TextView)view.findViewById(R.id.section);
         filiere = (TextView)view.findViewById(R.id.filiere);
         formation = (TextView)view.findViewById(R.id.formation);
-
+        syncLayout = view.findViewById(R.id.layout_sync);
+        resetLayout = view.findViewById(R.id.layout_reset);
         if (info.annee==1)
         {
             anne.setText("Première");
@@ -75,7 +83,33 @@ public class SettingsFragment extends Fragment {
             formation.setText("Licence");
         }
         filiere.setText(info.filiere);
-
+        downloadMapLayout = view.findViewById(R.id.layout_download_map);
+        downloadMapLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), DownloadActivity.class);
+                startActivity(intent);
+            }
+        });
+        if (SharedPreference.verifyKey("map_downloaded",getActivity()))
+        {
+            downloadMapLayout.setVisibility(View.GONE);
+        }
+        syncLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), WaitActivity.class);
+                startActivity(intent);
+            }
+        });
+        resetLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PreparationActivity.class);
+                intent.putExtra("reinit","true");
+                startActivity(intent);
+            }
+        });
         return view;
     }
 

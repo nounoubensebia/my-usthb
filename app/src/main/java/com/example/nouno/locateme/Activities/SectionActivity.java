@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class SectionActivity extends AppCompatActivity {
     String section;
-    public static Info Temp;
+    public Info Temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

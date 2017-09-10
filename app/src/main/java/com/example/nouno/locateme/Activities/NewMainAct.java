@@ -27,24 +27,28 @@ public class NewMainAct extends AppCompatActivity {
         info = new Gson().fromJson(inf,Info.class);
     }
 
+    private boolean reInit ()
+    {
+        return getIntent().getExtras().containsKey("reinit");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Avant de faire les configurations il faut tester si le fichier contenant l'emploi du temps existe
         getInfo();
 
-        if(fileExistance("timing")|| SharedPreference.verifyKey("INFO",this)||SharedPreference.verifyKey("TEMP",this)) {
+        if(!reInit()&&(SharedPreference.verifyKey("INFO",this)||SharedPreference.verifyKey("TEMP",this))) {
             //Toast.makeText(MainActivity.this, "Le fichier timing existe déjà", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(NewMainAct.this, StartActivity.class);
             startActivity(i);
             finish();
         }
-        else {
+        else
+        {
 
 
             setContentView(R.layout.activity_new_main);
-
-
             Button buttonLicence = (Button) findViewById(R.id.buttonLicence);
             Button buttonMaster = (Button) findViewById(R.id.buttonMaster);
 
@@ -77,8 +81,9 @@ public class NewMainAct extends AppCompatActivity {
                     }
                 }
             });
-
-
         }
+
+
+
     }
 }

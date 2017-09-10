@@ -38,7 +38,34 @@ public class Parseur{
 
     public static ArrayList<Jour> jours=new ArrayList<Jour>();
 
+    public static String getSum (String is)
+    {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = null;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        InputSource in = new InputSource(new StringReader(is));
 
+        // lecture du contenu du fichier XML
+        Document document = null;
+        try {
+            document = builder.parse(in);
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //****************************getElementsByTagName()****************************************************//
+        //récupération de la racine du document XML
+        Element liste = document.getDocumentElement();
+        //récupération des éléments "eleve"
+        NodeList lignes = liste.getElementsByTagName("ligne");
+        NodeList sums=liste.getElementsByTagName("sum");
+        return sums.item(0).getFirstChild().getNodeValue();
+    }
 
     public static void parseXml(String is) throws Exception {
         //String xmlFile = "C:/Users/user/Desktop/read.xml";

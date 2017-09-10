@@ -81,7 +81,11 @@
         <activity
             android:name=".Activities.PreparationActivity"
             android:theme="@style/WelcomeTheme" />
-        <activity android:name=".Activities.WaitActivity" android:theme="@style/WelcomeTheme" ></activity>
+        <activity
+            android:name=".Activities.WaitActivity"
+            android:theme="@style/WelcomeTheme" />
+        <activity android:name=".Activities.DownloadActivity"
+            android:theme="@style/WelcomeTheme"></activity>
     </application>
 
 </manifest>

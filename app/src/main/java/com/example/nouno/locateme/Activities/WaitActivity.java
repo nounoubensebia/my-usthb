@@ -31,13 +31,13 @@ public class WaitActivity extends AppCompatActivity {
     TextView errorText;
     ProgressBar progressBar;
     TextView mainText;
-    public static String affiche;
-    public static int wait = 0 ;
-    public static String url;
-    public static String sum;
+    public  String affiche;
+    public  int wait = 0;
+
+    public String sum;
     public static ArrayList<DoneJour> doneJours;
 
-    public boolean fileExistance(String fname){
+    public boolean fileExistance(String fname) {
         File file = getFileStreamPath(fname);
         return file.exists();
     }
@@ -51,8 +51,7 @@ public class WaitActivity extends AppCompatActivity {
         mainText = (TextView) findViewById(R.id.text_main);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final ConnexionNet connexionNet = new ConnexionNet(this);
-        if (!connexionNet.isConnected())
-        {
+        if (!connexionNet.isConnected()) {
             mainText.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
             errorText.setVisibility(View.VISIBLE);
@@ -62,12 +61,12 @@ public class WaitActivity extends AppCompatActivity {
         connexionTask.execute(new LinkedHashMap<String, String>());
     }
 
-    private class ConnexionTask extends AsyncTask<Map<String,String>,Void,String> {
-
+    private class ConnexionTask extends AsyncTask<Map<String, String>, Void, String> {
 
 
         protected String doInBackground(Map<String, String>... params) {
-            WebResponse webResponse = QueryUtils.makeHttpGetRequest(SharedPreference.loadString("URL",WaitActivity.this),
+            String urla = SharedPreference.loadString("URL", WaitActivity.this);
+            WebResponse webResponse = QueryUtils.makeHttpGetRequest(SharedPreference.loadString("URL", WaitActivity.this),
                     new LinkedHashMap<String, String>());
             if (webResponse.isError()) {
                 return null;//erreur
@@ -76,74 +75,75 @@ public class WaitActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String s) {
-
-            if (!fileExistance("timing")) {
-                try {
-                    affiche = s;
-                    StringBuilder sb = new StringBuilder(s);
-                    sb.deleteCharAt(0);
-                    String resultString = sb.toString();
-                    //Création du fichier contenant l'emploi du temps
-                    String filename = "timing";
-                    FileOutputStream outputStream;
-
+            if (s != null) {
+                if (!fileExistance("timing")) {
                     try {
-                        outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-                        outputStream.write(resultString.getBytes());
-                        outputStream.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    //Parseur.parseXml(resultString);
-                    SharedPreference.saveString("SUM",sum, WaitActivity.this);
-                    //wait = 1;
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            else
-            {
-                affiche = s;
-                StringBuilder sb = new StringBuilder(s);
-                sb.deleteCharAt(0);
-                String resultString = sb.toString();
-
-                try {
-
-                    doneJours = Parseur.getJours(resultString);
-                    //Toast.makeText(EmploiDuTemps.this,EmploiDuTemps.sum,Toast.LENGTH_LONG).show();
-
-                    if(!sum.equals(SharedPreference.loadString("SUM",WaitActivity.this)))
-                    {
-                        //Toast.makeText(getActivity(),"Synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
-                        SharedPreference.saveString("SUM",sum,WaitActivity.this);
-                        //Remplissage du fichier
+                        affiche = s;
+                        StringBuilder sb = new StringBuilder(s);
+                        sb.deleteCharAt(0);
+                        String resultString = sb.toString();
+                        //Création du fichier contenant l'emploi du temps
                         String filename = "timing";
                         FileOutputStream outputStream;
+
                         try {
-                            outputStream = WaitActivity.this.openFileOutput(filename, Context.MODE_PRIVATE);
+                            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
                             outputStream.write(resultString.getBytes());
                             outputStream.close();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                    else
-                    {
+                        //Parseur.parseXml(resultString);
+                        SharedPreference.saveString("SUM", sum, WaitActivity.this);
+                        //wait = 1;
 
-                        //Toast.makeText(getActivity(),"Pas de synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                } else {
+                    affiche = s;
+                    StringBuilder sb = new StringBuilder(s);
+                    sb.deleteCharAt(0);
+                    String resultString = sb.toString();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    try {
+
+                        doneJours = Parseur.getJours(resultString);
+                        //Toast.makeText(EmploiDuTemps.this,EmploiDuTemps.sum,Toast.LENGTH_LONG).show();
+                        sum = Parseur.getSum(resultString);
+                        if (!sum.equals(SharedPreference.loadString("SUM", WaitActivity.this))) {
+                            //Toast.makeText(getActivity(),"Synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
+                            SharedPreference.saveString("SUM", sum, WaitActivity.this);
+                            //Remplissage du fichier
+                            String filename = "timing";
+                            FileOutputStream outputStream;
+                            try {
+                                outputStream = WaitActivity.this.openFileOutput(filename, Context.MODE_PRIVATE);
+                                outputStream.write(resultString.getBytes());
+                                outputStream.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+
+                            //Toast.makeText(getActivity(),"Pas de synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    wait = 1;
                 }
-                wait = 1;
+                Intent intent = new Intent(WaitActivity.this, StartActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
             }
-            Intent intent = new Intent(WaitActivity.this,StartActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+            else
+            {
+
+            }
+
         }
     }
 }

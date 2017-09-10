@@ -148,7 +148,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-
+            android:id="@+id/layout_download_map"
             android:background="#FFF"
             android:orientation="vertical">
 
@@ -166,7 +166,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-
+            android:id="@+id/layout_sync"
             android:background="#FFF"
             android:orientation="vertical">
 
@@ -184,7 +184,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-
+            android:id="@+id/layout_reset"
             android:background="#FFF"
             android:orientation="vertical">
 
