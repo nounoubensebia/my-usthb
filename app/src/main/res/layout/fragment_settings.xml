@@ -39,15 +39,17 @@
             android:orientation="vertical">
 
             <TextView
-                android:textSize="16sp"
+                android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
-                android:text="Formation"
-                android:textColor="#000" />
+                android:text="Cycle"
+                android:textColor="#000"
+                android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/formation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -72,6 +74,7 @@
                 android:textColor="#000" />
 
             <TextView
+                android:id="@+id/year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -96,6 +99,7 @@
                 android:textColor="#000" />
 
             <TextView
+                android:id="@+id/filiere"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -111,6 +115,7 @@
             android:orientation="vertical">
 
             <TextView
+
                 android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -120,13 +125,57 @@
                 android:textColor="#000" />
 
             <TextView
+                android:id="@+id/section"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:text="A" />
         </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Actions"
+            android:textColor="#000"
+            android:textSize="16sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
 
+            android:background="#FFF"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:textSize="16sp"
+                android:text="Télécharger la carte"
+                android:textColor="#000" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+
+            android:background="#FFF"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:textSize="16sp"
+                android:text="Synchroniser les données"
+                android:textColor="#000" />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -146,9 +195,9 @@
                 android:textColor="@android:color/holo_red_light" />
 
 
-        </LinearLayout>
+
     </LinearLayout>
 
 
-
+</LinearLayout>
 </LinearLayout>

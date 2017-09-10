@@ -17,6 +17,7 @@ public class Info {
     public String code;
     public String cycle;
     public String fac;
+    public String section;
 
     public Info(ArrayList<Filiere> filieres, int annee, String filiere, String code,String cycle,String fac) {
         this.filieres = filieres;

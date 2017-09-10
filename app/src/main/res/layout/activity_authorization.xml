@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    tools:context="com.example.nouno.locateme.Activities.AuthorizationActivity">
+    <android.support.v7.widget.Toolbar
+
+        android:id="@+id/toolbar1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ToolbarTheme"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
+    <ImageView
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_usthb_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/text_authorization"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textSize="20sp"
+        android:layout_marginTop="32dp"
+        android:text="Pour pouvoir utiliser l'application vous devez autoriser l'accès à votre position géographique."
+        android:textColor="#FFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:elevation="0dp"
+        android:id="@+id/button_authorize"
+        android:layout_marginTop="64dp"
+        android:background="@drawable/button_rect_empty"
+        android:textColor="#FFF"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:text="Autoriser l'accès"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>

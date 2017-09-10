@@ -1,6 +1,7 @@
 package com.example.nouno.locateme.Activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,15 +36,45 @@ public class WelcomeActivity extends AppCompatActivity {
     private TextView downloadCompleteTextView;
     private View welcomeLayout;
     private ProgressBar progressBar;
-
+    private Button laterButton;
+    private View downloadCompleteLayout;
+    private Button nextButton;
+    private OfflineRegion offlineRegion;
     public boolean fileExistance(String fname){
         File file = getBaseContext().getFileStreamPath(fname);
         return file.exists();
     }
+
+
+    private void rootToNextActivity ()
+    {
+        Intent intent;
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP_MR1)
+        {
+            intent = new Intent(this,AuthorizationActivity.class);
+
+        }
+        else
+        {
+            intent = new Intent(WelcomeActivity.this, PreparationActivity.class);
+        }
+        startActivity(intent);
+        finish();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(fileExistance("timing")) {
+        if(!fileExistance("timing")&&!SharedPreference.verifyKey("INFO",this)&&!SharedPreference.verifyKey("TEMP",this)) {
+            if (SharedPreference.verifyKey("map_downloaded",this))
+            {
+                rootToNextActivity();
+            }
             //Toast.makeText(MainActivity.this, "Le fichier timing existe déjà", Toast.LENGTH_SHORT).show();
+
+        }
+        else
+        {
             Intent i = new Intent(WelcomeActivity.this, StartActivity.class);
             startActivity(i);
             finish();
@@ -53,12 +84,14 @@ public class WelcomeActivity extends AppCompatActivity {
         Mapbox.getInstance(this, "pk.eyJ1Ijoibm91bm91OTYiLCJhIjoiY2o0Z29mMXNsMDVoazMzbzI1NTJ1MmRqbCJ9.CXczOhM2eznwR0Mv6h2Pgg");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
+        laterButton = (Button) findViewById(R.id.button_later);
         downloadingLayout = findViewById(R.id.layout_progress);
         startDownloadingButton = (Button) findViewById(R.id.button_download);
         downloadCompleteTextView = (TextView) findViewById(R.id.text_download_complete);
         welcomeLayout = findViewById(R.id.layout_welcome);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        nextButton = (Button) findViewById(R.id.button_next);
+        downloadCompleteLayout = findViewById(R.id.layout_download_finished);
         startDownloadingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +100,17 @@ public class WelcomeActivity extends AppCompatActivity {
                 downloadRegion();
             }
         });
+        laterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (offlineRegion!=null)
+                {
+                    offlineRegion.setDownloadState(OfflineRegion.STATE_INACTIVE);
+                }
+                rootToNextActivity();
 
+            }
+        });
 
 
 
@@ -111,6 +154,7 @@ public class WelcomeActivity extends AppCompatActivity {
         offlineManager.createOfflineRegion(definition, metadata, new OfflineManager.CreateOfflineRegionCallback() {
             @Override
             public void onCreate(OfflineRegion offlineRegion) {
+                WelcomeActivity.this.offlineRegion = offlineRegion;
                 offlineRegion.setDownloadState(OfflineRegion.STATE_ACTIVE);
                 offlineRegion.setObserver(new OfflineRegion.OfflineRegionObserver() {
                     @Override
@@ -128,7 +172,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    downloadCompleteTextView.setVisibility(View.VISIBLE);
+                                    downloadCompleteLayout.setVisibility(View.VISIBLE);
                                     SharedPreference.saveString("map_downloaded","true",WelcomeActivity.this);
                                 }
                             },250);
@@ -152,11 +196,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
             }
         });
-        downloadCompleteTextView.setOnClickListener(new View.OnClickListener() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(WelcomeActivity.this,NewMainAct.class);
-                startActivity(i);
+                rootToNextActivity();
             }
         });
     }

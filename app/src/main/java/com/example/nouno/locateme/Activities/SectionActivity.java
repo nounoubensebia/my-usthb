@@ -84,7 +84,7 @@ public class SectionActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 String text="https://ent.usthb.dz/index.php?/Emp/xml/"+Temp.code+"/"+Temp.annee+"/"+section+"/1";
-                Toast.makeText(SectionActivity.this,text, Toast.LENGTH_LONG).show();
+                //Toast.makeText(SectionActivity.this,text, Toast.LENGTH_LONG).show();
                 Intent i = new Intent(SectionActivity.this,StartActivity.class);
                 URL info = null;
                 try {
@@ -92,11 +92,15 @@ public class SectionActivity extends AppCompatActivity {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
-
+                Temp.section = section;
                 SharedPreference.saveString("INFO",info.toString(),SectionActivity.this);
+                SharedPreference.saveString("TEMP",new Gson().toJson(Temp),SectionActivity.this);
                 String json = new Gson().toJson(info);
                 i.putExtra("INFO",json);
+
                 startActivity(i);
+
+
 
             }
         });
