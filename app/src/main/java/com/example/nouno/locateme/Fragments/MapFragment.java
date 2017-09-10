@@ -143,7 +143,7 @@ public class MapFragment extends Fragment {
         fabClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                markerSelected = false;
+
                 mMapboxMap.removeAnnotations();
                 exit(fabClear);
                 enter(fabList);
@@ -159,6 +159,7 @@ public class MapFragment extends Fragment {
                 enter(fabClear);
                 exit(fabList);
                 bottomChoice.setVisibility(View.VISIBLE);
+                updateSelectionLayout();
                 ((StartActivity)getActivity()).hideBottomBar();
 
             }
@@ -268,6 +269,61 @@ public class MapFragment extends Fragment {
             }
         });
         return view;
+    }
+    void updateSelectionLayout ()
+    {
+        if (!kiosqueSelected)
+        {
+            changeTextViewState(kiosqueText,R.drawable.ic_kiosk_disabled);
+
+        }
+        else
+        {
+            changeTextViewState(kiosqueText,R.drawable.ic_kiosk);
+
+        }
+
+        if (!mosqueSelected)
+        {
+            changeTextViewState(mosqueText,R.drawable.ic_mosque_disabled);
+
+        }
+        else
+        {
+            changeTextViewState(mosqueText,R.drawable.ic_mosque);
+
+        }
+        if (!buvetteSelected)
+        {
+
+            changeTextViewState(buvetteText,R.drawable.ic_food_disabled);
+        }
+        else
+        {
+
+            changeTextViewState(buvetteText,R.drawable.ic_food);
+        }
+
+        if (!exitSelected)
+        {
+            changeTextViewState(exitText,R.drawable.ic_sortie_disabled);
+
+        }
+        else
+        {
+
+            changeTextViewState(exitText,R.drawable.ic_sortie);
+        }
+        if (!sannitaireSelected)
+        {
+
+            changeTextViewState(sanitaireText,R.drawable.ic_toilet_disabled);
+        }
+        else
+        {
+
+            changeTextViewState(sanitaireText,R.drawable.ic_toilet);
+        }
     }
 
     private void createMap(Bundle savedInstanceState,View view) {

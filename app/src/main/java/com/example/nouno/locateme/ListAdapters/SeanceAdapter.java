@@ -47,7 +47,17 @@ public class SeanceAdapter extends ArrayAdapter<Seance> {
             groupText.setText(seance.type);
         }
         moduleText.setText(seance.module);
-        localText.setText(seance.local);
+        if (seance.local.charAt(seance.local.length()-1)==')')
+        {
+            StringBuilder sb = new StringBuilder(seance.local);
+            sb.deleteCharAt(seance.local.length()-1);
+            localText.setText(sb.toString());
+        }
+        else
+        {
+            localText.setText(seance.local);
+        }
+
         return item;
     }
 }

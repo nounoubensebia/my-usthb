@@ -46,6 +46,7 @@ public class CustomMapView  {
     {
         this.mapboxMap = mapboxMap;
         this.mapView = mapView;
+        mapboxMap.setMinZoomPreference(14);
     }
 
     public MapView getMapView() {

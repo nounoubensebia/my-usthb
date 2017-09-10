@@ -588,8 +588,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        Toast.makeText(SearchQueryTwoActivity.this,"Vous ne pouvez pas utiliser votre position" +
-                                "vous etes en dehors du campus",Toast.LENGTH_LONG).show();
+                        Toast.makeText(SearchQueryTwoActivity.this,"Vous ne pouvez pas utiliser votre position GPS " +
+                                "vous êtes en dehors du campus",Toast.LENGTH_LONG).show();
                     }
                 }
             }
