@@ -16,7 +16,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.example.nouno.locateme.Activities.EmploiDuTempsActivity;
+
 import com.example.nouno.locateme.Data.Creneau;
 import com.example.nouno.locateme.Data.DoneJour;
 import com.example.nouno.locateme.Fragments.AgendaFragment;

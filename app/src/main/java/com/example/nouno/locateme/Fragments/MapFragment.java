@@ -22,7 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.nouno.locateme.Activities.Main2Activity;
+
 import com.example.nouno.locateme.Activities.SearchQueryTwoActivity;
 import com.example.nouno.locateme.Activities.StartActivity;
 import com.example.nouno.locateme.Data.CenterOfInterest;
@@ -123,13 +123,8 @@ public class MapFragment extends Fragment {
 
 
 
-        final DrawerLayout drawer = (DrawerLayout) view.findViewById(R.id.drawer_layout);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawer.openDrawer(GravityCompat.START);
-            }
-        });
+
+
 
         /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

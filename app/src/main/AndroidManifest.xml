@@ -24,11 +24,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Activities.MainActivity"
-            android:label="@string/app_name" />
-        <activity android:name=".MapTestActivity" />
-        <activity android:name=".Activities.MapActivity" />
-        <activity
             android:name=".Activities.SearchQueryTwoActivity"
             android:label="Où aller ?"
             android:theme="@style/MainTheme" />
@@ -39,10 +34,7 @@
         <activity
             android:name=".Activities.NavigationActivity"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".Activities.Main2Activity"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".Activities.AnneeLicense"
             android:theme="@style/WelcomeTheme" />
@@ -55,8 +47,8 @@
         <activity
             android:name=".Activities.SectionActivity"
             android:theme="@style/WelcomeTheme" />
-        <activity android:name=".Activities.MenuActivity" />
-        <activity android:name=".Activities.EmploiDuTempsActivity" />
+
+
         <activity
             android:name=".Activities.NewMainAct"
             android:theme="@style/WelcomeTheme" />

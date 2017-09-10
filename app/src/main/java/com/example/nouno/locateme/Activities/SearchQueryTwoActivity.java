@@ -534,7 +534,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 builder.include(Place.SOUTH_WEST_BOUND.getMapBoxLatLng());
                 mapboxMap.setLatLngBoundsForCameraTarget(builder.build());
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
-                mapboxMap.getUiSettings().setAllGesturesEnabled(true);
+                mapboxMap.getUiSettings().setAllGesturesEnabled(false);
                 mapboxMap.setMyLocationEnabled(true);
 
             }
