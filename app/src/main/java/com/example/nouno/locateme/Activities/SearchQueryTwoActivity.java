@@ -73,6 +73,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private View pathCalculProgress;
     private CustomMapView mCustomMapView;
     private View pathNotFoundLayout;
+    private View swapImage;
     private View pathFoundLayout;
     private View coordinateLayout;
     private boolean backPressed = false;
@@ -335,7 +336,12 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             Place place = new Place(centerOfInterest.getLabel(),centerOfInterest.getCoordinate(),false);
             setDestination(place);
         }
-
+        swapImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                swap();
+            }
+        });
 
     }
 
@@ -368,6 +374,49 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             }
         }
 
+
+
+    }
+
+    private void swap ()
+    {
+        if (state>STATE_NO_PATH)
+        {
+            int state = this.state;
+            Place inter = mPath.getSource();
+
+            setDeparture(mPath.getDestination());
+            setDestination(inter);
+            if (state==STATE_PATH_INITIALIZED)
+                updateUiState(STATE_PATH_INITIALIZED,false,true);
+            else{
+                fab.clearAnimation();
+                fab.setVisibility(View.GONE);
+                updateUiState(STATE_PATH_INITIALIZED,false,true);
+            }
+        }
+        else
+        {
+            if (mPath.getSource()!=null&&mPath.getDestination()==null)
+            {
+                Place inter = mPath.getSource();
+                mPath.setSource(null);
+                setDeparture(null);
+                setDestination(inter);
+                hideKeyboard();
+            }
+            else
+            {
+                if (mPath.getSource()==null&&mPath.getDestination()!=null)
+                {
+                    Place inter = mPath.getDestination();
+                    mPath.setDestination(null);
+                    setDestination(null);
+                    setDeparture(inter);
+                    hideKeyboard();
+                }
+            }
+        }
     }
 
     private void getViews ()
@@ -387,6 +436,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         arrivalTimeText = (TextView)findViewById(R.id.text_arrival_time);
         useCurrentLocationText = (TextView)findViewById(R.id.text_use_current_location);
         mSuggestionsListView = (RecyclerView) findViewById(R.id.suggestions_list);
+        swapImage = findViewById(R.id.swap_image);
     }
 
     private void reinitSearchSuggestionsList ()
@@ -426,6 +476,9 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     private void setDeparture (Place departure)
     {
+        mPath.setGraph(null);
+        if (departure!=null)
+        {
         departureEditText.setTag("tag");
         Log.i("DEPT",departure.getLabel());
         if (mPath.getDestination()!=null)
@@ -463,11 +516,22 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             state = STATE_PATH_INITIALIZED;
         }
         departureEditText.setTag(null);
+        }
+        else
+        {
+            departureEditText.setTag("tag");
+            departureEditText.setText("");
+            departureEditText.setTag(null);
+            hideKeyboard();
+        }
         //fromCenterOfInterest = false;
     }
 
     private void setDestination (Place destination)
     {
+        mPath.setGraph(null);
+        if (destination!=null)
+        {
         destinationEditText.setTag("tag");
         Log.i("DEST",destination.getLabel());
         if (mPath.getSource()!=null)
@@ -505,6 +569,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             state = STATE_PATH_INITIALIZED;
         }
         destinationEditText.setTag(null);
+        }
+        else
+        {
+            departureEditText.setTag("tag");
+            departureEditText.setText("");
+            departureEditText.setTag(null);
+            hideKeyboard();
+        }
         //fromCenterOfInterest = false;
     }
     public void hideKeyboard() {
@@ -840,6 +912,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 break;
             case STATE_PATH_INITIALIZED :
                 state = STATE_PATH_INITIALIZED;
+                createMap();
                 if (!animate)
                 {
                     if (!keyboardShown)
@@ -905,6 +978,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 break;
             case STATE_PATH_CALCULATED :
                 state = STATE_PATH_CALCULATED;
+
                 if (animate)
                 {
                     if (!keyboardShown)
