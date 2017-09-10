@@ -23,6 +23,11 @@ import com.example.nouno.locateme.Fragments.AgendaFragment;
 import com.example.nouno.locateme.ListAdapters.CreneauAdapter;
 import com.example.nouno.locateme.Utils.Parseur;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -66,12 +71,20 @@ public class SuperAwesomeCardFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         ViewCompat.setElevation(rootView, 50);
         emptyDayText = (TextView) rootView.findViewById(R.id.text_empty_day);
-        if (AgendaFragment.wait == 1&&AgendaFragment.doneJours.size()>0)
+        ArrayList<DoneJour> doneJours = null;
+        String s = readFile();
+        try {
+             doneJours = Parseur.getJours(s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (doneJours!=null&&doneJours.size()>0)
         {   ListView listView = (ListView)rootView.findViewById(R.id.list);
-            if (!AgendaFragment.doneJours.get(position).isEmptyDay())
+            if (!doneJours.get(position).isEmptyDay())
             {
                 listView.setVisibility(View.VISIBLE);
-                CreneauAdapter creneauAdapter = new CreneauAdapter(getContext(),AgendaFragment.doneJours.get(position).getCreneaux());
+                CreneauAdapter creneauAdapter = new CreneauAdapter(getContext(),doneJours.get(position).getCreneaux());
                 listView.setAdapter(creneauAdapter);
                 listView.setDividerHeight(0);
                 emptyDayText.setVisibility(View.GONE);
@@ -145,5 +158,29 @@ public class SuperAwesomeCardFragment extends Fragment {
 
         }*/
         return rootView;
+    }
+
+    private String readFile ()
+    {
+        FileInputStream fis = null;
+        try {
+            fis =getActivity().openFileInput("timing");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        InputStreamReader isr = new InputStreamReader(fis);
+        BufferedReader bufferedReader = new BufferedReader(isr);
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //Toast.makeText(EmploiDuTemps.this,"Lecture à partir du fichier", Toast.LENGTH_SHORT).show();
+        String resultString=sb.toString();
+        return resultString;
     }
 }

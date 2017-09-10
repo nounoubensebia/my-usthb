@@ -85,7 +85,7 @@ public class SectionActivity extends AppCompatActivity {
             {
                 String text="https://ent.usthb.dz/index.php?/Emp/xml/"+Temp.code+"/"+Temp.annee+"/"+section+"/1";
                 //Toast.makeText(SectionActivity.this,text, Toast.LENGTH_LONG).show();
-                Intent i = new Intent(SectionActivity.this,StartActivity.class);
+                Intent i = new Intent(SectionActivity.this,WaitActivity.class);
                 URL info = null;
                 try {
                     info = new URL(text);
@@ -95,6 +95,7 @@ public class SectionActivity extends AppCompatActivity {
                 Temp.section = section;
                 SharedPreference.saveString("INFO",info.toString(),SectionActivity.this);
                 SharedPreference.saveString("TEMP",new Gson().toJson(Temp),SectionActivity.this);
+                SharedPreference.saveString("URL",info.toString(),SectionActivity.this);
                 String json = new Gson().toJson(info);
                 i.putExtra("INFO",json);
 

@@ -94,9 +94,9 @@ public class WaitActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Parseur.parseXml(resultString);
+                    //Parseur.parseXml(resultString);
                     SharedPreference.saveString("SUM",sum, WaitActivity.this);
-                    wait = 1;
+                    //wait = 1;
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -140,7 +140,7 @@ public class WaitActivity extends AppCompatActivity {
                 }
                 wait = 1;
             }
-            Intent intent = new Intent(WaitActivity.this,AgendaFragment.class);
+            Intent intent = new Intent(WaitActivity.this,StartActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();

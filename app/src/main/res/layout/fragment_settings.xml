@@ -16,6 +16,10 @@
         android:title="Emploi du temps"
         app:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
     <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_marginBottom="64dp"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_marginTop="8dp"
         android:layout_width="match_parent"
@@ -200,4 +204,5 @@
 
 
 </LinearLayout>
+    </ScrollView>
 </LinearLayout>

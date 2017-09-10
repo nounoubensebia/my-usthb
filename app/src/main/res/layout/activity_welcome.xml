@@ -85,7 +85,7 @@
         android:layout_marginRight="32dp"
         android:gravity="center"
         android:textSize="16sp"
-        android:text="Pour pouvoir utiliser l'application en mode hors ligne il est nécessaire de télécharger des données supplémentaires vous pouvez lancer le téléchargement dés maintenant en appuyant sur le bouton lancer le téléchargement. Il est aussi possible de lancer le téléchargement ultérieurement"
+        android:text="Pour pouvoir utiliser l'application en mode hors ligne il est nécessaire de télécharger des données supplémentaires. Vous pouvez lancer le téléchargement en appuyant sur le bouton &quot;lancer le téléchargement&quot;. Il est aussi possible de lancer le téléchargement ultérieurement en appuyant sur le bouton &quot;laisser pour plus tard&quot;"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <android.support.design.widget.CoordinatorLayout

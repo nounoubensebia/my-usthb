@@ -68,91 +68,12 @@ public class AgendaFragment extends Fragment {
     private int currentColor;
     private SystemBarTintManager mTintManager;
     public static String affiche;
-    public static int wait = 0 ;
+
     public static String url;
     public static String sum;
-    public static ArrayList<DoneJour> doneJours;
-
-    private class ConnexionTask extends AsyncTask<Map<String,String>,Void,String> {
 
 
 
-        protected String doInBackground(Map<String, String>... params) {
-            WebResponse webResponse = QueryUtils.makeHttpGetRequest(SharedPreference.loadString("URL",getActivity()),
-                    new LinkedHashMap<String, String>());
-            if (webResponse.isError()) {
-                return null;//erreur
-            } else
-                return webResponse.getResponseString();
-        }
-
-        protected void onPostExecute(String s) {
-
-            if (!fileExistance("timing")) {
-                try {
-                    affiche = s;
-                    StringBuilder sb = new StringBuilder(s);
-                    sb.deleteCharAt(0);
-                    String resultString = sb.toString();
-                    //Création du fichier contenant l'emploi du temps
-                    String filename = "timing";
-                    FileOutputStream outputStream;
-
-                    try {
-                        outputStream = getActivity().openFileOutput(filename, Context.MODE_PRIVATE);
-                        outputStream.write(resultString.getBytes());
-                        outputStream.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    Parseur.parseXml(resultString);
-                    SharedPreference.saveString("SUM",sum, getActivity());
-                    wait = 1;
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            else
-            {
-                affiche = s;
-                StringBuilder sb = new StringBuilder(s);
-                sb.deleteCharAt(0);
-                String resultString = sb.toString();
-
-                try {
-
-                    doneJours = Parseur.getJours(resultString);
-                    //Toast.makeText(EmploiDuTemps.this,EmploiDuTemps.sum,Toast.LENGTH_LONG).show();
-
-                    if(!sum.equals(SharedPreference.loadString("SUM",getActivity())))
-                    {
-                        Toast.makeText(getActivity(),"Synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
-                        SharedPreference.saveString("SUM",sum,getActivity());
-                        //Remplissage du fichier
-                        String filename = "timing";
-                        FileOutputStream outputStream;
-                        try {
-                            outputStream = getActivity().openFileOutput(filename, Context.MODE_PRIVATE);
-                            outputStream.write(resultString.getBytes());
-                            outputStream.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    else
-                    {
-
-                        //Toast.makeText(getActivity(),"Pas de synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                wait = 1;
-            }
-        }
-    }
 
     public boolean fileExistance(String fname){
         File file = getActivity().getFileStreamPath(fname);
@@ -172,60 +93,8 @@ public class AgendaFragment extends Fragment {
         // Inflate the layout for this fragment
         View  view = inflater.inflate(R.layout.fragment_agenda, container, false);
 
-        if(!fileExistance("timing"))
-        {
-            //String json = getActivity().getIntent().getExtras().getString("INFO");
-            //URL info = new Gson().fromJson(json,URL.class);
-            //url=info.toString();
-            url = SharedPreference.loadString("INFO",getActivity());
-            SharedPreference.saveString("URL",url,getActivity());
-            ConnexionTask connexionTask = new ConnexionTask();
-            connexionTask.execute(new LinkedHashMap<String, String>());
-        }
-        else
-        {
-            //le fichier existe, on teste s'il y a la connexion
-            ConnexionNet cn=new ConnexionNet(getActivity());
-            if(cn.isConnected())
-            {
-                //Toast.makeText(getActivity(),"Connexion établie", Toast.LENGTH_SHORT).show();
-                //effectuer la synchronisation dans le cas où l'emploi du temps est modifié
-                ConnexionTask connexionTask = new ConnexionTask();
-                connexionTask.execute(new LinkedHashMap<String, String>());
-            }
-            else
-            {
-                Toast.makeText(getActivity(),"Connexion non établie", Toast.LENGTH_SHORT).show();
-                FileInputStream fis = null;
-                try {
-                    fis =getActivity().openFileInput("timing");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                InputStreamReader isr = new InputStreamReader(fis);
-                BufferedReader bufferedReader = new BufferedReader(isr);
-                StringBuilder sb = new StringBuilder();
-                String line;
-                try {
-                    while ((line = bufferedReader.readLine()) != null) {
-                        sb.append(line);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                //Toast.makeText(EmploiDuTemps.this,"Lecture à partir du fichier", Toast.LENGTH_SHORT).show();
-                String resultString=sb.toString();
-                try {
 
-                    Parseur.parseXml(resultString);
-                    SharedPreference.saveString("SUM",sum,getActivity());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                wait=1;
-            }
 
-        }
         ButterKnife.bind(view);
         pager = (ViewPager)view.findViewById(R.id.pager);
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
@@ -236,9 +105,8 @@ public class AgendaFragment extends Fragment {
         // enable status bar tint
         mTintManager.setStatusBarTintEnabled(true);
         //doneJours = new ArrayList<>();
-        if (doneJours == null)
-            doneJours = new ArrayList<>();
-        adapter = new MyPagerAdapter(getChildFragmentManager(),doneJours);
+
+        adapter = new MyPagerAdapter(getChildFragmentManager(),null);
         pager.setAdapter(adapter);
         tabs.setViewPager(pager);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()

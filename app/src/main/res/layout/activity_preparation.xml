@@ -30,7 +30,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:text="Téléchargement des données nécessaires à la configuration de l'application."
+        android:text="Téléchargement des données nécessaires pour la configuration de l'application."
         android:textColor="#FFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
