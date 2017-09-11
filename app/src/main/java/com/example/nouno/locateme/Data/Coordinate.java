@@ -2,7 +2,7 @@ package com.example.nouno.locateme.Data;
 
 import android.location.Location;
 
-import com.google.android.gms.maps.model.LatLng;
+
 import com.google.gson.Gson;
 
 
@@ -19,11 +19,6 @@ public class Coordinate {
         this.longitude = longitude;
     }
 
-    public Coordinate (LatLng latLng)
-    {
-        latitude = latLng.latitude;
-        longitude = latLng.longitude;
-    }
 
     public Coordinate (com.mapbox.mapboxsdk.geometry.LatLng latLng)
     {
@@ -48,10 +43,7 @@ public class Coordinate {
         this.longitude = longitude;
     }
 
-    public LatLng getGoogleLatLng ()
-    {
-        return (new LatLng(latitude,longitude));
-    }
+
 
     public com.mapbox.mapboxsdk.geometry.LatLng getMapBoxLatLng ()
     {

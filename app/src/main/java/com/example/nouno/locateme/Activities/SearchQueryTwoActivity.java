@@ -911,12 +911,13 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 break;
             case STATE_PATH_INITIALIZED :
                 state = STATE_PATH_INITIALIZED;
-                createMap();
+
                 if (!animate)
                 {
                     if (!keyboardShown)
                     {
                         coordinateLayout.setVisibility(View.VISIBLE);
+                        createMap();
                         scrollView.setVisibility(View.GONE);
                         pathFoundLayout.setVisibility(View.GONE);
                         pathNotFoundLayout.setVisibility(View.VISIBLE);
@@ -946,6 +947,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 coordinateLayout.setVisibility(View.VISIBLE);
+                                createMap();
                                 //pathNotFoundLayout.setVisibility(View.VISIBLE);
 
                             }
@@ -973,6 +975,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     }
 
                 }
+
+
                 //createMap();
                 break;
             case STATE_PATH_CALCULATED :
@@ -1039,7 +1043,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
 
                 mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
-            ArrayList<Coordinate> boundsCoordinates = new ArrayList<>();
+            final ArrayList<Coordinate> boundsCoordinates = new ArrayList<>();
 
             final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());
             if (mPath.getGraph()!=null)
@@ -1048,6 +1052,19 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     boundsCoordinates.add(mPath.getSource().getCoordinate());
                     boundsCoordinates.add(mPath.getDestination().getCoordinate());
+                    boundsCoordinates.add(middlePoint);
+                    if (Build.VERSION.SDK_INT<Build.VERSION_CODES.N_MR1)
+                    {
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCustomMapView.animateCamera(boundsCoordinates,350);
+                            }
+                        },500);
+
+                    }
+
                     mCustomMapView.animateCamera(boundsCoordinates,350);
                 }
 
@@ -1121,5 +1138,12 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         super.onLowMemory();
         if (mCustomMapView!=null)
         mCustomMapView.getMapView().onLowMemory();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onSaveInstanceState(outState);
     }
 }

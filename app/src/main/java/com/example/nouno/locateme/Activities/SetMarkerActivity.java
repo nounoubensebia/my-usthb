@@ -13,7 +13,7 @@ import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
-import com.google.android.gms.maps.model.Marker;
+
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -23,7 +23,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 public class SetMarkerActivity extends AppCompatActivity {
     private CustomMapView mCustomMapView;
     private Button mConfirmButton;
-    private Marker marker;
+
     private Coordinate selectedPlace;
     public static final int RESULT_OK = 1;
     private TextView myPositionText;
@@ -157,5 +157,12 @@ public class SetMarkerActivity extends AppCompatActivity {
         super.onLowMemory();
         if (mCustomMapView!=null)
             mCustomMapView.getMapView().onLowMemory();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onSaveInstanceState(outState);
     }
 }

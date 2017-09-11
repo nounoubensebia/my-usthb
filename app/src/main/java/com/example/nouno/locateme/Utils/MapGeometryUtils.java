@@ -6,8 +6,9 @@ import android.graphics.PointF;
 import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Djikstra.Edge;
 import com.example.nouno.locateme.Djikstra.Graph;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.PolyUtil;
+import com.example.nouno.locateme.PolyUtils;
+
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.Projection;
 
 import java.util.ArrayList;
@@ -21,11 +22,11 @@ public class MapGeometryUtils {
 
     public static Coordinate findNearestPoint(Coordinate testa, List<Coordinate> targeta) {
         double distance = -1;
-        LatLng test = testa.getGoogleLatLng();
+        LatLng test = testa.getMapBoxLatLng();
         ArrayList<LatLng> target = new ArrayList<>();
         for (Coordinate c: targeta)
         {
-            target.add(c.getGoogleLatLng());
+            target.add(c.getMapBoxLatLng());
         }
         LatLng minimumDistancePoint = test;
 
@@ -41,7 +42,7 @@ public class MapGeometryUtils {
                 segmentPoint = 0;
             }
 
-            double currentDistance = PolyUtil.distanceToLine(test, point, target.get(segmentPoint));
+            double currentDistance = PolyUtils.distanceToLine(test, point, target.get(segmentPoint));
             if (distance == -1 || currentDistance < distance) {
                 distance = currentDistance;
                 minimumDistancePoint = findNearestPoint(test, point, target.get(segmentPoint));
@@ -57,12 +58,12 @@ public class MapGeometryUtils {
             return start;
         }
 
-        final double s0lat = Math.toRadians(p.latitude);
-        final double s0lng = Math.toRadians(p.longitude);
-        final double s1lat = Math.toRadians(start.latitude);
-        final double s1lng = Math.toRadians(start.longitude);
-        final double s2lat = Math.toRadians(end.latitude);
-        final double s2lng = Math.toRadians(end.longitude);
+        final double s0lat = Math.toRadians(p.getLatitude());
+        final double s0lng = Math.toRadians(p.getLongitude());
+        final double s1lat = Math.toRadians(start.getLatitude());
+        final double s1lng = Math.toRadians(start.getLongitude());
+        final double s2lat = Math.toRadians(end.getLatitude());
+        final double s2lng = Math.toRadians(end.getLongitude());
 
         double s2s1lat = s2lat - s1lat;
         double s2s1lng = s2lng - s1lng;
@@ -75,8 +76,8 @@ public class MapGeometryUtils {
             return end;
         }
 
-        return new LatLng(start.latitude + (u * (end.latitude - start.latitude)),
-                start.longitude + (u * (end.longitude - start.longitude)));
+        return new LatLng(start.getLatitude() + (u * (end.getLatitude() - start.getLatitude())),
+                start.getLongitude() + (u * (end.getLongitude() - start.getLongitude())));
 
 
     }

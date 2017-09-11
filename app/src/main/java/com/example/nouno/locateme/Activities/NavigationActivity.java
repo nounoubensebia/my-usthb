@@ -386,4 +386,11 @@ public class NavigationActivity extends AppCompatActivity {
         if (mCustomMapView!=null)
             mCustomMapView.getMapView().onLowMemory();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onSaveInstanceState(outState);
+    }
 }

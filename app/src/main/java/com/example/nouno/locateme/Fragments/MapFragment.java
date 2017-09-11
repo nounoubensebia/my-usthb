@@ -509,4 +509,47 @@ public class MapFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onPause();
+    }
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onResume();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onLowMemory();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mCustomMapView!=null)
+            mCustomMapView.getMapView().onSaveInstanceState(outState);
+    }
 }
