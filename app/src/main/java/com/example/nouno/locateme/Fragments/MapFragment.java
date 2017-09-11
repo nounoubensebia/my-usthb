@@ -100,7 +100,7 @@ public class MapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Mapbox.getInstance(this.getActivity(), "pk.eyJ1Ijoibm91bm91OTYiLCJhIjoiY2o0Z29mMXNsMDVoazMzbzI1NTJ1MmRqbCJ9.CXczOhM2eznwR0Mv6h2Pgg");
+
         View view= inflater.inflate(R.layout.fragment_map, container, false);
 
         getStructureList();
@@ -348,15 +348,7 @@ public class MapFragment extends Fragment {
                 });
                 mCustomMapView = new CustomMapView(mapboxMap,mMapView);
                 mapboxMap.setMyLocationEnabled(true);
-                try {
-                    String graphJson = FileUtils.readFile(getActivity().getAssets().open("GraphJson.txt"));
-                    //Graph graph = GraphCreator.createGraph(graphJson);
-                    //Graph graph = new Graph(graphJson);
-                    //mCustomMapView.drawFromGraph(graph);
-                    //mCustomMapView.drawPolyline(graph);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
 
                 mCustomMapView.setOnMarkerClickListener(new CustomMapView.OnMarkerClickListener() {
                     @Override

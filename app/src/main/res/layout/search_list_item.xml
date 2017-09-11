@@ -15,7 +15,7 @@
         <ImageView
             android:id="@+id/image_view"
             android:layout_width="128dp"
-            app:srcCompat="@drawable/test2"
+            app:srcCompat="@drawable/test"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:layout_height="100dp" />

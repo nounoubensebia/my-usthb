@@ -880,8 +880,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             //Graph graph = GraphCreator.createGraph(graphJson);
             mGraph = new Graph(graphJson);
 
-            //String json = FileUtils.readFile(this.getAssets().open("testGraph.txt"));
-            //mGraph = GraphCreator.createGraph(json);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -930,7 +929,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         scrollView.setVisibility(View.VISIBLE);
                         //pathNotFoundLayout.setVisibility(View.VISIBLE);
                     }
-                    createMap();
+
                 }
                 else
                 {
@@ -972,7 +971,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         },250);
 
                     }
-                    createMap();
+
                 }
                 //createMap();
                 break;
@@ -1049,7 +1048,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 {
                     boundsCoordinates.add(mPath.getSource().getCoordinate());
                     boundsCoordinates.add(mPath.getDestination().getCoordinate());
-                    mCustomMapView.moveCamera(boundsCoordinates,350);
+                    mCustomMapView.animateCamera(boundsCoordinates,350);
                 }
 
     }
