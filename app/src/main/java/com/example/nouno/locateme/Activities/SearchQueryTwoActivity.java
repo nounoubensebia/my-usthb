@@ -34,6 +34,7 @@ import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Data.SearchSuggestion;
 import com.example.nouno.locateme.Data.StructureList;
+import com.example.nouno.locateme.DataRepo;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.ListAdapters.SearchSuggestionItemAdapter;
 import com.example.nouno.locateme.OnButtonClickListner;
@@ -116,6 +117,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (mGraph==null)
+        {
+            getGraph();
+        }
         getStructureList();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_query_two);
@@ -822,10 +827,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mGraph==null)
-                {
-                    getGraph();
-                }
+
                 //getGraph();
                 mGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(), new OnSearchFinishListener() {
                     @Override
@@ -875,7 +877,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void getGraph() {
-        try {
+        /*try {
             String graphJson = FileUtils.readFile(SearchQueryTwoActivity.this.getAssets().open("GraphJson.txt"));
             //Graph graph = GraphCreator.createGraph(graphJson);
             mGraph = new Graph(graphJson);
@@ -883,7 +885,8 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+        mGraph = DataRepo.getGraphInstance(this);
     }
 
     private void updateUiState (int newState,boolean keyboardShown,boolean animate)

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.nouno.locateme.ConnexionNet;
 import com.example.nouno.locateme.Data.DoneJour;
 import com.example.nouno.locateme.Data.WebResponse;
+import com.example.nouno.locateme.DataRepo;
 import com.example.nouno.locateme.Fragments.AgendaFragment;
 import com.example.nouno.locateme.QueryUtils;
 import com.example.nouno.locateme.R;
@@ -92,6 +93,7 @@ public class WaitActivity extends AppCompatActivity {
 
 
         protected String doInBackground(Map<String, String>... params) {
+            DataRepo.getGraphInstance(WaitActivity.this);
             String urla = SharedPreference.loadString("URL", WaitActivity.this);
             WebResponse webResponse = QueryUtils.makeHttpGetRequest(SharedPreference.loadString("URL", WaitActivity.this),
                     new LinkedHashMap<String, String>());
@@ -220,6 +222,7 @@ public class WaitActivity extends AppCompatActivity {
                     finish();
                 }
             }
+
 
         }
     }

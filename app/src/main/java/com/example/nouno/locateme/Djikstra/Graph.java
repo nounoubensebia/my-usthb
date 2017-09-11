@@ -419,6 +419,7 @@ public class Graph {
         for (Edge edge : edgesToExplodeMarker2) {
             Edge e1 = Edge.getEdgeById(graph.edges, edge.getId());
             Coordinate polylineCoordinate1 = MapGeometryUtils.findNearestPoint(marker2, edge.getCoordinates());
+            if (e1!=null)
             destination = graph.explodeEdgeAtCoordinate(e1, polylineCoordinate1, marker2, projection,false);
         }
         graph.addReverse();
