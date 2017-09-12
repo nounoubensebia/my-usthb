@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.nouno.locateme.Activities.GlideApp;
 import com.example.nouno.locateme.Data.CenterOfInterest;
 import com.example.nouno.locateme.Data.Classroom;
@@ -236,23 +237,14 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)holder.structureLayout.getLayoutParams();
                 layoutParams.setMargins(layoutParams.leftMargin,0,layoutParams.rightMargin,layoutParams.bottomMargin);
             }
-
-
-            //Resources resources = item.getResources();
-
-            try {
-
-                String encodedImage = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                    encodedImage = FileUtils.readFile(context.getAssets().open("filename.txt"));
-                }
-                byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-                GlideApp.with(context).asBitmap().load(decodedString).dontAnimate().skipMemoryCache(true).into(holder.imageView);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            if (searchSuggestion.getStructure().getDrawableResource()!=-1)
+                Glide.with(context)
+                        .load(searchSuggestion.getStructure().getDrawableResource())
+                        .into(holder.imageView);
+            else
+                Glide.with(context)
+                        .load(R.drawable.test)
+                        .into(holder.imageView);
         }
     }
 

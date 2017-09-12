@@ -1,6 +1,8 @@
 package com.example.nouno.locateme.Data;
 
 
+import com.example.nouno.locateme.R;
+
 /**
  * Created by nouno on 15/08/2017.
  */
@@ -57,6 +59,54 @@ public class Structure {
 
     public String getTags() {
         return tags;
+    }
+
+    public int getDrawableResource ()
+    {
+        if (! (this instanceof Classroom)&&!(this instanceof CenterOfInterest))
+        {
+            switch ((int) id)
+            {
+                case 0:return R.drawable.departement_informatique;
+                case 1 :return R.drawable.nouveau_bloc;
+                case 2:return R.drawable.salle_td_100_200;
+                case 3:return R.drawable.faculte_physique;
+                case 5:return R.drawable.salle_td_300_400;
+                case 6:return R.drawable.faculte_biologie;
+                case 7:
+                case 8:
+                case 9:
+                case 10: return R.drawable.nouveau_bloc;
+                case 11:return R.drawable.hall_technologie;
+                case 13:return R.drawable.village;
+                case 15:return R.drawable.centre_de_calcul;
+                case 16:return R.drawable.faculte_electronique_et_informatique;
+                case 20:return R.drawable.faculte_chimie;
+            }
+        }
+        else
+        {
+            if (this instanceof CenterOfInterest)
+            {
+                CenterOfInterest centerOfInterest = (CenterOfInterest) this;
+                if (centerOfInterest.getType()==CenterOfInterest.TYPE_TOILETTE)
+                {
+                    return R.drawable.toilet;
+                }
+                else
+                {
+                    switch ((int)centerOfInterest.getId())
+                    {
+                        case 36:return R.drawable.buvette_departement_informatique;
+                        case 37:return R.drawable.kiosque_informatique;
+                        case 38:return R.drawable.kiosque_faculte_genie_civil;
+                        case 63:return R.drawable.kiosque_espace_internet;
+                    }
+                }
+
+            }
+        }
+        return -1;
     }
 
 }

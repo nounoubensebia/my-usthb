@@ -97,11 +97,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     private RecyclerView mSuggestionsListView;
     private boolean fromCenterOfInterest = false;
     private boolean fromCenterOfInterestdeparture = false;
+    boolean calculationInProgress = false;
 
-
-    private void getStructureList ()
-    {
-        InputStream inputStream = null;
+    private void getStructureList() {
+        /*InputStream inputStream = null;
         try {
             inputStream = this.getResources().getAssets().open("LocalsJson.txt");
 
@@ -109,16 +108,16 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         structureList = new Gson().fromJson(localsJson,StructureList.class);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+        structureList = DataRepo.getStructureListInstance(this);
+
 
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (mGraph==null)
-        {
+        if (mGraph == null) {
             getGraph();
         }
         getStructureList();
@@ -126,13 +125,13 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_query_two);
         getSupportActionBar().setElevation(0);
         getViews();
-        populateSuggestionsList("",false);
+        populateSuggestionsList("", false);
         KeyboardVisibilityEvent.setEventListener(
                 this,
                 new KeyboardVisibilityEventListener() {
                     @Override
                     public void onVisibilityChanged(boolean isOpen) {
-                       keyboardShown = isOpen;
+                        keyboardShown = isOpen;
                     }
                 });
         createMap(savedInstanceState);
@@ -140,55 +139,44 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         departureEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (departureEditText.getTag()==null)
-                if (!hasFocus)
-                {
-                    if (fromCenterOfInterest)
-                    {
-                        fromCenterOfInterest = false;
+                if (departureEditText.getTag() == null)
+                    if (!hasFocus) {
+                        if (fromCenterOfInterest) {
+                            fromCenterOfInterest = false;
 
-                        if (mPath.getSource()==null)
-                        {
+                            if (mPath.getSource() == null) {
+                                departureEditText.setText("");
+                            }
+
+                        }
+                        reinitSearchSuggestionsList();
+                        if (mPath.getSource() != null)
+                            departureEditText.setText("Depuis " + mPath.getSource().getLabel());
+                        if (state > STATE_NO_PATH) {
+                            departureEditText.setText("Depuis "+mPath.getSource().getLabel());
+                            if (mPath.getDestination() != null) {
+                                destinationEditText.setFocusableInTouchMode(false);
+                            }
+
+                        }
+                        if (mPath.getSource() == null) {
                             departureEditText.setText("");
-                        }
 
-                    }
-                    reinitSearchSuggestionsList();
-                    if (mPath.getSource()!=null)
-                    departureEditText.setText("Depuis "+mPath.getSource().getLabel());
-                    if (state>STATE_NO_PATH)
-                    {
-                        departureEditText.setText(mPath.getSource().getLabel());
-                        if (mPath.getDestination()!=null)
-                        {
-                            destinationEditText.setFocusableInTouchMode(false);
                         }
-
                     }
-                    if (mPath.getSource() == null)
-                    {
+                if (departureEditText.getTag() == null)
+                    if (hasFocus) {
+
                         departureEditText.setText("");
-
-                    }
-                }
-                if (departureEditText.getTag()==null)
-                if (hasFocus)
-                {
-
-                    departureEditText.setText("");
-                    if (fromCenterOfInterest)
-                    {
-                        fromCenterOfInterest = false;
-                        if (mPath.getDestination() == null)
-                        {
-                            destinationEditText.setText("");
-                        }
-                        else
-                        {
-                            destinationEditText.setText("Vers "+mPath.getDestination().getLabel());
+                        if (fromCenterOfInterest) {
+                            fromCenterOfInterest = false;
+                            if (mPath.getDestination() == null) {
+                                destinationEditText.setText("");
+                            } else {
+                                destinationEditText.setText("Vers " + mPath.getDestination().getLabel());
+                            }
                         }
                     }
-                }
             }
         });
 
@@ -201,77 +189,62 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                Log.i("LENGTH","56");
+                Log.i("LENGTH", "56");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (departureEditText.getTag()==null)
-                if (departureEditText.hasFocus())
-                {
+                if (departureEditText.getTag() == null)
+                    if (departureEditText.hasFocus()) {
 
-                        if (s.toString().length()>=2)
-                        {
+                        if (s.toString().length() >= 2) {
 
                             ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
-                            ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
+                            ((SearchSuggestionItemAdapter) mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
 
-                        }
-                        else
-                        {
+                        } else {
                             reinitSearchSuggestionsList();
                         }
 
-                }
+                    }
 
             }
         });
         destinationEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (destinationEditText.getTag()==null)
-                if (!hasFocus)
-                {
+                if (destinationEditText.getTag() == null)
+                    if (!hasFocus) {
 
-                    if (fromCenterOfInterest)
-                    {
-                        fromCenterOfInterest = false;
-                        if (mPath.getDestination() == null)
-                        {
-                            departureEditText.setText("");
+                        if (fromCenterOfInterest) {
+                            fromCenterOfInterest = false;
+                            if (mPath.getDestination() == null) {
+                                departureEditText.setText("");
+                            }
+                        }
+                        if (state > STATE_NO_PATH) {
+                            destinationEditText.setText("Vers " + mPath.getDestination().getLabel());
+                            if (mPath.getSource() != null) {
+                                departureEditText.setFocusableInTouchMode(false);
+                            }
+
+                        }
+                        if (mPath.getDestination() == null) {
+                            destinationEditText.setText("");
                         }
                     }
-                    if (state > STATE_NO_PATH)
-                    {
-                        destinationEditText.setText("Vers "+mPath.getDestination().getLabel());
-                        if (mPath.getSource()!=null)
-                        {
-                            departureEditText.setFocusableInTouchMode(false);
-                        }
-
-                    }
-                    if (mPath.getDestination()==null)
-                    {
+                if (destinationEditText.getTag() == null)
+                    if (hasFocus) {
                         destinationEditText.setText("");
-                    }
-                }
-                if (destinationEditText.getTag()==null)
-                if (hasFocus)
-                {
-                    destinationEditText.setText("");
-                    if (fromCenterOfInterest)
-                    {
-                        fromCenterOfInterest = false;
-                        if (mPath.getSource() == null)
-                        {
-                            departureEditText.setText("");
-                        }
-                        else
-                        {
-                            departureEditText.setText("Depuis "+mPath.getSource().getLabel());
+                        if (fromCenterOfInterest) {
+                            fromCenterOfInterest = false;
+                            if (mPath.getSource() == null) {
+                                departureEditText.setText("");
+                            } else {
+                                departureEditText.setText("Depuis " + mPath.getSource().getLabel());
+                            }
                         }
                     }
-                }
             }
         });
         destinationEditText.addTextChangedListener(new TextWatcher() {
@@ -287,24 +260,20 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (destinationEditText.getTag()==null)
-                if (destinationEditText.hasFocus())
-                {
+                if (destinationEditText.getTag() == null)
+                    if (destinationEditText.hasFocus()) {
 
-                        if (s.toString().length()>=2)
-                        {
+                        if (s.toString().length() >= 2) {
                             ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
 
-                            ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
+                            ((SearchSuggestionItemAdapter) mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
 
-                            Log.i("LENGTH","56");
-                        }
-                        else
-                        {
+                            Log.i("LENGTH", "56");
+                        } else {
                             reinitSearchSuggestionsList();
                         }
 
-                }
+                    }
             }
         });
 
@@ -317,11 +286,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         departureEditText.requestFocus();
 
 
-
         mSuggestionsListView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState !=0){
+                if (newState != 0) {
                     InputMethodManager inputMethodManager = (InputMethodManager)
                             getSystemService(Activity.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(SearchQueryTwoActivity.this.getCurrentFocus().getWindowToken(), 0);
@@ -334,11 +302,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             }
         });
 
-        if (getIntent().getExtras()!=null)
-        {
-            if (getIntent().getExtras().containsKey("centerOfInterest"));
-            CenterOfInterest centerOfInterest = new Gson().fromJson(getIntent().getExtras().getString("centerOfInterest"),CenterOfInterest.class);
-            Place place = new Place(centerOfInterest.getLabel(),centerOfInterest.getCoordinate(),false);
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().containsKey("centerOfInterest")) ;
+            CenterOfInterest centerOfInterest = new Gson().fromJson(getIntent().getExtras().getString("centerOfInterest"), CenterOfInterest.class);
+            Place place = new Place(centerOfInterest.getLabel(), centerOfInterest.getCoordinate(), false);
             setDestination(place);
         }
         swapImage.setOnClickListener(new View.OnClickListener() {
@@ -350,180 +317,150 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     }
 
-    private Coordinate getUserLocation ()
-    {
-        if (lastKnownUserLocation!=null)
-        {
-            if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
-            {
-                Coordinate coordinate = new Coordinate(mCustomMapView.getMapboxMap().getMyLocation().getLatitude(),mCustomMapView.getMapboxMap().getMyLocation().getLongitude());
+    private Coordinate getUserLocation() {
+        if (lastKnownUserLocation != null) {
+            if (mCustomMapView.getMapboxMap().getMyLocation() != null) {
+                Coordinate coordinate = new Coordinate(mCustomMapView.getMapboxMap().getMyLocation().getLatitude(), mCustomMapView.getMapboxMap().getMyLocation().getLongitude());
                 lastKnownUserLocation = coordinate;
                 return lastKnownUserLocation;
-            }
-            else
-            {
+            } else {
                 return lastKnownUserLocation;
             }
-        }
-        else
-        {
-            if (mCustomMapView.getMapboxMap().getMyLocation()!=null)
-            {
-                Coordinate coordinate = new Coordinate(mCustomMapView.getMapboxMap().getMyLocation().getLatitude(),mCustomMapView.getMapboxMap().getMyLocation().getLongitude());
+        } else {
+            if (mCustomMapView.getMapboxMap().getMyLocation() != null) {
+                Coordinate coordinate = new Coordinate(mCustomMapView.getMapboxMap().getMyLocation().getLatitude(), mCustomMapView.getMapboxMap().getMyLocation().getLongitude());
                 lastKnownUserLocation = coordinate;
                 return lastKnownUserLocation;
-            }
-            else
-            {
+            } else {
                 return null;
             }
         }
 
 
-
     }
 
-    private void swap ()
-    {
-        if (state>STATE_NO_PATH)
-        {
-            int state = this.state;
-            Place inter = mPath.getSource();
-
-            setDeparture(mPath.getDestination());
-            setDestination(inter);
-            if (state==STATE_PATH_INITIALIZED)
-                updateUiState(STATE_PATH_INITIALIZED,false,true);
-            else{
-                fab.clearAnimation();
-                fab.setVisibility(View.GONE);
-                updateUiState(STATE_PATH_INITIALIZED,false,true);
-            }
-        }
-        else
-        {
-            if (mPath.getSource()!=null&&mPath.getDestination()==null)
-            {
+    private void swap() {
+        if (!calculationInProgress) {
+            if (state > STATE_NO_PATH) {
+                int state = this.state;
                 Place inter = mPath.getSource();
-                mPath.setSource(null);
-                setDeparture(null);
+
+                setDeparture(mPath.getDestination());
                 setDestination(inter);
-                hideKeyboard();
-            }
-            else
-            {
-                if (mPath.getSource()==null&&mPath.getDestination()!=null)
-                {
-                    Place inter = mPath.getDestination();
-                    mPath.setDestination(null);
-                    setDestination(null);
-                    setDeparture(inter);
+                if (state == STATE_PATH_INITIALIZED)
+                    updateUiState(STATE_PATH_INITIALIZED, false, true);
+                else {
+                    fab.clearAnimation();
+                    fab.setVisibility(View.GONE);
+                    updateUiState(STATE_PATH_INITIALIZED, false, true);
+                }
+            } else {
+                if (mPath.getSource() != null && mPath.getDestination() == null) {
+                    Place inter = mPath.getSource();
+                    mPath.setSource(null);
+                    setDeparture(null);
+                    setDestination(inter);
                     hideKeyboard();
+                } else {
+                    if (mPath.getSource() == null && mPath.getDestination() != null) {
+                        Place inter = mPath.getDestination();
+                        mPath.setDestination(null);
+                        setDestination(null);
+                        setDeparture(inter);
+                        hideKeyboard();
+                    }
                 }
             }
         }
     }
 
-    private void getViews ()
-    {
-        departureEditText = (EditText)findViewById(R.id.departure_text);
-        destinationEditText = (EditText)findViewById(R.id.destination_text);
-        mSetPositionOnMapTextView = (TextView)findViewById(R.id.set_position_on_map);
+    private void getViews() {
+        departureEditText = (EditText) findViewById(R.id.departure_text);
+        destinationEditText = (EditText) findViewById(R.id.destination_text);
+        mSetPositionOnMapTextView = (TextView) findViewById(R.id.set_position_on_map);
         appBarLayout = findViewById(R.id.app_bar_layout);
-        pathLayout = (LinearLayout)findViewById(R.id.path_info_layout);
-        pathCalculProgress = (ProgressBar)findViewById(R.id.path_progress_bar);
+        pathLayout = (LinearLayout) findViewById(R.id.path_info_layout);
+        pathCalculProgress = (ProgressBar) findViewById(R.id.path_progress_bar);
         pathFoundLayout = findViewById(R.id.path_calculated_layout);
         pathNotFoundLayout = findViewById(R.id.path_initialized_layout);
         fab = findViewById(R.id.floating);
         coordinateLayout = findViewById(R.id.coordinate_layout);
         scrollView = findViewById(R.id.scrollView);
-        distancedurationText = (TextView)findViewById(R.id.text_duration_distance);
-        arrivalTimeText = (TextView)findViewById(R.id.text_arrival_time);
-        useCurrentLocationText = (TextView)findViewById(R.id.text_use_current_location);
+        distancedurationText = (TextView) findViewById(R.id.text_duration_distance);
+        arrivalTimeText = (TextView) findViewById(R.id.text_arrival_time);
+        useCurrentLocationText = (TextView) findViewById(R.id.text_use_current_location);
         mSuggestionsListView = (RecyclerView) findViewById(R.id.suggestions_list);
         swapImage = findViewById(R.id.swap_image);
     }
 
-    private void reinitSearchSuggestionsList ()
-    {
+    private void reinitSearchSuggestionsList() {
         ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<>();
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE,null,true));
-        ((SearchSuggestionItemAdapter)mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE, null, true));
+        ((SearchSuggestionItemAdapter) mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == SetMarkerActivity.RESULT_OK)
-        {
-            if (requestCode==REQUEST_DEPARTURE_CODE)
-            {
+        if (resultCode == SetMarkerActivity.RESULT_OK) {
+            if (requestCode == REQUEST_DEPARTURE_CODE) {
                 Place departure = Place.fromJson(data.getStringExtra("place"));
                 setDeparture(departure);
-            }
-            else
-            {
+            } else {
                 Place destination = Place.fromJson(data.getStringExtra("place"));
                 setDestination(destination);
             }
-            updateUiState(state,false,false);
-            if (state > STATE_NO_PATH)
-            {
+            updateUiState(state, false, false);
+            if (state > STATE_NO_PATH) {
                 reInitMap();
             }
         }
     }
 
-    private void setDeparture (Place departure)
-    {
+    private void setDeparture(Place departure) {
         mPath.setGraph(null);
-        if (departure!=null)
-        {
-        departureEditText.setTag("tag");
-        Log.i("DEPT",departure.getLabel());
-        if (mPath.getDestination()!=null)
-        {
-            state = STATE_PATH_INITIALIZED;
-        }
-        //departure.setLabel("Prés de la faculté de chimie");
-        mPath.setSource(departure);
-        departureEditText.setText("Depuis "+departure.getLabel());
-        departureEditText.clearFocus();
-        departureEditText.setFocusableInTouchMode(false);
-        departureEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                departureEditText.setText("");
-                departureEditText.setFocusableInTouchMode(true);
-                departureEditText.requestFocus();
-                departureEditText.requestFocusFromTouch();
-                showKeyboard(departureEditText,0);
-                updateUiState(state,true,true);
+        if (departure != null) {
+            departureEditText.setTag("tag");
+            Log.i("DEPT", departure.getLabel());
+            if (mPath.getDestination() != null) {
+                state = STATE_PATH_INITIALIZED;
             }
-        });
+            //departure.setLabel("Prés de la faculté de chimie");
+            mPath.setSource(departure);
+            departureEditText.setText("Depuis " + departure.getLabel());
+            departureEditText.clearFocus();
+            departureEditText.setFocusableInTouchMode(false);
+            departureEditText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!calculationInProgress) {
+                        departureEditText.setText("");
+                        departureEditText.setFocusableInTouchMode(true);
+                        departureEditText.requestFocus();
+                        departureEditText.requestFocusFromTouch();
+                        showKeyboard(departureEditText, 0);
+                        updateUiState(state, true, true);
+                    }
+                }
+            });
 
-        if (state == STATE_NO_PATH)
-        {
-            destinationEditText.requestFocus();
-            showKeyboard(destinationEditText,1);
-        }
-        else
-        {
-            destinationEditText.clearFocus();
-            destinationEditText.setFocusableInTouchMode(false);
-            hideKeyboard();
-            appBarLayout.clearFocus();
-            state = STATE_PATH_INITIALIZED;
-        }
-        departureEditText.setTag(null);
-        }
-        else
-        {
+            if (state == STATE_NO_PATH) {
+                destinationEditText.requestFocus();
+                showKeyboard(destinationEditText, 1);
+            } else {
+                destinationEditText.clearFocus();
+                destinationEditText.setFocusableInTouchMode(false);
+                hideKeyboard();
+                appBarLayout.clearFocus();
+                state = STATE_PATH_INITIALIZED;
+            }
+            departureEditText.setTag(null);
+        } else {
             departureEditText.setTag("tag");
             departureEditText.setText("");
             departureEditText.setTag(null);
@@ -532,51 +469,45 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         //fromCenterOfInterest = false;
     }
 
-    private void setDestination (Place destination)
-    {
+    private void setDestination(Place destination) {
         mPath.setGraph(null);
-        if (destination!=null)
-        {
-        destinationEditText.setTag("tag");
-        Log.i("DEST",destination.getLabel());
-        if (mPath.getSource()!=null)
-        {
-            state = STATE_PATH_INITIALIZED;
-        }
-        //destination.setLabel("Prés de la faculté de mathématiques");
-        mPath.setDestination(destination);
-        destinationEditText.clearFocus();
-        destinationEditText.setFocusableInTouchMode(false);
-        destinationEditText.setText("Vers "+destination.getLabel());
-
-        destinationEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                destinationEditText.setText("");
-                destinationEditText.setFocusableInTouchMode(true);
-                destinationEditText.requestFocus();
-                destinationEditText.requestFocusFromTouch();
-                showKeyboard(departureEditText,1);
-                updateUiState(state,true,true);
+        if (destination != null) {
+            destinationEditText.setTag("tag");
+            Log.i("DEST", destination.getLabel());
+            if (mPath.getSource() != null) {
+                state = STATE_PATH_INITIALIZED;
             }
-        });
-        if (state == STATE_NO_PATH)
-        {
-            departureEditText.requestFocus();
-            showKeyboard(departureEditText,0);
-        }
-        else
-        {
-            departureEditText.clearFocus();
-            departureEditText.setFocusableInTouchMode(false);
-            appBarLayout.clearFocus();
-            hideKeyboard();
-            state = STATE_PATH_INITIALIZED;
-        }
-        destinationEditText.setTag(null);
-        }
-        else
-        {
+            //destination.setLabel("Prés de la faculté de mathématiques");
+            mPath.setDestination(destination);
+            destinationEditText.clearFocus();
+            destinationEditText.setFocusableInTouchMode(false);
+            destinationEditText.setText("Vers " + destination.getLabel());
+
+            destinationEditText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!calculationInProgress) {
+                        destinationEditText.setText("");
+                        destinationEditText.setFocusableInTouchMode(true);
+                        destinationEditText.requestFocus();
+                        destinationEditText.requestFocusFromTouch();
+                        showKeyboard(departureEditText, 1);
+                        updateUiState(state, true, true);
+                    }
+                }
+            });
+            if (state == STATE_NO_PATH) {
+                departureEditText.requestFocus();
+                showKeyboard(departureEditText, 0);
+            } else {
+                departureEditText.clearFocus();
+                departureEditText.setFocusableInTouchMode(false);
+                appBarLayout.clearFocus();
+                hideKeyboard();
+                state = STATE_PATH_INITIALIZED;
+            }
+            destinationEditText.setTag(null);
+        } else {
             destinationEditText.setTag("tag");
             destinationEditText.setText("");
             destinationEditText.setTag(null);
@@ -584,14 +515,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         }
         //fromCenterOfInterest = false;
     }
+
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
-    public void showKeyboard (EditText editText,int x)
-    {
-        Log.i("SHOW","true");
+    public void showKeyboard(EditText editText, int x) {
+        Log.i("SHOW", "true");
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -610,7 +541,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 builder.include(Place.NORTH_EAST_BOUND.getMapBoxLatLng());
                 builder.include(Place.SOUTH_WEST_BOUND.getMapBoxLatLng());
                 mapboxMap.setLatLngBoundsForCameraTarget(builder.build());
-                mCustomMapView = new CustomMapView(mapboxMap,mMapView);
+                mCustomMapView = new CustomMapView(mapboxMap, mMapView);
                 mapboxMap.getUiSettings().setAllGesturesEnabled(false);
                 mapboxMap.setMyLocationEnabled(true);
 
@@ -618,55 +549,47 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         });
     }
 
-    private void reInitMap ()
-    {
+    private void reInitMap() {
         //mCustomMapView.moveCamera(new Coordinate(36.712126,3.178768),18);
 
     }
-    private void populateSuggestionsList (String query,boolean first)
-    {
+
+    private void populateSuggestionsList(String query, boolean first) {
         ArrayList<SearchSuggestion> searchSuggestions = new ArrayList<>();
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE,null,true));
-        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE,null,true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MY_POSITION, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SET_ON_MAP, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_BUVETTE, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SORTIE, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_MOSQUE, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_KIOSQUE, null, true));
+        searchSuggestions.add(new SearchSuggestion(SearchSuggestion.ID_SANNITAIRE, null, true));
 
 
-
-        final SearchSuggestionItemAdapter searchSuggestionItemAdapter = new SearchSuggestionItemAdapter(this,searchSuggestions,structureList,R.layout.item_place_suggestion);
+        final SearchSuggestionItemAdapter searchSuggestionItemAdapter = new SearchSuggestionItemAdapter(this, searchSuggestions, structureList, R.layout.item_place_suggestion);
         searchSuggestionItemAdapter.setOnMyPositionClickListner(new OnButtonClickListner.OnButtonClickListener() {
             @Override
             public void OnClick(Object o) {
                 mCustomMapView.getMapboxMap().setMyLocationEnabled(true);
-                Log.i("Click","clicked");
-                if (getUserLocation()!=null)
-                {
+                Log.i("Click", "clicked");
+                if (getUserLocation() != null) {
 
-                    Coordinate coordinate = getUserLocation ();
-                    if (coordinate.isInsideCampus())
-                    {
-                        if (departureEditText.hasFocus())
-                        {
-                            setDeparture(new Place("Ma position",coordinate,true));
+                    Coordinate coordinate = getUserLocation();
+                    if (coordinate.isInsideCampus()) {
+                        if (departureEditText.hasFocus()) {
+                            setDeparture(new Place("Ma position", coordinate, true));
                             //hideKeyboard();
-                        }
-                        else {
+                        } else {
                             if (destinationEditText.hasFocus()) {
-                                setDestination(new Place("Ma position", coordinate,true));
+                                setDestination(new Place("Ma position", coordinate, true));
                                 //hideKeyboard();
                             }
                         }
                         hideKeyboard();
-                        updateUiState(state,false,false);
+                        updateUiState(state, false, false);
                         hideKeyboard();
-                    }
-                    else
-                    {
-                        Toast.makeText(SearchQueryTwoActivity.this,"Vous ne pouvez pas utiliser votre position GPS " +
-                                "vous êtes en dehors du campus",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(SearchQueryTwoActivity.this, "Vous ne pouvez pas utiliser votre position GPS " +
+                                "vous êtes en dehors du campus", Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -675,25 +598,21 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             @Override
             public void OnClick(Object o) {
                 hideKeyboard();
-                Intent i = new Intent(SearchQueryTwoActivity.this,SetMarkerActivity.class);
+                Intent i = new Intent(SearchQueryTwoActivity.this, SetMarkerActivity.class);
 
-                if (departureEditText.hasFocus())
-                {
+                if (departureEditText.hasFocus()) {
 
-                    if (mPath.getDestination()!=null)
-                    {
-                        i.putExtra("destination",mPath.getDestination().toJson());
+                    if (mPath.getDestination() != null) {
+                        i.putExtra("destination", mPath.getDestination().toJson());
                     }
-                    i.putExtra("requestCode",REQUEST_DEPARTURE_CODE);
-                    startActivityForResult(i,REQUEST_DEPARTURE_CODE);
-                }
-                else {
+                    i.putExtra("requestCode", REQUEST_DEPARTURE_CODE);
+                    startActivityForResult(i, REQUEST_DEPARTURE_CODE);
+                } else {
 
-                    if (mPath.getSource()!=null)
-                    {
-                        i.putExtra("departure",mPath.getSource().toJson());
+                    if (mPath.getSource() != null) {
+                        i.putExtra("departure", mPath.getSource().toJson());
                     }
-                    i.putExtra("requestCode",REQUEST_DESTINATION_CODE);
+                    i.putExtra("requestCode", REQUEST_DESTINATION_CODE);
                     startActivityForResult(i, REQUEST_DESTINATION_CODE);
                 }
 
@@ -704,32 +623,25 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
             public void OnClick(SearchSuggestion searchSuggestion) {
                 String s = "";
                 String d = "";
-                if (searchSuggestion.getStructure()instanceof Classroom)
-                {
-                    s="Salle ";
-                    d=" "+structureList.getBlocLabel(searchSuggestion.getStructure());
+                if (searchSuggestion.getStructure() instanceof Classroom) {
+                    s = "Salle ";
+                    d = " " + structureList.getBlocLabel(searchSuggestion.getStructure());
                 }
-                if (searchSuggestion.getStructure()instanceof CenterOfInterest)
-                {
-                    d= " "+structureList.getBlocLabel(searchSuggestion.getStructure());
+                if (searchSuggestion.getStructure() instanceof CenterOfInterest) {
+                    d = " " + structureList.getBlocLabel(searchSuggestion.getStructure());
                 }
 
-                if (departureEditText.hasFocus()||(fromCenterOfInterest && fromCenterOfInterestdeparture))
-                {
-                    setDeparture(new Place(s+searchSuggestion.getStructure().getLabel()+d,searchSuggestion.getStructure().getCoordinate(),false));
+                if (departureEditText.hasFocus() || (fromCenterOfInterest && fromCenterOfInterestdeparture)) {
+                    setDeparture(new Place(s + searchSuggestion.getStructure().getLabel() + d, searchSuggestion.getStructure().getCoordinate(), false));
+                } else if (destinationEditText.hasFocus() || (fromCenterOfInterest || !fromCenterOfInterestdeparture)) {
+                    setDestination(new Place(s + searchSuggestion.getStructure().getLabel() + d, searchSuggestion.getStructure().getCoordinate(), false));
                 }
-                else
-                if (destinationEditText.hasFocus()||(fromCenterOfInterest||!fromCenterOfInterestdeparture))
-                {
-                    setDestination(new Place(s+searchSuggestion.getStructure().getLabel()+d,searchSuggestion.getStructure().getCoordinate(),false));
-                }
-                if (fromCenterOfInterest)
-                {
+                if (fromCenterOfInterest) {
 
                     fromCenterOfInterest = false;
                 }
                 hideKeyboard();
-                updateUiState(state,false,false);
+                updateUiState(state, false, false);
                 hideKeyboard();
 
             }
@@ -737,11 +649,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         searchSuggestionItemAdapter.setOnCenterOfInterestClickListner(new OnButtonClickListner.OnButtonClickListener<SearchSuggestion>() {
             @Override
             public void OnClick(SearchSuggestion searchSuggestion) {
-                ArrayList<SearchSuggestion> searchSuggestions1 = structureList.getSearchSuggestions(getUserLocation(),getTypeFromId((int)searchSuggestion.getId()));
-                if (departureEditText.hasFocus())
-                {
+                ArrayList<SearchSuggestion> searchSuggestions1 = structureList.getSearchSuggestions(getUserLocation(), getTypeFromId((int) searchSuggestion.getId()));
+                if (departureEditText.hasFocus()) {
                     departureEditText.setTag("tag");
-                    departureEditText.setText(CenterOfInterest.getTypeString(getTypeFromId((int)searchSuggestion.getId())));
+                    departureEditText.setText(CenterOfInterest.getTypeString(getTypeFromId((int) searchSuggestion.getId())));
                     departureEditText.clearFocus();
                     departureEditText.setFocusableInTouchMode(false);
                     departureEditText.setFocusable(false);
@@ -750,38 +661,40 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                     departureEditText.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            departureEditText.setText("");
-                            departureEditText.setFocusableInTouchMode(true);
-                            departureEditText.requestFocus();
-                            departureEditText.requestFocusFromTouch();
-                            showKeyboard(departureEditText,0);
-                            fromCenterOfInterest = false;
+                            if (!calculationInProgress) {
+                                departureEditText.setText("");
+                                departureEditText.setFocusableInTouchMode(true);
+                                departureEditText.requestFocus();
+                                departureEditText.requestFocusFromTouch();
+                                showKeyboard(departureEditText, 0);
+                                fromCenterOfInterest = false;
+                            }
 
                         }
                     });
                     fromCenterOfInterest = true;
-                    fromCenterOfInterestdeparture=true;
+                    fromCenterOfInterestdeparture = true;
                 }
-                if (destinationEditText.hasFocus())
-                {
+                if (destinationEditText.hasFocus()) {
                     destinationEditText.setTag("tag");
-                    destinationEditText.setText(CenterOfInterest.getTypeString(getTypeFromId((int)searchSuggestion.getId())));
+                    destinationEditText.setText(CenterOfInterest.getTypeString(getTypeFromId((int) searchSuggestion.getId())));
                     destinationEditText.clearFocus();
                     destinationEditText.setFocusableInTouchMode(false);
                     destinationEditText.setFocusable(false);
                     destinationEditText.setTag(null);
                     fromCenterOfInterest = true;
-                    fromCenterOfInterestdeparture=false;
+                    fromCenterOfInterestdeparture = false;
                     destinationEditText.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
-                            destinationEditText.setText("");
-                            destinationEditText.setFocusableInTouchMode(true);
-                            destinationEditText.requestFocus();
-                            destinationEditText.requestFocusFromTouch();
-                            showKeyboard(destinationEditText,0);
-                            fromCenterOfInterest = false;
+                            if (!calculationInProgress) {
+                                destinationEditText.setText("");
+                                destinationEditText.setFocusableInTouchMode(true);
+                                destinationEditText.requestFocus();
+                                destinationEditText.requestFocusFromTouch();
+                                showKeyboard(destinationEditText, 0);
+                                fromCenterOfInterest = false;
+                            }
                         }
                     });
                 }
@@ -798,19 +711,22 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
     }
 
-    private int getTypeFromId (int id)
-    {
-        switch (id)
-        {
-            case (int)SearchSuggestion.ID_BUVETTE:return CenterOfInterest.TYPE_BUVETTE;
+    private int getTypeFromId(int id) {
+        switch (id) {
+            case (int) SearchSuggestion.ID_BUVETTE:
+                return CenterOfInterest.TYPE_BUVETTE;
 
-            case (int)SearchSuggestion.ID_KIOSQUE:return CenterOfInterest.TYPE_KIOSQUE;
+            case (int) SearchSuggestion.ID_KIOSQUE:
+                return CenterOfInterest.TYPE_KIOSQUE;
 
-            case (int)SearchSuggestion.ID_MOSQUE:return CenterOfInterest.TYPE_MOSQUE;
+            case (int) SearchSuggestion.ID_MOSQUE:
+                return CenterOfInterest.TYPE_MOSQUE;
 
-            case (int)SearchSuggestion.ID_SANNITAIRE:return CenterOfInterest.TYPE_TOILETTE;
+            case (int) SearchSuggestion.ID_SANNITAIRE:
+                return CenterOfInterest.TYPE_TOILETTE;
 
-            case (int)SearchSuggestion.ID_SORTIE:return CenterOfInterest.TYPE_SORTIE;
+            case (int) SearchSuggestion.ID_SORTIE:
+                return CenterOfInterest.TYPE_SORTIE;
 
 
         }
@@ -818,34 +734,32 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
     }
 
 
-
-
-    private void getPath()
-    {
+    private void getPath() {
         pathCalculProgress.setVisibility(View.VISIBLE);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                calculationInProgress = true;
                 //getGraph();
                 mGraph.getShortestPath(mPath, mCustomMapView.getMapboxMap().getProjection(), new OnSearchFinishListener() {
                     @Override
                     public void OnSearchFinish(Graph graph) {
-                        updateUiState(STATE_PATH_CALCULATED,false,true);
+                        calculationInProgress = false;
+                        updateUiState(STATE_PATH_CALCULATED, false, true);
                         state = STATE_PATH_CALCULATED;
                         mPath.setDistance((float) graph.getWeight());
-                        distancedurationText.setText(mPath.getDurationString()+" "+mPath.getDistanceString());
+                        distancedurationText.setText(mPath.getDurationString() + " " + mPath.getDistanceString());
                         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
                         Date currentLocalTime = cal.getTime();
                         long time = currentLocalTime.getTime();
-                        time+=mPath.getDuration()*1000;
+                        time += mPath.getDuration() * 1000;
                         mPath.setGraph(graph);
                         currentLocalTime = new Time(time);
                         DateFormat date = new SimpleDateFormat("HH:mm");
                         date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
                         String localTime = date.format(currentLocalTime);
-                        arrivalTimeText.setText("Arrivée à "+localTime);
+                        arrivalTimeText.setText("Arrivée à " + localTime);
                         createMap();
                         mCustomMapView.drawPolyline(graph);
 
@@ -854,9 +768,9 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 Gson gson = new Gson();
                                 String navigationInstructionsJson = gson.toJson(navigationInstructions);
-                                Intent i = new Intent(SearchQueryTwoActivity.this,NavigationActivity.class);
+                                Intent i = new Intent(SearchQueryTwoActivity.this, NavigationActivity.class);
 
-                                i.putExtra("path",mPath.toJson());
+                                i.putExtra("path", mPath.toJson());
                                 startActivity(i);
                             }
                         });
@@ -865,12 +779,11 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
 
             }
-        },0);
+        }, 0);
     }
 
-    private void animateFab()
-    {
-        Animation animation = AnimationUtils.loadAnimation(this,R.anim.fab_animation);
+    private void animateFab() {
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.fab_animation);
         animation.setRepeatCount(Animation.INFINITE);
         fab.startAnimation(animation);
     }
@@ -889,19 +802,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         mGraph = DataRepo.getGraphInstance(this);
     }
 
-    private void updateUiState (int newState,boolean keyboardShown,boolean animate)
-    {
-        switch (newState)
-        {
-            case STATE_NO_PATH :
+    private void updateUiState(int newState, boolean keyboardShown, boolean animate) {
+        switch (newState) {
+            case STATE_NO_PATH:
                 state = STATE_NO_PATH;
-                if (!animate)
-                {
+                if (!animate) {
                     coordinateLayout.setVisibility(View.GONE);
                     scrollView.setVisibility(View.VISIBLE);
-                }
-                else
-                {
+                } else {
                     coordinateLayout.setVisibility(View.GONE);
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -909,16 +817,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         public void run() {
                             scrollView.setVisibility(View.VISIBLE);
                         }
-                    },250);
+                    }, 250);
                 }
                 break;
-            case STATE_PATH_INITIALIZED :
+            case STATE_PATH_INITIALIZED:
                 state = STATE_PATH_INITIALIZED;
 
-                if (!animate)
-                {
-                    if (!keyboardShown)
-                    {
+                if (!animate) {
+                    if (!keyboardShown) {
                         coordinateLayout.setVisibility(View.VISIBLE);
                         createMap();
                         scrollView.setVisibility(View.GONE);
@@ -926,19 +832,14 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         pathNotFoundLayout.setVisibility(View.VISIBLE);
                         fab.setVisibility(View.GONE);
                         pathCalculProgress.setVisibility(View.GONE);
-                    }
-                    else
-                    {
+                    } else {
                         coordinateLayout.setVisibility(View.GONE);
                         scrollView.setVisibility(View.VISIBLE);
                         //pathNotFoundLayout.setVisibility(View.VISIBLE);
                     }
 
-                }
-                else
-                {
-                    if (!keyboardShown)
-                    {
+                } else {
+                    if (!keyboardShown) {
 
                         fab.setVisibility(View.GONE);
                         pathCalculProgress.setVisibility(View.GONE);
@@ -954,7 +855,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                                 //pathNotFoundLayout.setVisibility(View.VISIBLE);
 
                             }
-                        },250);
+                        }, 250);
                         /*handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -963,9 +864,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                             }
                         },500);*/
 
-                    }
-                    else
-                    {
+                    } else {
                         coordinateLayout.setVisibility(View.GONE);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
@@ -973,7 +872,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                             public void run() {
                                 scrollView.setVisibility(View.VISIBLE);
                             }
-                        },250);
+                        }, 250);
 
                     }
 
@@ -982,13 +881,11 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
                 //createMap();
                 break;
-            case STATE_PATH_CALCULATED :
+            case STATE_PATH_CALCULATED:
                 state = STATE_PATH_CALCULATED;
 
-                if (animate)
-                {
-                    if (!keyboardShown)
-                    {
+                if (animate) {
+                    if (!keyboardShown) {
                         coordinateLayout.setVisibility(View.VISIBLE);
                         scrollView.setVisibility(View.GONE);
                         pathNotFoundLayout.setVisibility(View.GONE);
@@ -1000,11 +897,9 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                                 fab.setVisibility(View.VISIBLE);
                                 animateFab();
                             }
-                        },250);
+                        }, 250);
 
-                    }
-                    else
-                    {
+                    } else {
                         coordinateLayout.setVisibility(View.GONE);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
@@ -1012,14 +907,11 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                             public void run() {
                                 scrollView.setVisibility(View.VISIBLE);
                             }
-                        },250);
+                        }, 250);
                     }
 
-                }
-                else
-                {
-                    if (!keyboardShown)
-                    {
+                } else {
+                    if (!keyboardShown) {
                         coordinateLayout.setVisibility(View.VISIBLE);
                         scrollView.setVisibility(View.GONE);
                         pathNotFoundLayout.setVisibility(View.GONE);
@@ -1027,9 +919,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                         fab.setVisibility(View.VISIBLE);
                         animateFab();
                         createMap();
-                    }
-                    else
-                    {
+                    } else {
                         coordinateLayout.setVisibility(View.GONE);
                         scrollView.setVisibility(View.VISIBLE);
                     }
@@ -1038,115 +928,106 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         }
     }
 
-    private void createMap ()
-    {
+    private void createMap() {
 
-            targetFixed = false;
-            mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
-            mCustomMapView.drawMarker(mPath.getSource().getCoordinate(),"Lieu de départ",R.drawable.ic_marker_blue_24dp);
+        targetFixed = false;
+        mCustomMapView.getMapboxMap().removeAnnotations(mCustomMapView.getMapboxMap().getAnnotations());
+        mCustomMapView.drawMarker(mPath.getSource().getCoordinate(), "Lieu de départ", R.drawable.ic_marker_blue_24dp);
 
-                mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(),"destination",R.drawable.ic_marker_red_24dp);
-            final ArrayList<Coordinate> boundsCoordinates = new ArrayList<>();
+        mCustomMapView.drawMarker(mPath.getDestination().getCoordinate(), "destination", R.drawable.ic_marker_red_24dp);
+        final ArrayList<Coordinate> boundsCoordinates = new ArrayList<>();
 
-            final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(),mPath.getDestination().getCoordinate());
-            if (mPath.getGraph()!=null)
-                mCustomMapView.animateCamera(mPath.getGraph(),350);
-                else
-                {
-                    boundsCoordinates.add(mPath.getSource().getCoordinate());
-                    boundsCoordinates.add(mPath.getDestination().getCoordinate());
-                    boundsCoordinates.add(middlePoint);
-                    if (Build.VERSION.SDK_INT<Build.VERSION_CODES.N_MR1)
-                    {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mCustomMapView.animateCamera(boundsCoordinates,350);
-                            }
-                        },500);
-
+        final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(), mPath.getDestination().getCoordinate());
+        if (mPath.getGraph() != null)
+            mCustomMapView.animateCamera(mPath.getGraph(), 350);
+        else {
+            boundsCoordinates.add(mPath.getSource().getCoordinate());
+            boundsCoordinates.add(mPath.getDestination().getCoordinate());
+            boundsCoordinates.add(middlePoint);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCustomMapView.animateCamera(boundsCoordinates, 350);
                     }
+                }, 500);
 
-                    mCustomMapView.animateCamera(boundsCoordinates,350);
-                }
+            }
+
+            mCustomMapView.animateCamera(boundsCoordinates, 350);
+        }
 
     }
 
     @Override
     public void onBackPressed() {
-        if (state == STATE_NO_PATH||keyboardShown)
+        if (state == STATE_NO_PATH || keyboardShown)
             super.onBackPressed();
-        else
-        {
-            if (coordinateLayout.getVisibility()==View.GONE)
-            {
-                updateUiState(state,false,true);
-                if (departureEditText.hasFocus())
-                {
+        else {
+            if (coordinateLayout.getVisibility() == View.GONE) {
+                updateUiState(state, false, true);
+                if (departureEditText.hasFocus()) {
 
-                    departureEditText.setText("Depuis "+mPath.getSource().getLabel());
+                    departureEditText.setText("Depuis " + mPath.getSource().getLabel());
                     departureEditText.setFocusableInTouchMode(false);
                     departureEditText.clearFocus();
 
                 }
-                if (destinationEditText.hasFocus())
-                {
+                if (destinationEditText.hasFocus()) {
 
-                    destinationEditText.setText("Vers "+mPath.getDestination().getLabel());
+                    destinationEditText.setText("Vers " + mPath.getDestination().getLabel());
                     destinationEditText.setFocusableInTouchMode(false);
                     destinationEditText.clearFocus();
 
                 }
-            }
-            else
-            {
+            } else {
                 super.onBackPressed();
             }
 
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
-        if (mCustomMapView!=null)
-        mCustomMapView.getMapView().onPause();
+        if (mCustomMapView != null)
+            mCustomMapView.getMapView().onPause();
     }
-
 
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mCustomMapView!=null)
-        mCustomMapView.getMapView().onStop();
+        if (mCustomMapView != null)
+            mCustomMapView.getMapView().onStop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mCustomMapView!=null)
-        mCustomMapView.getMapView().onDestroy();
+        if (mCustomMapView != null)
+            mCustomMapView.getMapView().onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mCustomMapView!=null)
-        mCustomMapView.getMapView().onResume();
+        if (mCustomMapView != null)
+            mCustomMapView.getMapView().onResume();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        if (mCustomMapView!=null)
-        mCustomMapView.getMapView().onLowMemory();
+        if (mCustomMapView != null)
+            mCustomMapView.getMapView().onLowMemory();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mCustomMapView!=null)
+        if (mCustomMapView != null)
             mCustomMapView.getMapView().onSaveInstanceState(outState);
     }
 }

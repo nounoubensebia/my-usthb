@@ -29,6 +29,7 @@ import com.example.nouno.locateme.Data.CenterOfInterest;
 import com.example.nouno.locateme.Data.Coordinate;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Data.StructureList;
+import com.example.nouno.locateme.DataRepo;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
 import com.example.nouno.locateme.Utils.FileUtils;
@@ -83,7 +84,7 @@ public class MapFragment extends Fragment {
 
     private void getStructureList ()
     {
-        InputStream inputStream = null;
+        /*InputStream inputStream = null;
         try {
             inputStream = this.getResources().getAssets().open("LocalsJson.txt");
 
@@ -91,7 +92,8 @@ public class MapFragment extends Fragment {
             structureList = new Gson().fromJson(localsJson,StructureList.class);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+        structureList = DataRepo.getStructureListInstance(getActivity());
 
     }
 
@@ -117,9 +119,6 @@ public class MapFragment extends Fragment {
             }
         });
         createMap(savedInstanceState,view);
-        ActivityCompat.requestPermissions(getActivity(),
-                new String[]{Manifest.permission. ACCESS_FINE_LOCATION},
-                3);
 
 
 
@@ -390,6 +389,7 @@ public class MapFragment extends Fragment {
         bigLabel.setText(centerOfInterest.getLabel()+"");
         smallLabel.setText(structureList.getBlocLabel(centerOfInterest));
         typeText.setText(CenterOfInterest.getTypeString(centerOfInterest.getType()));
+
     }
 
     public void enter(final View view) {

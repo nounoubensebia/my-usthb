@@ -81,6 +81,11 @@ public class WaitActivity extends AppCompatActivity {
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                errorText.setVisibility(View.GONE);
+                retryButton.setVisibility(View.GONE);
+                cancelButton.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+
                 ConnexionTask connexionTask = new ConnexionTask();
                 connexionTask.execute(new LinkedHashMap<String, String>());
             }
@@ -94,6 +99,7 @@ public class WaitActivity extends AppCompatActivity {
 
         protected String doInBackground(Map<String, String>... params) {
             DataRepo.getGraphInstance(WaitActivity.this);
+            DataRepo.getStructureListInstance(WaitActivity.this);
             String urla = SharedPreference.loadString("URL", WaitActivity.this);
             WebResponse webResponse = QueryUtils.makeHttpGetRequest(SharedPreference.loadString("URL", WaitActivity.this),
                     new LinkedHashMap<String, String>());

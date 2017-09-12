@@ -36,23 +36,19 @@ public class DataRepo {
         return graph;
     }
 
-    public static StructureList getStructureListInstance (Context context)
-    {
-        if (structureList == null)
-        {
-        InputStream inputStream = null;
-        try {
-            inputStream = context.getResources().getAssets().open("LocalsJson.txt");
+    public static StructureList getStructureListInstance(Context context) {
+        if (structureList == null) {
+            InputStream inputStream = null;
+            try {
+                inputStream = context.getResources().getAssets().open("LocalsJson.txt");
 
-            String localsJson = FileUtils.readFile(inputStream);
-            structureList = new Gson().fromJson(localsJson,StructureList.class);
-            return structureList;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        }
-        else
-        {
+                String localsJson = FileUtils.readFile(inputStream);
+                structureList = new Gson().fromJson(localsJson, StructureList.class);
+                return structureList;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
             return structureList;
         }
         return structureList;
