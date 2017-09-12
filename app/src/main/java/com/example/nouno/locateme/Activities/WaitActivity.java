@@ -33,7 +33,7 @@ public class WaitActivity extends AppCompatActivity {
     TextView errorText;
     Button cancelButton;
     ProgressBar progressBar;
-    TextView mainText;
+
     View syncCompletedLayout;
     Button syncCompletedButton;
     public  String affiche;
@@ -69,7 +69,7 @@ public class WaitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wait);
         retryButton = (Button) findViewById(R.id.button_retry);
         errorText = (TextView) findViewById(R.id.text_error);
-        mainText = (TextView) findViewById(R.id.text_main);
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         cancelButton = (Button) findViewById(R.id.button_cancel);
         syncCompletedLayout = findViewById(R.id.layout_sync_completed);
@@ -165,7 +165,7 @@ public class WaitActivity extends AppCompatActivity {
                 }
                 if (getIntent().getExtras()!=null&&getIntent().getExtras().containsKey("fromSettingsActivity"))
                 {
-                    mainText.setVisibility(View.GONE);
+
                     progressBar.setVisibility(View.GONE);
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -194,7 +194,7 @@ public class WaitActivity extends AppCompatActivity {
             }
             else
             {
-                mainText.setVisibility(View.GONE);
+
                 progressBar.setVisibility(View.GONE);
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {

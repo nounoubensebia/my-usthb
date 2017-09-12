@@ -577,9 +577,9 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         }
         else
         {
-            departureEditText.setTag("tag");
-            departureEditText.setText("");
-            departureEditText.setTag(null);
+            destinationEditText.setTag("tag");
+            destinationEditText.setText("");
+            destinationEditText.setTag(null);
             hideKeyboard();
         }
         //fromCenterOfInterest = false;

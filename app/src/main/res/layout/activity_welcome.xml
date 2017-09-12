@@ -5,153 +5,183 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:orientation="vertical"
     android:background="@color/backgroundColor"
+    android:orientation="vertical"
     tools:context="com.example.nouno.locateme.Activities.WelcomeActivity">
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/layout_download_finished"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/text_download_complete"
-            android:text="Téléchargement terminé"
-            android:visibility="visible"
-            android:textColor="#FFF"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:drawablePadding="16dp"
-            android:drawableBottom="@drawable/ic_check_circle_black_24dp"
-            android:layout_height="wrap_content" />
-        <Button
-
-            android:layout_marginTop="16dp"
-            style="?android:attr/borderlessButtonStyle"
-            android:id="@+id/button_next"
-            android:elevation="0dp"
-            android:background="@drawable/button_rect_empty"
-            android:textColor="#FFF"
-            android:layout_gravity="center"
-            android:layout_marginBottom="32dp"
-            android:text="Suivant"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
 
 
-    <LinearLayout
-        android:animateLayoutChanges="true"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
-
-    <android.support.v7.widget.Toolbar
-
-        android:id="@+id/toolbar1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ToolbarTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
-        <ImageView
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_usthb_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
         <LinearLayout
-            android:animateLayoutChanges="true"
-            android:id="@+id/layout_welcome"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-    <TextView
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:textSize="32sp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        android:text="Bienvenue"
-        android:textColor="#FFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:layout_marginTop="16dp"
-        android:textColor="#FFF"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:text="Pour pouvoir utiliser l'application en mode hors ligne il est nécessaire de télécharger des données supplémentaires. Vous pouvez lancer le téléchargement en appuyant sur le bouton &quot;lancer le téléchargement&quot;. Il est aussi possible de lancer le téléchargement ultérieurement en appuyant sur le bouton &quot;laisser pour plus tard&quot;."
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:animateLayoutChanges="true"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_marginBottom="32dp"
-            android:layout_width="match_parent"
-            android:layout_gravity="bottom|center"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
             <LinearLayout
-
-                android:visibility="gone"
-                android:id="@+id/layout_progress"
-                android:orientation="vertical"
-                android:layout_gravity="bottom|center"
-                android:layout_marginBottom="32dp"
+                android:id="@+id/layout_download_finished"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
                 <TextView
-                    android:layout_marginBottom="16dp"
-                    android:layout_gravity="center"
-                    android:textColor="#FFF"
-                    android:textSize="16sp"
-                    android:text="Téléchargement en cours"
+                    android:id="@+id/text_download_complete"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_marginLeft="32dp"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:indeterminate="false"
-                    android:layout_marginRight="32dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableBottom="@drawable/ic_check_circle_black_24dp"
+                    android:drawablePadding="16dp"
+                    android:text="Téléchargement terminé"
+                    android:textColor="#FFF"
+                    android:textSize="20sp"
+                    android:visibility="visible" />
+
+                <Button
+
+                    android:id="@+id/button_next"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="32dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_rect_empty"
+                    android:elevation="0dp"
+                    android:text="Suivant"
+                    android:textColor="#FFF" />
 
             </LinearLayout>
-        <Button
-            style="?android:attr/borderlessButtonStyle"
-            android:elevation="0dp"
-            android:id="@+id/button_download"
-            android:backgroundTint="#FFF"
-            android:background="@drawable/button_rect_full"
-            android:textColor="@color/backgroundColor"
-            android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
-            android:text="lancer le téléchargement"
-            android:layout_width="256dp"
-            android:layout_height="wrap_content" />
-            <Button
-                style="?android:attr/borderlessButtonStyle"
-                android:id="@+id/button_later"
-                android:elevation="0dp"
-                android:background="@drawable/button_rect_empty"
-                android:textColor="#FFF"
-                android:layout_gravity="center"
-                android:layout_marginBottom="32dp"
-                android:text="laisser pour plus tard"
-                android:layout_width="256dp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
 
 
-    </android.support.design.widget.CoordinatorLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.Toolbar
+
+                    android:id="@+id/toolbar1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorPrimary"
+                    android:minHeight="?attr/actionBarSize"
+                    android:theme="@style/ToolbarTheme"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_usthb_logo" />
+
+                <LinearLayout
+                    android:id="@+id/layout_welcome"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+
+                        android:layout_marginTop="16dp"
+                        android:text="Bienvenue"
+                        android:textColor="#FFF"
+                        android:textSize="32sp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:text="Pour pouvoir utiliser les fonctionnalités de localisation en mode hors ligne il est nécessaire de télécharger la carte offline de l'USTHB. Vous pouvez lancer le téléchargement en appuyant sur le bouton &quot;lancer le téléchargement de la carte&quot;. Il est aussi possible d'utiliser l'application sans télécharger la carte offline et de lancer le téléchargement ultérieurement en appuyant sur le bouton &quot;lancer l'application sans télécharger la carte offline&quot;."
+                        android:textColor="#FFF"
+                        android:textSize="14sp" />
+
+                    <android.support.design.widget.CoordinatorLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:animateLayoutChanges="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|center"
+                            android:layout_marginBottom="32dp"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+
+                                android:id="@+id/layout_progress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom|center"
+                                android:layout_marginBottom="32dp"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginBottom="16dp"
+                                    android:text="Téléchargement en cours"
+                                    android:textColor="#FFF"
+                                    android:textSize="16sp" />
+
+                                <ProgressBar
+                                    android:id="@+id/progressBar"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="32dp"
+                                    android:layout_marginRight="32dp"
+                                    android:indeterminate="false" />
+
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/button_download"
+                                style="?android:attr/borderlessButtonStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="16dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="64dp"
+                                android:background="@drawable/button_rect_full"
+                                android:backgroundTint="#FFF"
+                                android:elevation="0dp"
+                                android:paddingLeft="24dp"
+                                android:paddingRight="24dp"
+                                android:text="lancer le téléchargement de la carte offline"
+                                android:textColor="@color/backgroundColor" />
+
+                            <Button
+                                android:id="@+id/button_later"
+                                style="?android:attr/borderlessButtonStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="32dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"
+                                android:background="@drawable/button_rect_empty"
+                                android:elevation="0dp"
+                                android:text="lancer l'application sans télécharger la carte offline"
+                                android:textColor="#FFF" />
+                        </LinearLayout>
+
+
+                    </android.support.design.widget.CoordinatorLayout>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+
 </android.support.design.widget.CoordinatorLayout>

@@ -177,7 +177,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
                 android:textSize="16sp"
-                android:text="Synchroniser les données"
+                android:text="Synchroniser l'emploi du temps"
                 android:textColor="#000" />
         </LinearLayout>
         <LinearLayout

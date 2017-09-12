@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Iterator;
@@ -31,8 +32,8 @@ public class QueryUtils {
             URL url = new URL(urlString);
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoOutput(true);
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setReadTimeout(15000);
+            urlConnection.setConnectTimeout(5000);
+            urlConnection.setReadTimeout(5000);
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
             String postParameters = buildParametersString(parameters);
@@ -51,7 +52,13 @@ public class QueryUtils {
             {
                 webResponse.setError(true);
             }
-        } catch (MalformedURLException e) {
+
+        }
+        catch (SocketTimeoutException e)
+        {
+            e.printStackTrace();
+        }
+        catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
