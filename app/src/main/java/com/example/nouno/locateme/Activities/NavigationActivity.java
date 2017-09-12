@@ -288,8 +288,8 @@ public class NavigationActivity extends AppCompatActivity {
 
     private int getBottomPixels ()
     {
-        Log.i("PIXEL",UiUtils.convertPixelsToDp(1000,this)+"");
-        Log.i("PIXEL2",UiUtils.convertPixelsToDp(150,this)+"");
+        Log.i("PIXEL",UiUtils.convertPixelsToDp(350,this)+"");
+
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);

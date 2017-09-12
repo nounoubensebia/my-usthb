@@ -43,6 +43,7 @@ import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;
 import com.example.nouno.locateme.Utils.FileUtils;
 import com.example.nouno.locateme.Utils.MapGeometryUtils;
+import com.example.nouno.locateme.Utils.UiUtils;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -939,7 +940,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
 
         final Coordinate middlePoint = MapGeometryUtils.getMiddle(mPath.getSource().getCoordinate(), mPath.getDestination().getCoordinate());
         if (mPath.getGraph() != null)
-            mCustomMapView.animateCamera(mPath.getGraph(), 350);
+            mCustomMapView.animateCamera(mPath.getGraph(),(int) UiUtils.transformDpToPx(this,120));
         else {
             boundsCoordinates.add(mPath.getSource().getCoordinate());
             boundsCoordinates.add(mPath.getDestination().getCoordinate());
@@ -949,13 +950,13 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mCustomMapView.animateCamera(boundsCoordinates, 350);
+                        mCustomMapView.animateCamera(boundsCoordinates, (int) UiUtils.transformDpToPx(SearchQueryTwoActivity.this,120));
                     }
                 }, 500);
 
             }
 
-            mCustomMapView.animateCamera(boundsCoordinates, 350);
+            mCustomMapView.animateCamera(boundsCoordinates,(int) UiUtils.transformDpToPx(SearchQueryTwoActivity.this,120));
         }
 
     }
