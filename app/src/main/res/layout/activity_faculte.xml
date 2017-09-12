@@ -44,8 +44,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
 
-        android:background="#FFF"
-        android:popupBackground="#FFF" />
+        android:background="@drawable/shape_rounded_white_without_padding"
+        android:popupBackground="@drawable/shape_rounded_white_without_padding" />
 
 
 

@@ -297,9 +297,8 @@ public class NavigationActivity extends AppCompatActivity {
         int height = size.y;
         if (layoutHeight!=-1)
         layoutHeight = pathInstructionsLayout.getHeight();
-        int bottomPixels =(int)UiUtils.transformDpToPx(this,334);
-        if (bottomPixels>1000)
-            bottomPixels = 1000;
+        int bottomPixels =layoutHeight + (int)UiUtils.transformDpToPx(this,384);
+
         return bottomPixels;
     }
 

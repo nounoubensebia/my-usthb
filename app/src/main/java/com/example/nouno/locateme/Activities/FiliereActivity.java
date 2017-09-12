@@ -12,8 +12,11 @@ import android.widget.Spinner;
 import com.example.nouno.locateme.Data.Filiere;
 import com.example.nouno.locateme.Data.Info;
 import com.example.nouno.locateme.R;
+import com.example.nouno.locateme.SharedPreference;
 import com.google.gson.Gson;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class FiliereActivity extends AppCompatActivity {
@@ -80,6 +83,7 @@ public class FiliereActivity extends AppCompatActivity {
                     if(filiere.equals(filieres.get(i).designation))
                     {
                         code=filieres.get(i).code;
+                        Temp.code = code;
                     }
                 }
 
@@ -100,10 +104,52 @@ public class FiliereActivity extends AppCompatActivity {
             {
                 Intent i = new Intent(FiliereActivity.this,SectionActivity.class) ;
                 Info info = new Info(Temp.filieres,Temp.annee,filiere,code,Temp.cycle,Temp.fac);
-                String json = new Gson().toJson(info);
-                i.putExtra("INFO",json);
-                startActivity(i);
+                if (oneSection(filieres,info)!=null)
+                {
+                    i = new Intent(FiliereActivity.this,WaitActivity.class);
+                    String text="https://ent.usthb.dz/index.php?/Emp/xml/"+Temp.code+"/"+Temp.annee+"/"+oneSection(filieres,info)+"/1";
+                    URL infoUrl = null;
+                    try {
+                        infoUrl = new URL(text);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                    Temp.filiere =filiere;
+                    Temp.section = oneSection(filieres,info);
+                    info.section = oneSection(filieres,info);
+                    SharedPreference.saveString("INFO",infoUrl.toString(),FiliereActivity.this);
+                    SharedPreference.saveString("TEMP",new Gson().toJson(Temp),FiliereActivity.this);
+                    SharedPreference.saveString("URL",infoUrl.toString(),FiliereActivity.this);
+                    String json = new Gson().toJson(infoUrl);
+                    i.putExtra("INFO",json);
+                    startActivity(i);
+                }
+                else
+                {
+                    String json = new Gson().toJson(info);
+                    i.putExtra("INFO",json);
+                    startActivity(i);
+                }
             }
         });
+    }
+
+    private String oneSection (ArrayList<Filiere> filieres,Info info)
+    {
+
+        for(int i=0;i<filieres.size();i++)
+        {
+            if(filieres.get(i).designation.equals(info.filiere))
+            {
+                for(int j=0;j<filieres.get(i).anet.size();j++)
+                {
+
+                    if (filieres.get(i).anet.get(j).section.size()==1)
+
+                    return filieres.get(i).anet.get(j).section.get(0);
+                }
+            }
+        }
+        return null;
     }
 }

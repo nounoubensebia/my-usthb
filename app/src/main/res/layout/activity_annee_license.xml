@@ -40,7 +40,8 @@
             android:textSize="20sp"/>
 
         <Button
-
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             style="?android:attr/borderlessButtonStyle"
             android:elevation="0dp"
             android:id="@+id/l1"
@@ -53,7 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
-
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             style="?android:attr/borderlessButtonStyle"
             android:elevation="0dp"
             android:id="@+id/l2"
@@ -67,7 +69,8 @@
             android:layout_height="wrap_content" />
 
         <Button
-
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             style="?android:attr/borderlessButtonStyle"
             android:elevation="0dp"
             android:id="@+id/l3"
