@@ -474,7 +474,10 @@ public class Graph {
 
         int startOrder = 0;
         int endOrder = 0;
+        Edge escapedEdge = null;
         int i = 0;
+        int escapeOrder=0;
+        boolean escaped = false;
         for (Edge e : edges) {
 
             if (lastPolyline.size() > 0) {
@@ -485,6 +488,7 @@ public class Graph {
 
 
                 if (angle < 160 && angle >= 20) {
+                    escaped = false;
                     Log.e("TAGT", angle + "");
                     double distance = 0;
                     endOrder = i - 1;
@@ -492,17 +496,21 @@ public class Graph {
                     for (Edge e1 : edges) {
                         distance += MapGeometryUtils.PolylineDistance(e1.getCoordinates());
                     }
+                    
                     navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_LEFT, distance, startOrder, endOrder));
                     startOrder = i;
 
 
                 }
-                ;
-                if (angle < 20 && angle >= -20) {
 
+                if (angle < 20 && angle >= -20||(angle>=160||angle<-160)) {
+                    escaped = true;
+                    escapedEdge = e;
+                    escapeOrder = startOrder;
                 }
-                ;
+
                 if (angle < -20 && angle >= -160) {
+                    escaped = false;
                     Log.e("TAGT", angle + "");
                     double distance = 0;
                     endOrder = i - 1;
@@ -524,9 +532,27 @@ public class Graph {
             }
             i++;
         }
-        ArrayList<Coordinate> polyline = edges.get(edges.size() - 1).getCoordinates();
-        NavigationInstruction navigationInstruction = new NavigationInstruction(NavigationInstruction.DIRECTION_FRONT, MapGeometryUtils.PolylineDistance(polyline), edges.size() - 1, edges.size() - 1);
-        navigationInstructions.add(navigationInstruction);
+        if (escaped)
+        {
+
+            double distance = 0;
+            ArrayList<Edge> edges1 = getEdges(escapeOrder,edges.size() - 1);
+            for (Edge e1 : edges1) {
+                distance += MapGeometryUtils.PolylineDistance(e1.getCoordinates());
+            }
+            NavigationInstruction navigationInstruction = new NavigationInstruction(NavigationInstruction.DIRECTION_FRONT,
+                    distance, escapeOrder,
+                    edges.size() - 1);
+            navigationInstructions.add(navigationInstruction);
+        }
+        else
+        {
+            ArrayList<Coordinate> polyline = edges.get(edges.size() - 1).getCoordinates();
+            NavigationInstruction navigationInstruction = new NavigationInstruction(NavigationInstruction.DIRECTION_FRONT,
+                    MapGeometryUtils.PolylineDistance(polyline), edges.size() - 1,
+                    edges.size() - 1);
+            navigationInstructions.add(navigationInstruction);
+        }
         return navigationInstructions;
     }
 
