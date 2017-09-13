@@ -55,6 +55,7 @@ public class MapFragment extends Fragment {
     MapView mMapView;
     MapboxMap mMapboxMap;
     CustomMapView mCustomMapView;
+    View searchView;
     ImageView button;
     View fabList;
     View fabClear;
@@ -117,7 +118,15 @@ public class MapFragment extends Fragment {
         button = (ImageView) view.findViewById(R.id.btn);
         whereToGoText = (TextView) view.findViewById(R.id.where_to_go);
         layoutImage = (ImageView) view.findViewById(R.id.image_view);
-        whereToGoText.setOnClickListener(new View.OnClickListener() {
+        /*whereToGoText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), SearchQueryTwoActivity.class);
+                startActivity(i);
+            }
+        });*/
+        searchView = view.findViewById(R.id.search_layout);
+        searchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), SearchQueryTwoActivity.class);
@@ -436,6 +445,7 @@ public class MapFragment extends Fragment {
         typeText.setText(CenterOfInterest.getTypeString(centerOfInterest.getType()));
         smallLabel.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
         typeText.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+        layoutImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         if (centerOfInterest.getDrawableResource()!=-1)
             Glide.with(this)
                     .load(centerOfInterest.getDrawableResource())
@@ -444,9 +454,11 @@ public class MapFragment extends Fragment {
             Glide.with(this)
                     .load(R.drawable.test)
                     .into(layoutImage);
+
     }
 
     public void bindLocationLayout(Structure structure, Place place) {
+        layoutImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
         if (structure != null)
         {    Drawable drawable = ContextCompat.getDrawable(getActivity(),R.drawable.ic_location_red_24dp);
             smallLabel.setVisibility(View.VISIBLE);

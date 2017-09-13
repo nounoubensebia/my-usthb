@@ -22,40 +22,51 @@
         <activity
             android:name=".Activities.SearchQueryTwoActivity"
             android:label="Où aller ?"
+            android:screenOrientation="portrait"
             android:theme="@style/MainTheme" />
         <activity
             android:name=".Activities.SetMarkerActivity"
             android:label="Sélectionner un lieu "
+            android:screenOrientation="portrait"
             android:theme="@style/MainTheme" />
         <activity
             android:name=".Activities.NavigationActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
             android:name=".Activities.AnneeLicense"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme" />
         <activity
             android:name=".Activities.FiliereActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme" />
         <activity
             android:name=".Activities.FaculteActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme" />
         <activity
             android:name=".Activities.SectionActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme" />
 
 
         <activity
             android:name=".Activities.NewMainAct"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme" />
         <activity
             android:name=".Activities.AnneMasterActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme" />
         <activity
             android:name=".Activities.StartActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_start" />
         <activity
             android:name=".Activities.WelcomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,14 +76,18 @@
         </activity>
         <activity
             android:name=".Activities.AuthorizationActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme" />
         <activity
             android:name=".Activities.PreparationActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme" />
         <activity
             android:name=".Activities.WaitActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme" />
         <activity android:name=".Activities.DownloadActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/WelcomeTheme"></activity>
     </application>
 

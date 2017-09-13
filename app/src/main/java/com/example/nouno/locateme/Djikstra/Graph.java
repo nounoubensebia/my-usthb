@@ -496,7 +496,7 @@ public class Graph {
                     for (Edge e1 : edges) {
                         distance += MapGeometryUtils.PolylineDistance(e1.getCoordinates());
                     }
-                    
+
                     navigationInstructions.add(new NavigationInstruction(NavigationInstruction.DIRECTION_LEFT, distance, startOrder, endOrder));
                     startOrder = i;
 

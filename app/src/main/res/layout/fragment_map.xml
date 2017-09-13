@@ -19,15 +19,10 @@
         android:background="@drawable/rounded_button"
         android:elevation="24dp">
 
-        <ImageView
-            android:id="@+id/btn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:layout_marginRight="16dp"
-            app:srcCompat="@drawable/ic_list_black_24dp" />
+
 
         <TextView
+            android:layout_marginLeft="16dp"
             android:id="@+id/where_to_go"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -227,10 +222,11 @@
                 android:id="@+id/image_view"
                 app:srcCompat="@drawable/faculte_biologie"
                 android:layout_width="112dp"
-
+                android:scaleType="centerCrop"
                 android:layout_height="72dp" />
             <LinearLayout
-                android:layout_marginLeft="8dp"
+
+                android:layout_marginLeft="16dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
