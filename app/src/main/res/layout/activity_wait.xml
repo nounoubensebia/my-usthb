@@ -24,16 +24,16 @@
     <ImageView
         android:layout_gravity="center"
         app:srcCompat="@drawable/ic_usthb_logo"
-        android:layout_width="128dp"
-        android:layout_height="128dp" />
+        android:layout_width="112dp"
+        android:layout_height="112dp" />
 
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_gravity="center"
         style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="32dp"
+        android:layout_height="32dp" />
 
 
     <TextView

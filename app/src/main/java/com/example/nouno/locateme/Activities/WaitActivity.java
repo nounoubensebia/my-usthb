@@ -226,6 +226,7 @@ public class WaitActivity extends AppCompatActivity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
+                    Toast.makeText(WaitActivity.this,"Synchronisation échouée",Toast.LENGTH_LONG).show();
                 }
             }
 

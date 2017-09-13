@@ -150,6 +150,16 @@ public class StructureList {
 
     }
 
+
+    private ArrayList<Structure> getAllStructures ()
+    {
+        ArrayList<Structure> structures1 = new ArrayList<>();
+        structures1.addAll(structures);
+        structures1.addAll(centerOfInterests);
+        structures1.addAll(classrooms);
+        return structures1;
+    }
+
     public String getBlocLabel(Structure structure) {
         if (structure instanceof Classroom) {
             Classroom classroom = (Classroom) structure;
@@ -166,5 +176,23 @@ public class StructureList {
             }
         }
         return " ";
+    }
+
+    public Structure getNearestStructure (Coordinate coordinate)
+    {
+        double minDistance = 100000;
+        Structure structure1 = null;
+        for (Structure structure:structures)
+        {
+            if (Haversine.distance(coordinate,structure.getCoordinate())<minDistance)
+            {
+                structure1 = structure;
+                minDistance = Haversine.distance(coordinate,structure.getCoordinate());
+            }
+        }
+        if (minDistance<0.1)
+        return structure1;
+        else
+            return null;
     }
 }

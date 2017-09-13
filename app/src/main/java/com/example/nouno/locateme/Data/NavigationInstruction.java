@@ -51,10 +51,10 @@ public class NavigationInstruction {
         switch (direction)
         {
             case DIRECTION_LEFT :
-                s+="tourner à gauche";
+                s+="prendre à gauche";
                 break;
             case DIRECTION_RIGHT :
-                s+="tourner à droite";
+                s+="prendre à droite";
                 break;
             default :
                 s="Votre destination se trouve à "+(int)(distance*1000)+ " mètres";

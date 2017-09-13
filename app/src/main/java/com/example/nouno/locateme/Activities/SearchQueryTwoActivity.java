@@ -304,10 +304,22 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
         });
 
         if (getIntent().getExtras() != null) {
-            if (getIntent().getExtras().containsKey("centerOfInterest")) ;
-            CenterOfInterest centerOfInterest = new Gson().fromJson(getIntent().getExtras().getString("centerOfInterest"), CenterOfInterest.class);
-            Place place = new Place(centerOfInterest.getLabel(), centerOfInterest.getCoordinate(), false);
+            Place place;
+            if (getIntent().getExtras().containsKey("centerOfInterest"))
+            {
+                CenterOfInterest centerOfInterest = new Gson().fromJson(getIntent().getExtras().getString("centerOfInterest"), CenterOfInterest.class);
+                place = new Place(centerOfInterest.getLabel(), centerOfInterest.getCoordinate(), false);
+            }
+            else
+            {
+                place = Place.fromJson(getIntent().getExtras().getString("place"));
+            }
             setDestination(place);
+            if (getIntent().getExtras().containsKey("departure"))
+            {
+                setDeparture(Place.fromJson(getIntent().getExtras().getString("departure")));
+                updateUiState(STATE_PATH_INITIALIZED,false,true);
+            }
         }
         swapImage.setOnClickListener(new View.OnClickListener() {
             @Override
