@@ -82,6 +82,10 @@ public class Structure {
                 case 15:return R.drawable.centre_de_calcul;
                 case 16:return R.drawable.faculte_electronique_et_informatique;
                 case 20:return R.drawable.faculte_chimie;
+                case 21:return R.drawable.rectorat;
+                case 24:return R.drawable.salle_de_sport;
+                case 25:return R.drawable.auditorium;
+                case 26:return R.drawable.cyber_espace;
             }
         }
         else
