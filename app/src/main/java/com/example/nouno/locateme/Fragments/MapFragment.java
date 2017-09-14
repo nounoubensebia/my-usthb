@@ -447,13 +447,17 @@ public class MapFragment extends Fragment {
         typeText.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
         layoutImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         if (centerOfInterest.getDrawableResource()!=-1)
-            Glide.with(this)
+            Glide.with(getActivity())
                     .load(centerOfInterest.getDrawableResource())
                     .into(layoutImage);
         else
-            Glide.with(this)
-                    .load(R.drawable.test)
-                    .into(layoutImage);
+        {
+            if (centerOfInterest.getVectorDrawable()!=-1)
+            {
+                layoutImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                layoutImage.setImageDrawable(ContextCompat.getDrawable(getActivity(),centerOfInterest.getVectorDrawable()));
+            }
+        }
 
     }
 

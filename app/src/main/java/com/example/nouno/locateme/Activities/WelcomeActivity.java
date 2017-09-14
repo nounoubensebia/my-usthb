@@ -40,6 +40,9 @@ public class WelcomeActivity extends AppCompatActivity {
     private View downloadCompleteLayout;
     private Button nextButton;
     private OfflineRegion offlineRegion;
+    private View layoutError;
+    private Button retryButton;
+    private Button retryLaterButton;
     public boolean fileExistance(String fname){
         File file = getBaseContext().getFileStreamPath(fname);
         return file.exists();
@@ -59,7 +62,9 @@ public class WelcomeActivity extends AppCompatActivity {
             intent = new Intent(WelcomeActivity.this, PreparationActivity.class);
         }
         startActivity(intent);
-        finish();
+        if (SharedPreference.verifyKey("map_downloaded",this))
+            finish();
+
     }
 
 
@@ -93,6 +98,9 @@ public class WelcomeActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         nextButton = (Button) findViewById(R.id.button_next);
         downloadCompleteLayout = findViewById(R.id.layout_download_finished);
+        layoutError = findViewById(R.id.layout_error);
+        retryButton = (Button) findViewById(R.id.button_retry);
+        retryLaterButton = (Button) findViewById(R.id.button_retry_later);
         startDownloadingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,8 +121,27 @@ public class WelcomeActivity extends AppCompatActivity {
             }
         });
 
-
-
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layoutError.setVisibility(View.GONE);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        downloadingLayout.setVisibility(View.VISIBLE);
+                        welcomeLayout.setVisibility(View.VISIBLE);
+                    }
+                },250);
+                downloadRegion();
+            }
+        });
+        retryLaterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rootToNextActivity();
+            }
+        });
 
     }
 
@@ -130,7 +157,7 @@ public class WelcomeActivity extends AppCompatActivity {
         OfflineTilePyramidRegionDefinition definition = new OfflineTilePyramidRegionDefinition(
                 "mapbox://styles/mapbox/outdoors-v10",
                 latLngBounds,
-                14,
+                10,
                 20,
                 WelcomeActivity.this.getResources().getDisplayMetrics().density);
 
@@ -154,7 +181,7 @@ public class WelcomeActivity extends AppCompatActivity {
         OfflineManager offlineManager = OfflineManager.getInstance(this);
         offlineManager.createOfflineRegion(definition, metadata, new OfflineManager.CreateOfflineRegionCallback() {
             @Override
-            public void onCreate(OfflineRegion offlineRegion) {
+            public void onCreate(final OfflineRegion offlineRegion) {
                 WelcomeActivity.this.offlineRegion = offlineRegion;
                 offlineRegion.setDownloadState(OfflineRegion.STATE_ACTIVE);
                 offlineRegion.setObserver(new OfflineRegion.OfflineRegionObserver() {
@@ -182,7 +209,16 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(OfflineRegionError error) {
+                        offlineRegion.setDownloadState(OfflineRegion.STATE_INACTIVE);
+                        welcomeLayout.setVisibility(View.GONE);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                layoutError.setVisibility(View.VISIBLE);
 
+                            }
+                        },250);
                     }
 
                     @Override

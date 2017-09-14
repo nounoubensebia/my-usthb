@@ -1,5 +1,7 @@
 package com.example.nouno.locateme.Data;
 
+import com.example.nouno.locateme.R;
+
 /**
  * Created by nouno on 15/08/2017.
  */
@@ -43,5 +45,33 @@ public class CenterOfInterest extends Structure {
             case TYPE_KIOSQUE : return "Kiosque";
         }
         return null;
+    }
+
+    @Override
+    public int getVectorDrawable() {
+
+        CenterOfInterest centerOfInterest = (CenterOfInterest) this;
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_TOILETTE)
+        {
+            return R.drawable.ic_toilet;
+        }
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_MOSQUE)
+        {
+            return R.drawable.ic_mosque;
+        }
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_SORTIE)
+        {
+            return R.drawable.ic_sortie;
+        }
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_KIOSQUE)
+        {
+            return R.drawable.ic_kiosk;
+        }
+
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_BUVETTE)
+        {
+            return R.drawable.ic_food;
+        }
+        return -1;
     }
 }

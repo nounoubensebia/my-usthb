@@ -21,8 +21,8 @@
         <ImageView
             android:layout_gravity="center"
             app:srcCompat="@drawable/ic_usthb_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="110dp"
+            android:layout_height="58dp" />
     <TextView
         android:layout_gravity="center"
         android:id="@+id/textView1"

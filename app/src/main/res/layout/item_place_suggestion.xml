@@ -73,9 +73,10 @@
             android:visibility="visible"
             android:id="@+id/image_view"
             android:layout_width="128dp"
+
             android:layout_height="100dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+
              />
 
         <LinearLayout

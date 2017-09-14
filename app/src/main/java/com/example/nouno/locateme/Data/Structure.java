@@ -68,22 +68,28 @@ public class Structure {
             switch ((int) id)
             {
                 case 0:return R.drawable.departement_informatique;
-                case 1 :return R.drawable.nouveau_bloc;
+                case 1 :return R.drawable.nouveau_bloc_b;
                 case 2:return R.drawable.salle_td_100_200;
                 case 3:return R.drawable.faculte_physique;
                 case 5:return R.drawable.salle_td_300_400;
                 case 6:return R.drawable.faculte_biologie;
-                case 7:
-                case 8:
-                case 9:
+                case 7:return R.drawable.nouveau_bloc_c;
+                case 8:return R.drawable.nouveau_bloc_a;
+                case 9:return R.drawable.nouveau_nouveau_bloc;
                 case 10: return R.drawable.nouveau_bloc;
                 case 11:return R.drawable.hall_technologie;
+                case 12:return R.drawable.faculte_de_math;
                 case 13:return R.drawable.village;
+                case 14:return R.drawable.faculte_de_math;
                 case 15:return R.drawable.centre_de_calcul;
                 case 16:return R.drawable.faculte_electronique_et_informatique;
+                case 18:return R.drawable.faculte_gp_gm;
+                case 19:return R.drawable.faculte_de_genie_civil;
                 case 20:return R.drawable.faculte_chimie;
                 case 21:return R.drawable.rectorat;
-                case 24:return R.drawable.salle_de_sport;
+                case 22:return R.drawable.annexe_rectorat;
+                case 23:return R.drawable.salle_des_sciences;
+                case 24:return R.drawable.salle_omnisport;
                 case 25:return R.drawable.auditorium;
                 case 26:return R.drawable.cyber_espace;
             }
@@ -91,26 +97,42 @@ public class Structure {
         else
         {
             if (this instanceof CenterOfInterest)
-            {
-                CenterOfInterest centerOfInterest = (CenterOfInterest) this;
-                if (centerOfInterest.getType()==CenterOfInterest.TYPE_TOILETTE)
-                {
-                    return R.drawable.toilet;
-                }
-                else
-                {
+            {       CenterOfInterest centerOfInterest =(CenterOfInterest) this;
+
                     switch ((int)centerOfInterest.getId())
                     {
+
                         case 36:return R.drawable.buvette_departement_informatique;
                         case 37:return R.drawable.kiosque_informatique;
                         case 38:return R.drawable.kiosque_faculte_genie_civil;
+                        case 39:return R.drawable.kiosque_lac_a4;
+                        case 43:return R.drawable.mecanicien_buvette;
+                        case 45:return R.drawable.mc_kiffan_buvette;
+                        case 46:return R.drawable.la_marquise_buvette;
                         case 63:return R.drawable.kiosque_espace_internet;
+                        case 44:
+                        case 55:
+                        case 56:
+                        case 57:return R.drawable.quatre_buvettes;
+                        case 64:return R.drawable.kiosque_g3;
+                        case 66:return R.drawable.kiosque_b10;
+                        case 67:return R.drawable.kiosque_a3;
+                        case 73:return R.drawable.acces_etudiant;
+                        case 74:return R.drawable.acces_parking_enseignant;
+                        case 77:return R.drawable.acces_djorf;
+                        case 78:return R.drawable.moussala;
                     }
-                }
+
+
 
             }
         }
         return -1;
+    }
+
+    public int getVectorDrawable ()
+    {
+            return R.drawable.ic_logo_usthb_blue;
     }
 
 }

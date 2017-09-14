@@ -100,7 +100,7 @@ public class DownloadActivity extends AppCompatActivity {
         OfflineTilePyramidRegionDefinition definition = new OfflineTilePyramidRegionDefinition(
                 "mapbox://styles/mapbox/outdoors-v10",
                 latLngBounds,
-                14,
+                10,
                 20,
                 DownloadActivity.this.getResources().getDisplayMetrics().density);
 
