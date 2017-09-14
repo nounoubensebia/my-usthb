@@ -181,7 +181,7 @@
                                 android:elevation="0dp"
                                 android:paddingLeft="24dp"
                                 android:paddingRight="24dp"
-                                android:text="lancer le téléchargement de la carte offline"
+                                android:text="lancer le téléchargement de la carte"
                                 android:textColor="@color/backgroundColor" />
 
                             <Button
@@ -197,7 +197,7 @@
                                 android:paddingRight="16dp"
                                 android:background="@drawable/button_rect_empty"
                                 android:elevation="0dp"
-                                android:text="continuer sans télécharger la carte offline"
+                                android:text="continuer sans télécharger la carte"
                                 android:textColor="#FFF" />
                         </LinearLayout>
 

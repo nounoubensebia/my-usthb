@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.nouno.locateme.ConnexionNet;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.SharedPreference;
@@ -43,6 +44,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private View layoutError;
     private Button retryButton;
     private Button retryLaterButton;
+    private int errorCount=0;
     public boolean fileExistance(String fname){
         File file = getBaseContext().getFileStreamPath(fname);
         return file.exists();
@@ -104,9 +106,20 @@ public class WelcomeActivity extends AppCompatActivity {
         startDownloadingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startDownloadingButton.setVisibility(View.GONE);
-                downloadingLayout.setVisibility(View.VISIBLE);
-                downloadRegion();
+                ConnexionNet connexionNet = new ConnexionNet(WelcomeActivity.this);
+                if (connexionNet.isConnected())
+                {
+                    startDownloadingButton.setVisibility(View.GONE);
+                    downloadingLayout.setVisibility(View.VISIBLE);
+                    downloadRegion();
+                }
+                else
+                {
+                    welcomeLayout.setVisibility(View.GONE);
+                    startDownloadingButton.setVisibility(View.GONE);
+                    downloadingLayout.setVisibility(View.VISIBLE);
+                    layoutError.setVisibility(View.VISIBLE);
+                }
             }
         });
         laterButton.setOnClickListener(new View.OnClickListener() {
@@ -124,16 +137,20 @@ public class WelcomeActivity extends AppCompatActivity {
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                layoutError.setVisibility(View.GONE);
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        downloadingLayout.setVisibility(View.VISIBLE);
-                        welcomeLayout.setVisibility(View.VISIBLE);
-                    }
-                },250);
-                downloadRegion();
+                ConnexionNet connexionNet = new ConnexionNet(WelcomeActivity.this);
+                if (connexionNet.isConnected())
+                {
+                    layoutError.setVisibility(View.GONE);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            downloadingLayout.setVisibility(View.VISIBLE);
+                            welcomeLayout.setVisibility(View.VISIBLE);
+                        }
+                    },250);
+                    downloadRegion();
+                }
             }
         });
         retryLaterButton.setOnClickListener(new View.OnClickListener() {
@@ -209,16 +226,24 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(OfflineRegionError error) {
-                        offlineRegion.setDownloadState(OfflineRegion.STATE_INACTIVE);
-                        welcomeLayout.setVisibility(View.GONE);
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                layoutError.setVisibility(View.VISIBLE);
+                        if (errorCount>5)
+                        {
+                            errorCount = 0;
+                            offlineRegion.setDownloadState(OfflineRegion.STATE_INACTIVE);
+                            welcomeLayout.setVisibility(View.GONE);
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    layoutError.setVisibility(View.VISIBLE);
 
-                            }
-                        },250);
+                                }
+                            },250);
+                        }
+                        else
+                        {
+                            errorCount++;
+                        }
                     }
 
                     @Override

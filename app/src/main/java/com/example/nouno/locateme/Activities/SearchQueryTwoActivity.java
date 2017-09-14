@@ -198,7 +198,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 if (departureEditText.getTag() == null)
                     if (departureEditText.hasFocus()) {
 
-                        if (s.toString().length() >= 2) {
+                        if (s.toString().length() >= 1) {
 
                             ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
                             ((SearchSuggestionItemAdapter) mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
@@ -264,7 +264,7 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 if (destinationEditText.getTag() == null)
                     if (destinationEditText.hasFocus()) {
 
-                        if (s.toString().length() >= 2) {
+                        if (s.toString().length() >= 1) {
                             ArrayList<SearchSuggestion> searchSuggestions = structureList.getSearchSuggestions(s.toString());
 
                             ((SearchSuggestionItemAdapter) mSuggestionsListView.getAdapter()).updateItems(searchSuggestions);
@@ -637,7 +637,10 @@ public class SearchQueryTwoActivity extends AppCompatActivity {
                 String s = "";
                 String d = "";
                 if (searchSuggestion.getStructure() instanceof Classroom) {
-                    s = "Salle ";
+
+                    if (!searchSuggestion.getStructure().getLabel().contains("Amphi") && !searchSuggestion.getStructure().getLabel().contains("Biblio"))
+                        s="Salle";
+
                     d = " " + structureList.getBlocLabel(searchSuggestion.getStructure());
                 }
                 if (searchSuggestion.getStructure() instanceof CenterOfInterest) {
