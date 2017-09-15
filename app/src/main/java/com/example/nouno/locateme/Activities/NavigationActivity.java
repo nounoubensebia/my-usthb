@@ -142,7 +142,7 @@ public class NavigationActivity extends AppCompatActivity {
                         }
                         else
                         {
-                            Toast.makeText(NavigationActivity.this,"Vous etes en dehors du campus",Toast.LENGTH_LONG).show();
+                            Toast.makeText(NavigationActivity.this,"Vous êtes en dehors du campus",Toast.LENGTH_LONG).show();
                         }
                     }
                 });

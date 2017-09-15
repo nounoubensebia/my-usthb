@@ -49,7 +49,7 @@ public class SetMarkerActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        Toast.makeText(SetMarkerActivity.this,"Vous etes en dehors du campus",Toast.LENGTH_LONG).show();
+                        Toast.makeText(SetMarkerActivity.this,"Vous êtes en dehors du campus",Toast.LENGTH_LONG).show();
                     }
                 }
             }

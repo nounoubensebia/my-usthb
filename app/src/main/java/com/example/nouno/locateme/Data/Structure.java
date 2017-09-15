@@ -92,6 +92,7 @@ public class Structure {
                 case 24:return R.drawable.salle_omnisport;
                 case 25:return R.drawable.auditorium;
                 case 26:return R.drawable.cyber_espace;
+                case 27:return R.drawable.faculte_de_math;
             }
         }
         else

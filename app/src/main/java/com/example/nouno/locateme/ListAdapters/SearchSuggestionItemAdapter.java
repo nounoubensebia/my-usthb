@@ -223,7 +223,7 @@ public class SearchSuggestionItemAdapter extends RecyclerView.Adapter<SearchSugg
                                 }
                                 else
                                 {
-                                    holder.typeText.setText("bâtiment");
+                                    holder.typeText.setText("Bloc");
                                 }
                             }
                         }
