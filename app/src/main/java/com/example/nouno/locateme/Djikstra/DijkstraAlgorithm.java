@@ -1,6 +1,6 @@
 package com.example.nouno.locateme.Djikstra;
 
-import com.example.nouno.locateme.Data.Coordinate;
+
 import com.google.gson.Gson;
 
 import java.util.*;

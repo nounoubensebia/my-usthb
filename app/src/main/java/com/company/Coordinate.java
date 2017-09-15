@@ -1,19 +1,22 @@
-package com.example.nouno.locateme.Data;
+package com.company;
 
 import android.location.Location;
 
 
+import com.example.nouno.locateme.Data.Place;
 import com.google.gson.Gson;
+
+import java.io.Serializable;
 
 
 /**
  * Created by nouno on 26/06/2017.
  */
 
-public class Coordinate {
+public class Coordinate implements Serializable {
     private double latitude;
     private double longitude;
-
+    private static final long serialVersionUID = 13;
     public Coordinate(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -74,7 +77,7 @@ public class Coordinate {
     {
         //TODO handle too far from road
 
-        return  (this.getLatitude()<=Place.NORTH_EAST_BOUND.getLatitude()&&
+        return  (this.getLatitude()<= Place.NORTH_EAST_BOUND.getLatitude()&&
                 this.getLatitude()>=Place.SOUTH_WEST_BOUND.getLatitude()&&
                 this.getLongitude()>=Place.SOUTH_WEST_BOUND.getLongitude()&&
                 this.getLongitude()<=Place.NORTH_EAST_BOUND.getLongitude());

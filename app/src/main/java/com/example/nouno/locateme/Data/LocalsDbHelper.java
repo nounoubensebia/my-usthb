@@ -6,6 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.company.CenterOfInterest;
+import com.company.Classroom;
+import com.company.Structure;
+import com.company.StructureList;
 import com.example.nouno.locateme.Utils.FileUtils;
 import com.google.gson.Gson;
 

@@ -1,17 +1,20 @@
-package com.example.nouno.locateme.Data;
+package com.company;
+
 
 
 import com.example.nouno.locateme.R;
 
+import java.io.Serializable;
+
 /**
  * Created by nouno on 15/08/2017.
  */
-public class Structure {
+public class Structure implements Serializable {
     private long id;
     private String label;
     private Coordinate coordinate;
     private String tags;
-
+    private static final long serialVersionUID = 12;
     public static final int STRUCTURE_DEPT_INFO = 1;
     public static final int STRUCTURE_NOUV_BLOC_B = 2;
 

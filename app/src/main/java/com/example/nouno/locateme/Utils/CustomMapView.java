@@ -12,7 +12,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 
-import com.example.nouno.locateme.Data.Coordinate;
+
+import com.company.Coordinate;
 import com.example.nouno.locateme.Djikstra.Edge;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.mapbox.mapboxsdk.annotations.Icon;

@@ -2,7 +2,8 @@ package com.example.nouno.locateme.Utils;
 
 import android.location.Location;
 
-import com.example.nouno.locateme.Data.Coordinate;
+import com.company.Coordinate;
+
 
 /**
  * Created by nouno on 25/06/2017.

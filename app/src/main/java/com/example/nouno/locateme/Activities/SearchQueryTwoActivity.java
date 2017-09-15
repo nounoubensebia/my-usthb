@@ -25,15 +25,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nouno.locateme.Data.CenterOfInterest;
-import com.example.nouno.locateme.Data.Classroom;
-import com.example.nouno.locateme.Data.Coordinate;
+
+import com.company.CenterOfInterest;
+import com.company.Classroom;
+import com.company.Coordinate;
+import com.company.StructureList;
 import com.example.nouno.locateme.Data.LocalsDbHelper;
 import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Data.SearchSuggestion;
-import com.example.nouno.locateme.Data.StructureList;
+
 import com.example.nouno.locateme.DataRepo;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.ListAdapters.SearchSuggestionItemAdapter;

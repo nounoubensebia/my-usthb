@@ -2,6 +2,7 @@ package com.example.nouno.locateme.Data;
 
 import android.util.Log;
 
+import com.company.Coordinate;
 import com.example.nouno.locateme.Djikstra.Edge;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.Utils.MapGeometryUtils;

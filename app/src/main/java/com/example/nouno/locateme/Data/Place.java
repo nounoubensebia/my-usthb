@@ -1,5 +1,6 @@
 package com.example.nouno.locateme.Data;
 
+import com.company.Coordinate;
 import com.google.gson.Gson;
 
 /**

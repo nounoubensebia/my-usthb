@@ -1,9 +1,12 @@
-package com.example.nouno.locateme.Data;
+package com.company;
 
 import android.util.Log;
 
+import com.example.nouno.locateme.Data.SearchSuggestion;
+import com.example.nouno.locateme.Data.StructureMatch;
 import com.example.nouno.locateme.Utils.Haversine;
 
+import java.io.Serializable;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,12 +16,12 @@ import java.util.regex.Pattern;
 /**
  * Created by nouno on 15/08/2017.
  */
-public class StructureList {
+public class StructureList implements Serializable {
     private ArrayList<Classroom> classrooms;
     private ArrayList<Structure> structures;
     private ArrayList<CenterOfInterest> centerOfInterests;
     private static final Pattern ACCENTS_PATTERN = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-
+    private static final long serialVersionUID = 1L;
     public StructureList(ArrayList<Classroom> classrooms, ArrayList<Structure> structures, ArrayList<CenterOfInterest> centerOfInterests) {
         this.classrooms = classrooms;
         this.structures = structures;

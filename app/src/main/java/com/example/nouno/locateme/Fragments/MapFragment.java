@@ -24,13 +24,17 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.company.CenterOfInterest;
+import com.company.Coordinate;
+import com.company.Structure;
+import com.company.StructureList;
 import com.example.nouno.locateme.Activities.SearchQueryTwoActivity;
 import com.example.nouno.locateme.Activities.StartActivity;
-import com.example.nouno.locateme.Data.CenterOfInterest;
-import com.example.nouno.locateme.Data.Coordinate;
+
+
 import com.example.nouno.locateme.Data.Place;
-import com.example.nouno.locateme.Data.Structure;
-import com.example.nouno.locateme.Data.StructureList;
+
+
 import com.example.nouno.locateme.DataRepo;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.CustomMapView;

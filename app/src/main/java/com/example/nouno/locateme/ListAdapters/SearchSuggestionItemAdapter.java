@@ -13,12 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.company.CenterOfInterest;
+import com.company.Classroom;
+import com.company.StructureList;
 import com.example.nouno.locateme.Activities.GlideApp;
-import com.example.nouno.locateme.Data.CenterOfInterest;
-import com.example.nouno.locateme.Data.Classroom;
+
 import com.example.nouno.locateme.Data.SearchSuggestion;
-import com.example.nouno.locateme.Data.Structure;
-import com.example.nouno.locateme.Data.StructureList;
+
 import com.example.nouno.locateme.OnButtonClickListner;
 import com.example.nouno.locateme.R;
 import com.example.nouno.locateme.Utils.FileUtils;

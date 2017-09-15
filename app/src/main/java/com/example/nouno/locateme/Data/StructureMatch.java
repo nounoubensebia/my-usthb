@@ -2,6 +2,8 @@ package com.example.nouno.locateme.Data;
 
 import android.support.annotation.NonNull;
 
+import com.company.Structure;
+
 /**
  * Created by nouno on 20/08/2017.
  */

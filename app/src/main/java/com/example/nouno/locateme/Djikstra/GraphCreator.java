@@ -1,6 +1,7 @@
 package com.example.nouno.locateme.Djikstra;
 
-import com.example.nouno.locateme.Data.Coordinate;
+
+import com.company.Coordinate;
 import com.example.nouno.locateme.Utils.MapGeometryUtils;
 
 import org.json.JSONArray;

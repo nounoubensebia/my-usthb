@@ -4,7 +4,8 @@ import android.graphics.PointF;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.nouno.locateme.Data.Coordinate;
+
+import com.company.Coordinate;
 import com.example.nouno.locateme.Data.NavigationInstruction;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.OnSearchFinishListener;

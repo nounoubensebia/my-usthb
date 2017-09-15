@@ -3,7 +3,8 @@ package com.example.nouno.locateme.Utils;
 
 import android.graphics.PointF;
 
-import com.example.nouno.locateme.Data.Coordinate;
+
+import com.company.Coordinate;
 import com.example.nouno.locateme.Djikstra.Edge;
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.PolyUtils;

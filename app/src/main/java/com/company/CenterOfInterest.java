@@ -1,4 +1,4 @@
-package com.example.nouno.locateme.Data;
+package com.company;
 
 import com.example.nouno.locateme.R;
 
@@ -8,7 +8,7 @@ import com.example.nouno.locateme.R;
 public class CenterOfInterest extends Structure {
     private long structureId;
     private int type;
-
+    private static final long serialVersionUID = 15;
     public CenterOfInterest(long id, String label, Coordinate coordinate, String tags, long structureId, int type) {
         super(id, label, coordinate, tags);
         this.structureId = structureId;

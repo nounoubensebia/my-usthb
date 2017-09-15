@@ -1,5 +1,7 @@
 package com.example.nouno.locateme.Data;
 
+import com.company.Structure;
+
 /**
  * Created by nouno on 28/06/2017.
  */

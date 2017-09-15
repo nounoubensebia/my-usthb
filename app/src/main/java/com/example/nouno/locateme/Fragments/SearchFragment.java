@@ -33,7 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-import com.example.nouno.locateme.Data.Coordinate;
+import com.company.Coordinate;
 import com.example.nouno.locateme.Data.Path;
 import com.example.nouno.locateme.Data.Place;
 import com.example.nouno.locateme.Djikstra.Edge;
