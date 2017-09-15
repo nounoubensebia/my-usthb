@@ -50,7 +50,7 @@ public class SearchItemAdapter extends ArrayAdapter<SearchSuggestion> {
 
             //Resources resources = item.getResources();
 
-        try {
+        /*try {
 
             String encodedImage = FileUtils.readFile(getContext().getAssets().open("filename.txt"));
             byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
@@ -61,7 +61,7 @@ public class SearchItemAdapter extends ArrayAdapter<SearchSuggestion> {
             //MyAppGlideModule.with(getContext()).load(decodedString).asBitmap().placeholder(R.drawable.ic_location_green_24dp).into(imageView);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         return item;
     }

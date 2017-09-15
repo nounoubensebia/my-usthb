@@ -120,7 +120,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginTop="16dp"
                         android:gravity="center"
-                        android:text="Pour pouvoir utiliser les fonctionnalités de localisation en mode hors ligne il est nécessaire de télécharger la carte offline de l'USTHB. Vous pouvez lancer le téléchargement en appuyant sur le bouton &quot;lancer le téléchargement de la carte&quot;. Il est aussi possible d'utiliser l'application sans télécharger la carte offline et de lancer le téléchargement ultérieurement en appuyant sur le bouton &quot;continuer sans télécharger la carte offline&quot;."
+                        android:text="Pour pouvoir utiliser les fonctionnalités de localisation en mode hors ligne il est nécessaire de télécharger la carte offline de l'USTHB. Vous pouvez lancer le téléchargement en appuyant sur le bouton &quot;lancer le téléchargement de la carte&quot;. Il est aussi possible d'utiliser l'application sans télécharger la carte offline et de lancer le téléchargement ultérieurement en appuyant sur le bouton &quot;continuer sans télécharger la carte&quot;."
                         android:textColor="#FFF"
                         android:textSize="14sp" />
 

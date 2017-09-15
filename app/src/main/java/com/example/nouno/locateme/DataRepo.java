@@ -3,11 +3,9 @@ package com.example.nouno.locateme;
 import android.content.Context;
 
 import com.company.StructureList;
-import com.example.nouno.locateme.Activities.SearchQueryTwoActivity;
 
 import com.example.nouno.locateme.Djikstra.Graph;
 import com.example.nouno.locateme.Utils.FileUtils;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +40,7 @@ public class DataRepo {
         if (structureList == null) {
             InputStream inputStream = null;
             try {
-                inputStream = context.getResources().getAssets().open("LocalsFile");
+                inputStream = context.getResources().getAssets().open("FILE1");
                 ObjectInputStream oi = new ObjectInputStream(inputStream);
                 StructureList structureList = (StructureList) oi.readObject();
                 oi.close();
