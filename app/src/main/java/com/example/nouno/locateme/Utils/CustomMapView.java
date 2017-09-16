@@ -382,7 +382,21 @@ public class CustomMapView  {
         });
     }
 
+    public void removeAllMarkers ()
+    {
+        mapboxMap.removeAnnotations();
+        markers.clear();
+    }
 
+    public UiMarkerUtils getMarkerWithTag (Object tag)
+    {
+        for (UiMarkerUtils uiMarkerUtils:markers)
+        {
+            if (uiMarkerUtils.getTag()==tag)
+                return uiMarkerUtils;
+        }
+        return null;
+    }
 
     public interface OnMarkerClickListener {
         void onClick (UiMarkerUtils uiMarkerUtils);

@@ -87,6 +87,7 @@ public class MapFragment extends Fragment {
     boolean kiosqueSelected;
     boolean placeSelected = false;
     CenterOfInterest selectedCenterOfInterest = null;
+    private UiMarkerUtils selectedMarker;
     private boolean bottomChoiceActive = false;
     private TextView whereToGoText;
 
@@ -372,15 +373,22 @@ public class MapFragment extends Fragment {
                 mCustomMapView.setOnMarkerClickListener(new CustomMapView.OnMarkerClickListener() {
                     @Override
                     public void onClick(UiMarkerUtils uiMarkerUtils) {
-                        markerSelected = true;
-                        centerOfInterestLayout.setVisibility(View.VISIBLE);
-                        searchLayout.setVisibility(View.GONE);
-                        pathLayout.setVisibility(View.VISIBLE);
-                        bottomChoice.setVisibility(View.GONE);
-                        exit(fabClear);
-                        mCustomMapView.animateCamera(new Coordinate(uiMarkerUtils.getMarker().getPosition()), 16);
-                        bindStructureLayout((CenterOfInterest) uiMarkerUtils.getTag());
-                        selectedCenterOfInterest = ((CenterOfInterest) uiMarkerUtils.getTag());
+                        if (!markerSelected)
+                        {
+                            markerSelected = true;
+                            centerOfInterestLayout.setVisibility(View.VISIBLE);
+                            UiMarkerUtils uiMarkerUtils1 = uiMarkerUtils;
+                            CenterOfInterest centerOfInterest = (CenterOfInterest) uiMarkerUtils1.getTag();
+                            mCustomMapView.removeAllMarkers();
+                            mCustomMapView.addMarker(centerOfInterest.getCoordinate(),getSelectedDrawable(centerOfInterest));
+                            searchLayout.setVisibility(View.GONE);
+                            pathLayout.setVisibility(View.VISIBLE);
+                            bottomChoice.setVisibility(View.GONE);
+                            exit(fabClear);
+                            mCustomMapView.animateCamera(new Coordinate(uiMarkerUtils.getMarker().getPosition()), 16);
+                            bindStructureLayout((CenterOfInterest) uiMarkerUtils.getTag());
+                            selectedCenterOfInterest = ((CenterOfInterest) uiMarkerUtils.getTag());
+                        }
 
                     }
                 });
@@ -395,6 +403,7 @@ public class MapFragment extends Fragment {
                             pathLayout.setVisibility(View.GONE);
                             bottomChoice.setVisibility(View.VISIBLE);
                             enter(fabClear);
+                            updateMap();
 
                         }
                         if (placeSelected)
@@ -440,6 +449,31 @@ public class MapFragment extends Fragment {
                 });
             }
         });
+    }
+
+    public int getSelectedDrawable (CenterOfInterest centerOfInterest)
+    {
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_BUVETTE)
+        {
+            return R.drawable.ic_food;
+        }
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_TOILETTE)
+        {
+            return R.drawable.ic_toilet;
+        }
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_KIOSQUE)
+        {
+            return R.drawable.ic_kiosk;
+        }
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_SORTIE)
+        {
+            return R.drawable.ic_sortie;
+        }
+        if (centerOfInterest.getType()==CenterOfInterest.TYPE_MOSQUE)
+        {
+            return R.drawable.ic_mosque;
+        }
+        return -1;
     }
 
     public void bindStructureLayout(CenterOfInterest centerOfInterest) {
