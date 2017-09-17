@@ -47,10 +47,11 @@
 
 
                     <EditText
-                        android:inputType="text"
+                        android:inputType="textNoSuggestions"
                         android:textSize="16sp"
                         android:maxLines="1"
                         android:id="@+id/departure_text"
+
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -72,7 +73,7 @@
 
 
                     <EditText
-                        android:inputType="text"
+                        android:inputType="textNoSuggestions"
                         android:maxLines="1"
                         android:textSize="16sp"
                         android:id="@+id/destination_text"
