@@ -36,11 +36,7 @@
                     android:theme="@style/ToolbarTheme"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
 
-                <ImageView
-                    android:layout_width="110dp"
-                    android:layout_height="58dp"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_usthb_logo" />
+
                 <LinearLayout
                     android:visibility="gone"
                     android:id="@+id/layout_error"

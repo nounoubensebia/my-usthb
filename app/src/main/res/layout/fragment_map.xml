@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/ic_search_black_24dp"
             android:fontFamily="sans-serif-condensed"
-            android:text="Où aller vous ?"
+            android:text="Où allez-vous ?"
             android:textColor="@color/backgroundColor"
             android:textSize="24sp" />
     </LinearLayout>

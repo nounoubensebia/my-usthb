@@ -15,9 +15,9 @@
 
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_usthb_round"
+        android:icon="@mipmap/ic_launcher_usthb_prob"
         android:label="My USTHB"
-        android:roundIcon="@mipmap/ic_launcher_usthb_round"
+        android:roundIcon="@mipmap/ic_launcher_usthb_prob"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
