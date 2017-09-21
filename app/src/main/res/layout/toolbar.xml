@@ -9,6 +9,9 @@
         android:background="@color/backgroundColor"
         android:minHeight="?attr/actionBarSize"
         android:elevation="8dp"
+        android:subtitleTextColor="#FFF"
+        android:titleTextColor="#FFF"
+
         android:title="Emploi du temps"
-        app:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+        app:theme="@style/AppTheme" />
 </merge>

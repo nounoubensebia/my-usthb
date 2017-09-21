@@ -6,6 +6,9 @@
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">#000</item>#21671C
         <item name="colorAccent">@color/backgroundColor</item>
+        <item name="android:actionMenuTextColor">#FFF</item>
+        <item name="actionMenuTextColor">#FFF</item>
+
     </style>
 
     <style name="WelcomeTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -13,12 +16,14 @@
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">@color/backgroundColor</item>#21671C
         <item name="colorAccent">#FFF</item>
+        <item name="android:actionMenuTextColor">#FFF</item>
     </style>
 
     <style name="MainTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">#000</item>
         <item name="colorAccent">@color/backgroundColor</item>
+        <item name="android:actionMenuTextColor">#FFF</item>
     </style>
 
     <style name="SignupTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -35,13 +40,14 @@
     </style>
 
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
+        <item name="android:actionMenuTextColor">#FFF</item>
         <item name="android:textColorPrimary">#FFF</item>
         <item name="actionMenuTextColor">@android:color/white</item>
 
     </style>
 
     <style name="ToolbarStyle" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="android:actionMenuTextColor">#FFF</item>
         <item name="contentInsetStart">0dp</item>
         <item name="android:contentInsetStart" tools:targetApi="lollipop">0dp</item>
     </style>

@@ -72,6 +72,8 @@ public class StartActivity extends AppCompatActivity {
 
     void loadTimeFragment ()
     {
+
+
         if (timeTableFragment == null)
         {
             timeTableFragment = new AgendaFragment();

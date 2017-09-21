@@ -2,10 +2,12 @@ package com.example.nouno.locateme.Fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -151,8 +155,41 @@ public class AgendaFragment extends Fragment {
         changeColor(ContextCompat.getColor(getActivity(), R.color.backgroundColor));
         Toolbar toolbar = (Toolbar)view.findViewById(R.id.toolbar);
         toolbar.setTitle("Emploi du temps");
+        /*toolbar.inflateMenu(R.menu.emploi_du_temps_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                signal();
+                return true;
+            }
+        });*/
         toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(),android.R.color.white));
         return view;
+    }
+
+    private void signal ()
+    {
+        Intent intent = new Intent(Intent.ACTION_SEND,Uri.parse("mailto:usthbplay@gmail.com"));
+        //emailIntent.setType("*/*");
+        intent.setData(Uri.parse("mailto"));
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_EMAIL  , new String[]{"usthbplay@gmail.com"});
+        intent.putExtra("subject", "signaler emploi du temps erroné");
+        intent.putExtra("body", "Faculté "+getInfo().fac+"\nFiliere "+getInfo().filiere+"\nAnnée "+getInfo().annee);
+        //emailIntent.putExtra(Intent.EXTRA_SUBJECT, "signaler emploi du temps erroné ");
+        //emailIntent.putExtra(Intent.EXTRA_TEXT   , "Faculté "+getInfo().fac+"\nFiliere "+getInfo().filiere+"\nAnnée "+getInfo().annee);
+
+
+
+            startActivity(intent);
+
+    }
+
+    private Info getInfo ()
+    {
+        String inf = SharedPreference.loadString("TEMP",getActivity());
+        Info info = new Gson().fromJson(inf,Info.class);
+        return info;
     }
 
     private void changeColor(int newColor) {
