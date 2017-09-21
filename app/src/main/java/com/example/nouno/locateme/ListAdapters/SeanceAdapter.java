@@ -40,13 +40,25 @@ public class SeanceAdapter extends ArrayAdapter<Seance> {
         TextView groupText = (TextView) item.findViewById(R.id.text_group);
         TextView moduleText = (TextView) item.findViewById(R.id.text_module);
         TextView localText = (TextView) item.findViewById(R.id.text_local);
-        if (seance.groupe!=null&&!seance.groupe.equals(""))
+        groupText.setVisibility(View.VISIBLE);
+        localText.setVisibility(View.VISIBLE);
+        if (seance.groupe!=null&&!seance.groupe.equals("")&&!seance.groupe.equals("txt"))
         groupText.setText("Groupe "+seance.groupe+" "+seance.type);
         else
         {
+            if (seance.groupe==null||seance.groupe.equals(""))
             groupText.setText(seance.type);
+            else
+                groupText.setVisibility(View.GONE);
+        }
+
+        if (seance.type.equals("txt"))
+        {
+            groupText.setVisibility(View.GONE);
+            localText.setVisibility(View.GONE);
         }
         moduleText.setText(seance.module);
+        if (seance.local!=null&&!seance.local.equals(""))
         if (seance.local.charAt(seance.local.length()-1)==')')
         {
             StringBuilder sb = new StringBuilder(seance.local);
@@ -57,7 +69,6 @@ public class SeanceAdapter extends ArrayAdapter<Seance> {
         {
             localText.setText(seance.local);
         }
-
         return item;
     }
 }

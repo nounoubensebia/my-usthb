@@ -33,7 +33,7 @@ public class WaitActivity extends AppCompatActivity {
     TextView errorText;
     Button cancelButton;
     ProgressBar progressBar;
-
+    private boolean changeURL = false;
     View syncCompletedLayout;
     Button syncCompletedButton;
     public  String affiche;
@@ -101,7 +101,13 @@ public class WaitActivity extends AppCompatActivity {
             DataRepo.getGraphInstance(WaitActivity.this);
             DataRepo.getStructureListInstance(WaitActivity.this);
             String urla = SharedPreference.loadString("URL", WaitActivity.this);
-            WebResponse webResponse = QueryUtils.makeHttpGetRequest(SharedPreference.loadString("URL", WaitActivity.this),
+            if (urla.contains("xml")&&!urla.contains("xml1"))
+            {
+                changeURL = true;
+                urla = urla.replace("xml","xml1");
+                SharedPreference.saveString("URL",urla,WaitActivity.this);
+            }
+            WebResponse webResponse = QueryUtils.makeHttpGetRequest(urla,
                     new LinkedHashMap<String, String>());
             if (webResponse.isError()) {
                 return null;//erreur
@@ -146,7 +152,7 @@ public class WaitActivity extends AppCompatActivity {
                         doneJours = Parseur.getJours(resultString);
                         //Toast.makeText(EmploiDuTemps.this,EmploiDuTemps.sum,Toast.LENGTH_LONG).show();
                         sum = Parseur.getSum(resultString);
-                        if (!sum.equals(SharedPreference.loadString("SUM", WaitActivity.this))) {
+                        if (!sum.equals(SharedPreference.loadString("SUM", WaitActivity.this))||changeURL) {
                             //Toast.makeText(getActivity(),"Synchronisation de l'emploi du temps",Toast.LENGTH_LONG).show();
                             SharedPreference.saveString("SUM", sum, WaitActivity.this);
                             //Remplissage du fichier
