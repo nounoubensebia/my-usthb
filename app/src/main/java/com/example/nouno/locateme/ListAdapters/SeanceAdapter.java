@@ -52,7 +52,7 @@ public class SeanceAdapter extends ArrayAdapter<Seance> {
                 groupText.setVisibility(View.GONE);
         }
 
-        if (seance.type.equals("txt"))
+        if (seance.type!=null&&seance.type.equals("txt"))
         {
             groupText.setVisibility(View.GONE);
             localText.setVisibility(View.GONE);

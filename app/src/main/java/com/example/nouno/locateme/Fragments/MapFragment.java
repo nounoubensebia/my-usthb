@@ -96,15 +96,7 @@ public class MapFragment extends Fragment {
     }
 
     private void getStructureList() {
-        /*InputStream inputStream = null;
-        try {
-            inputStream = this.getResources().getAssets().open("LocalsJson.txt");
 
-            String localsJson = FileUtils.readFile(inputStream);
-            structureList = new Gson().fromJson(localsJson,StructureList.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         structureList = DataRepo.getStructureListInstance(getActivity());
 
     }
@@ -123,13 +115,7 @@ public class MapFragment extends Fragment {
         button = (ImageView) view.findViewById(R.id.btn);
         whereToGoText = (TextView) view.findViewById(R.id.where_to_go);
         layoutImage = (ImageView) view.findViewById(R.id.image_view);
-        /*whereToGoText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), SearchQueryTwoActivity.class);
-                startActivity(i);
-            }
-        });*/
+
         searchView = view.findViewById(R.id.search_layout);
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,10 +131,6 @@ public class MapFragment extends Fragment {
 
 
 
-        /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();*/
 
 
         fabList = view.findViewById(R.id.fab_list);
@@ -375,19 +357,23 @@ public class MapFragment extends Fragment {
                     public void onClick(UiMarkerUtils uiMarkerUtils) {
                         if (!markerSelected)
                         {
-                            markerSelected = true;
-                            centerOfInterestLayout.setVisibility(View.VISIBLE);
+
                             UiMarkerUtils uiMarkerUtils1 = uiMarkerUtils;
-                            CenterOfInterest centerOfInterest = (CenterOfInterest) uiMarkerUtils1.getTag();
-                            mCustomMapView.removeAllMarkers();
-                            mCustomMapView.addMarker(centerOfInterest.getCoordinate(),getSelectedDrawable(centerOfInterest));
-                            searchLayout.setVisibility(View.GONE);
-                            pathLayout.setVisibility(View.VISIBLE);
-                            bottomChoice.setVisibility(View.GONE);
-                            exit(fabClear);
-                            mCustomMapView.animateCamera(new Coordinate(uiMarkerUtils.getMarker().getPosition()), 16);
-                            bindStructureLayout((CenterOfInterest) uiMarkerUtils.getTag());
-                            selectedCenterOfInterest = ((CenterOfInterest) uiMarkerUtils.getTag());
+                            if (uiMarkerUtils1!=null&&uiMarkerUtils1.getTag()!=null&&!placeSelected)
+                            {
+                                markerSelected = true;
+                                centerOfInterestLayout.setVisibility(View.VISIBLE);
+                                CenterOfInterest centerOfInterest = (CenterOfInterest) uiMarkerUtils1.getTag();
+                                mCustomMapView.removeAllMarkers();
+                                mCustomMapView.addMarker(centerOfInterest.getCoordinate(),getSelectedDrawable(centerOfInterest));
+                                searchLayout.setVisibility(View.GONE);
+                                pathLayout.setVisibility(View.VISIBLE);
+                                bottomChoice.setVisibility(View.GONE);
+                                exit(fabClear);
+                                mCustomMapView.animateCamera(new Coordinate(uiMarkerUtils.getMarker().getPosition()), 16);
+                                bindStructureLayout((CenterOfInterest) uiMarkerUtils.getTag());
+                                selectedCenterOfInterest = ((CenterOfInterest) uiMarkerUtils.getTag());
+                            }
                         }
 
                     }
